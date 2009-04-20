@@ -1,0 +1,252 @@
+/**
+ * (C) Copyright 2007 M.Sc. Friedrich Schäuffelhut
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * $Revison$
+ * $Author$
+ * $Date$
+ */
+package de.schaeuffelhut.jdbc.xx;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+
+import de.schaeuffelhut.jdbc.IfcResultType;
+import de.schaeuffelhut.jdbc.IfcStatementInParameter;
+import de.schaeuffelhut.jdbc.txn.Transactional;
+import de.schaeuffelhut.jdbc.txn.TxnContext;
+
+
+/**
+ * @author M.Sc. Friedrich Schäuffelhut
+ *
+ */
+public final class TxnStatementUtil
+{
+	private TxnStatementUtil(){}
+
+	/*
+	 * select single row
+	 */
+
+	public final static <T> Transactional<T> selectIntoScalar(final String sql, final IfcResultType<T> resultType)
+	{
+		return selectIntoScalar(sql, resultType, (IfcStatementInParameter[])null );
+	}
+	
+	public final static <T> Transactional<T> selectIntoScalar(final String sql, final IfcResultType<T> resultType, final IfcStatementInParameter...parameters)
+	{
+		return new Transactional<T>() {
+			public T run(TxnContext context) throws Exception
+			{
+				return StatementUtil.selectIntoScalar(
+						context.connection, sql, resultType, parameters );
+			}
+		};
+	}
+
+	public final static Transactional<Object[]> selectIntoTuple(final String sql, final IfcResultType<?>... resultTypes)
+	{
+		return selectIntoTuple(sql, resultTypes, (IfcStatementInParameter[])null );
+	}
+	
+	public final static Transactional<Object[]> selectIntoTuple(final String sql, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter...parameters)
+	{
+		return new Transactional<Object[]>() {
+			public Object[] run(TxnContext context) throws Exception
+			{
+				return StatementUtil.selectIntoTuple(
+						context.connection, sql, resultTypes, parameters );
+			}
+		};
+	}
+
+	public final static Transactional<Map<String,Object>> selectIntoMap(final String sql, final IfcResultType<?>... resultTypes)
+	{
+		return selectIntoMap(sql, resultTypes, (IfcStatementInParameter[])null );
+	}
+	
+	public final static Transactional<Map<String,Object>> selectIntoMap(final String sql, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter... parameters)
+	{
+		return new Transactional<Map<String,Object>>() {
+			public Map<String,Object> run(TxnContext context) throws Exception
+			{
+				return StatementUtil.selectIntoMap(
+						context.connection, sql, resultTypes, parameters);
+			}
+		};
+	}
+
+	public final static <T> Transactional<T> selectIntoObject(final String sql, final Class<T> type, final IfcResultType<?>... resultTypes)
+	{
+		return selectIntoObject(sql, type, resultTypes, (IfcStatementInParameter[])null );
+	}
+	
+	public final static <T> Transactional<T> selectIntoObject(final String sql, final Class<T> type, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter...parameters )
+	{
+		return new Transactional<T>() {
+			public T run(TxnContext context) throws Exception
+			{
+				return StatementUtil.selectIntoObject(
+						context.connection, sql, type, resultTypes, parameters );
+			}
+		};
+	}
+
+	/*
+	 * select multiple rows
+	 */
+
+	public final static <T> Transactional<ArrayList<T>> selectIntoScalars(final String sql, final IfcResultType<T> resultType)
+	{
+		return selectIntoScalars(sql, resultType, (IfcStatementInParameter[])null );
+	}
+	
+	public final static <T> Transactional<ArrayList<T>> selectIntoScalars(final String sql, final IfcResultType<T> resultType, final IfcStatementInParameter... parameters)
+	{
+		return new Transactional<ArrayList<T>>() {
+			public ArrayList<T> run(TxnContext context) throws Exception
+			{
+				return StatementUtil.selectIntoScalars(
+						context.connection, sql, resultType, parameters );
+			}
+		};
+	}
+
+	public final static <T> Transactional<Void> selectIntoScalars(final Collection<T> results, final String sql, final IfcResultType<T> resultType)
+	{
+		return selectIntoScalars(results, sql, resultType, (IfcStatementInParameter[])null );
+	}
+	
+	public final static <T> Transactional<Void> selectIntoScalars(final Collection<T> results, final String sql, final IfcResultType<T> resultType, final IfcStatementInParameter...parameters)
+	{
+		return new Transactional<Void>() {
+			public Void run(TxnContext context) throws Exception
+			{
+				StatementUtil.selectIntoScalars(
+						results, context.connection, sql, resultType, parameters );
+				return null;
+			}
+		};
+	}
+
+	public final static Transactional<ArrayList<Object[]>> selectIntoTuples(final String sql, final IfcResultType<?>... resultTypes)
+	{
+		return selectIntoTuples(sql, resultTypes, (IfcStatementInParameter[])null );
+	}
+	
+	public final static Transactional<ArrayList<Object[]>> selectIntoTuples(final String sql, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter...parameters)
+	{
+		return new Transactional<ArrayList<Object[]>>() {
+			public ArrayList<Object[]> run(TxnContext context) throws Exception
+			{
+				return StatementUtil.selectIntoTuples(
+						context.connection, sql, resultTypes, parameters );
+			}
+		};
+	}
+
+	public final static <T> Transactional<Void> selectIntoTuples(final Collection<Object[]> results, final String sql, final IfcResultType<?>... resultTypes)
+	{
+		return selectIntoTuples(results, sql, resultTypes, (IfcStatementInParameter[])null );
+	}
+	
+	public final static <T> Transactional<Void> selectIntoTuples(final Collection<Object[]> results, final String sql, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter...parameters)
+	{
+		return new Transactional<Void>() {
+			public Void run(TxnContext context) throws Exception
+			{
+				StatementUtil.selectIntoTuples(
+						results, context.connection, sql, resultTypes, parameters );
+				return null;
+			}
+		};
+	}
+
+	public final static Transactional<ArrayList<Map<String,Object>>> selectIntoMaps(final String sql, final IfcResultType<?>... resultTypes)
+	{
+		return selectIntoMaps(sql, resultTypes, (IfcStatementInParameter[])null );
+	}
+	
+	public final static Transactional<ArrayList<Map<String,Object>>> selectIntoMaps(final String sql, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter...parameters)
+	{
+		return new Transactional<ArrayList<Map<String,Object>>>() {
+			public ArrayList<Map<String,Object>> run(TxnContext context) throws Exception
+			{
+				return StatementUtil.selectIntoMaps(
+						context.connection, sql, resultTypes, parameters );
+			}
+		};
+	}
+
+	public final static <T> Transactional<Void> selectIntoMaps(final Collection<Map<String,Object>> results, final String sql, final IfcResultType<?>... resultTypes)
+	{
+		return selectIntoMaps(results, sql, resultTypes, (IfcStatementInParameter[])null);
+	}
+	
+	public final static <T> Transactional<Void> selectIntoMaps(final Collection<Map<String,Object>> results, final String sql, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter...parameters)
+	{
+		return new Transactional<Void>() {
+			public Void run(TxnContext context) throws Exception
+			{
+				StatementUtil.selectIntoMaps(
+						results, context.connection, sql, resultTypes, parameters );
+				return null;
+			}
+		};
+	}
+
+	public final static <T> Transactional<ArrayList<T>> selectIntoObjects(final String sql, final Class<T> type, final IfcResultType<?>... resultTypes)
+	{
+		return selectIntoObjects(sql, type, resultTypes, (IfcStatementInParameter[])null );
+	}
+	
+	public final static <T> Transactional<ArrayList<T>> selectIntoObjects(final String sql, final Class<T> type, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter...parameters)
+	{
+		return new Transactional<ArrayList<T>>() {
+			public ArrayList<T> run(TxnContext context) throws Exception
+			{
+				return StatementUtil.selectIntoObjects(
+						context.connection, sql, type, resultTypes, parameters );
+			}
+		};
+	}
+	
+	public final static <T> Transactional<Void> selectIntoObjects(final Collection<T> results, final String sql, final Class<T> type, final IfcResultType<?>... resultTypes)
+	{
+		return selectIntoObjects(results, sql, type, resultTypes, (IfcStatementInParameter[])null );
+	}
+	
+	public final static <T> Transactional<Void> selectIntoObjects(final Collection<T> results, final String sql, final Class<T> type, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter...parameters)
+	{
+		return new Transactional<Void>() {
+			public Void run(TxnContext context) throws Exception
+			{
+				StatementUtil.selectIntoObjects( 
+						results, context.connection, sql, type, resultTypes, parameters );
+				return null;
+			}
+		};
+	}
+	
+	/*
+	 * insert / updates
+	 */
+
+	public final static Transactional<Integer> execute(final String sql, final IfcStatementInParameter...parameters)
+	{
+		return new Transactional<Integer>() {
+			public Integer run(TxnContext context) throws Exception
+			{
+				StatementUtil.execute( 
+						context.connection, sql, parameters );
+				return null;
+			}
+		};
+	}
+
+}

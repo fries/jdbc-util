@@ -19,6 +19,9 @@ import java.sql.Connection;
  */
 public interface ConnectionProvider
 {
+	static final String PROP_CONN_PROVIDER = "jdbcutil.connection.provider";
+	public static final String PROP_CONN_PROVIDER_PREFIX = "jdbcutil.connection.provider.";
+
 	public abstract Connection open() throws Exception;
 	public abstract void close(Connection connection) throws Exception;
 }

@@ -24,7 +24,7 @@ import static org.apache.log4j.Logger.getLogger;
  * @author M.Sc. Friedrich Schäuffelhut
  *
  */
-public final class DefaultConnectionProvider implements ConnectionProvider
+public class DefaultConnectionProvider implements ConnectionProvider
 {
 	final static Logger logger = getLogger(DefaultConnectionProvider.class);
 
@@ -121,7 +121,13 @@ public final class DefaultConnectionProvider implements ConnectionProvider
 
 	public final Connection open() throws Exception
 	{
-		return driver.connect( connectionUrl, connectionInfo );
+		Connection connection = driver.connect( connectionUrl, connectionInfo );
+		onOpen( connection );
+		return connection;
+	}
+	
+	protected void onOpen(Connection connection) throws Exception{
+		// overried if desired
 	}
 	
 	public final void close(Connection connection) throws Exception

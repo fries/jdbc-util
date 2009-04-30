@@ -1,5 +1,6 @@
 package de.schaeuffelhut.jdbc.txn;
 
+import java.lang.reflect.Constructor;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -23,13 +24,27 @@ public class TxnUtil
 
 	public final static void initDefaultConnectionProvider()
 	{
-		Properties properties = JdbcUtilProperties.findProperties();
+		final Properties properties = JdbcUtilProperties.findProperties();
 		
-		/*TODO: choose defaultConnectionProvider 
-		 *      by property "jdbcutil.connection-provider"
-		 */
+		final String connectionProviderClassName = properties.getProperty( ConnectionProvider.PROP_CONN_PROVIDER );
 		
-		defaultConnectionProvider = new DefaultConnectionProvider( properties );
+		if ( connectionProviderClassName == null )
+		{
+			logger.debug( ConnectionProvider.PROP_CONN_PROVIDER + " undefined, using DefaultConnectionProvider");
+			defaultConnectionProvider = new DefaultConnectionProvider( properties );
+		}
+		else
+		{
+			logger.debug( String.format( "%s=%s", ConnectionProvider.PROP_CONN_PROVIDER, connectionProviderClassName ) );
+			try{
+				logger.debug( String.format( "creating new instance via constructor %s(Properties prop)", connectionProviderClassName ) );
+				Class<?> clazz = Class.forName( connectionProviderClassName );
+				Constructor<?> constructor = clazz.getConstructor( Properties.class );
+				defaultConnectionProvider = (ConnectionProvider)constructor.newInstance( properties );
+			} catch (Exception e) {
+				throw new RuntimeException( e );
+			}
+		}
 	}
 
 	public final static ConnectionProvider getDefaultConnectionProvider()

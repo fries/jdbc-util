@@ -9,13 +9,13 @@
  * $Author$
  * $Date$
  */
-package de.schaeuffelhut.jdbc;
+package de.schaeuffelhut.jdbc.xx;
 
 /**
  * @author M.Sc. Friedrich Schäuffelhut
  *
  */
-public interface IfcGetter<T,V>
+public interface IfcSetter<T,V>
 {
-	public abstract V getValue(T object); 
+	public abstract void setValue(T object, V newValue);
 }

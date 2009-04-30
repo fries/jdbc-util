@@ -9,10 +9,13 @@
  * $Author$
  * $Date$
  */
-package de.schaeuffelhut.jdbc;
+package de.schaeuffelhut.jdbc.xx;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import de.schaeuffelhut.jdbc.IfcResultSetAdaptor;
+import de.schaeuffelhut.jdbc.IfcResultType;
 
 
 

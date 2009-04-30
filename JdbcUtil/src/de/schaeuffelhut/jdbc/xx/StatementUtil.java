@@ -25,6 +25,8 @@ import org.apache.log4j.Logger;
 
 import de.schaeuffelhut.jdbc.IfcResultFactory;
 import de.schaeuffelhut.jdbc.IfcResultSetAdaptor;
+import de.schaeuffelhut.jdbc.IfcResultSetCollectionReader;
+import de.schaeuffelhut.jdbc.IfcResultSetScalarReader;
 import de.schaeuffelhut.jdbc.IfcResultType;
 import de.schaeuffelhut.jdbc.IfcStatementInParameter;
 import de.schaeuffelhut.jdbc.IfcStatementOutParameter;
@@ -44,14 +46,62 @@ public final class StatementUtil
 	private StatementUtil(){}
 
 	/*
+	 * selectInto scalar and collection
+	 */
+	
+	public final static <T> T selectInto(Connection connection, String sql, IfcResultSetScalarReader<T> resultReader, IfcStatementInParameter... parameters) throws Exception
+	{
+		PreparedStatement stmt = null;
+		try
+		{
+			if ( logger.isTraceEnabled() )
+				logger.trace( "selectIntoScalar: " + sql );
+			stmt = prepareStatement( connection, sql, parameters );
+			ResultSet resultSet = stmt.executeQuery();
+			return resultReader.readResult( resultSet );
+		}
+		finally
+		{
+			JdbcUtil.closeQuietly( stmt );
+		}
+	}
+
+	public final static <T> ArrayList<T> selectInto(Connection connection, String sql, IfcResultSetCollectionReader<T> resultReader, IfcStatementInParameter... parameters) throws Exception
+	{
+		ArrayList<T> results = new ArrayList<T>();
+		selectInto( results, connection, sql, resultReader, parameters );
+		return results;
+	}
+
+	public final static <T> void selectInto(Collection<T> results, Connection connection, String sql, IfcResultSetCollectionReader<T> resultReader, IfcStatementInParameter... parameters) throws Exception
+	{
+		PreparedStatement stmt = null;
+		try
+		{
+			if ( logger.isTraceEnabled() )
+				logger.trace( "selectIntoObjects: " + sql );
+			stmt = prepareStatement( connection, sql, parameters );
+			ResultSet resultSet = stmt.executeQuery();
+			resultReader.readResults( results, resultSet );
+		}
+		finally
+		{
+			JdbcUtil.closeQuietly( stmt );
+		}
+	}
+
+	
+	/*
 	 * select single row
 	 */
 
+	@Deprecated // use selectInto()
 	public final static <T> T selectIntoScalar(Connection connection, String sql, IfcResultType<T> resultType) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		return selectIntoScalar( connection, sql, resultType, (IfcStatementInParameter[])null );
 	}
 
+	@Deprecated // use selectInto()
 	public final static <T> T selectIntoScalar(Connection connection, String sql, IfcResultType<T> resultType, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		PreparedStatement stmt = null;
@@ -69,11 +119,13 @@ public final class StatementUtil
 		}
 	}
 
+	@Deprecated // use selectInto()
 	public final static Object[] selectIntoTuple(Connection connection, String sql, IfcResultType<?>... resultTypes) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		return selectIntoTuple( connection, sql, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto()
 	public final static Object[] selectIntoTuple(Connection connection, String sql, IfcResultType<?>[] resultTypes, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		PreparedStatement stmt = null;
@@ -91,11 +143,13 @@ public final class StatementUtil
 		}
 	}
 
+	@Deprecated // use selectInto()
 	public final static Map<String,Object> selectIntoMap(Connection connection, String sql, IfcResultType<?>... resultTypes) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		return selectIntoMap( connection, sql, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto()
 	public final static Map<String,Object> selectIntoMap(Connection connection, String sql, IfcResultType<?>[] resultTypes, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		PreparedStatement stmt = null;
@@ -113,11 +167,13 @@ public final class StatementUtil
 		}
 	}
 
+	@Deprecated // use selectInto()
 	public final static <T> T selectIntoObject(Connection connection, String sql, Class<T> type, IfcResultType<?>... resultTypes) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		return selectIntoObject( connection, sql, type, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto()
 	public final static <T> T selectIntoObject(Connection connection, String sql, Class<T> type, IfcResultType<?>[] resultTypes, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		PreparedStatement stmt = null;
@@ -135,6 +191,7 @@ public final class StatementUtil
 		}
 	}
 
+	@Deprecated // use selectInto()
 	public final static <T> T selectInto(Connection connection, String sql, IfcResultFactory<T> resultFactory, IfcResultSetAdaptor<T>[] resultSetAdaptors, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		PreparedStatement stmt = null;
@@ -156,23 +213,15 @@ public final class StatementUtil
 	 * select multiple rows
 	 */
 
-	public final static <T> ArrayList<T> selectIntoScalars(Connection connection, String sql, IfcResultType<T> resultType) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
-	{
-		return selectIntoScalars( connection, sql, resultType, (IfcStatementInParameter[])null );
-	}
-	
+	@Deprecated // use selectInto()
 	public final static <T> ArrayList<T> selectIntoScalars(Connection connection, String sql, IfcResultType<T> resultType, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		ArrayList<T> results = new ArrayList<T>();
-		selectIntoScalars( results, connection, sql, resultType );
+		selectIntoScalars( results, connection, sql, resultType, parameters );
 		return results;
 	}
 
-	public final static <T> void selectIntoScalars(Collection<T> results, Connection connection, String sql, IfcResultType<T> resultType) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
-	{
-		selectIntoScalars( results, connection, sql, resultType, (IfcStatementInParameter[])null );
-	}
-	
+	@Deprecated // use selectInto()
 	public final static <T> void selectIntoScalars(Collection<T> results, Connection connection, String sql, IfcResultType<T> resultType, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		PreparedStatement stmt = null;
@@ -190,11 +239,13 @@ public final class StatementUtil
 		}
 	}
 
+	@Deprecated // use selectInto()
 	public final static ArrayList<Object[]> selectIntoTuples(Connection connection, String sql, IfcResultType<?>... resultTypes) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		return selectIntoTuples( connection, sql, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto()
 	public final static ArrayList<Object[]> selectIntoTuples(Connection connection, String sql, IfcResultType<?>[] resultTypes, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		ArrayList<Object[]> results = new ArrayList<Object[]>();
@@ -202,11 +253,13 @@ public final class StatementUtil
 		return results;
 	}
 
+	@Deprecated // use selectInto()
 	public final static <T> void selectIntoTuples(Collection<Object[]> results, Connection connection, String sql, IfcResultType<?>... resultTypes) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		selectIntoTuples( results, connection, sql, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto()
 	public final static <T> void selectIntoTuples(Collection<Object[]> results, Connection connection, String sql, IfcResultType<?>[] resultTypes, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		PreparedStatement stmt = null;
@@ -224,11 +277,13 @@ public final class StatementUtil
 		}
 	}
 
+	@Deprecated // use selectInto()
 	public final static ArrayList<Map<String,Object>> selectIntoMaps(Connection connection, String sql, IfcResultType<?>... resultTypes) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		return selectIntoMaps( connection, sql, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto()
 	public final static ArrayList<Map<String,Object>> selectIntoMaps(Connection connection, String sql, IfcResultType<?>[] resultTypes, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		ArrayList<Map<String,Object>> results = new ArrayList<Map<String,Object>>();
@@ -236,11 +291,13 @@ public final class StatementUtil
 		return results;
 	}
 	
+	@Deprecated // use selectInto()
 	public final static <T> void selectIntoMaps(Collection<Map<String,Object>> results, Connection connection, String sql, IfcResultType<?>... resultTypes) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		selectIntoMaps( results, connection, sql, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto()
 	public final static <T> void selectIntoMaps(Collection<Map<String,Object>> results, Connection connection, String sql, IfcResultType<?>[] resultTypes, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		PreparedStatement stmt = null;
@@ -258,11 +315,13 @@ public final class StatementUtil
 		}
 	}
 
+	@Deprecated // use selectInto()
 	public final static <T> ArrayList<T> selectIntoObjects(Connection connection, String sql, Class<T> type, IfcResultType<?>... resultTypes) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		return selectIntoObjects( connection, sql, type, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto()
 	public final static <T> ArrayList<T> selectIntoObjects(Connection connection, String sql, Class<T> type, IfcResultType<?>[] resultTypes, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		ArrayList<T> results = new ArrayList<T>();
@@ -270,11 +329,13 @@ public final class StatementUtil
 		return results;
 	}
 
+	@Deprecated // use selectInto()
 	public final static <T> void selectIntoObjects(Collection<T> results, Connection connection, String sql, Class<T> type, IfcResultType<?>... resultTypes) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		selectIntoObjects( results, connection, sql, type, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto()
 	public final static <T> void selectIntoObjects(Collection<T> results, Connection connection, String sql, Class<T> type, IfcResultType<?>[] resultTypes, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		PreparedStatement stmt = null;
@@ -292,6 +353,7 @@ public final class StatementUtil
 		}
 	}
 
+	@Deprecated // use selectInto()
 	public final static <T> ArrayList<T>  selectIntoCollection(Connection connection, String sql, IfcResultFactory<T> factory, IfcResultSetAdaptor<T>[] resultTypes, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		ArrayList<T> results = new ArrayList<T>();
@@ -299,6 +361,7 @@ public final class StatementUtil
 		return results;
 	}
 	
+	@Deprecated // use selectInto()
 	public final static <T> void selectIntoCollection(
 			Collection<T> results, Connection connection, String sql, IfcResultFactory<T> factory, IfcResultSetAdaptor<T>[] resultTypes, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
@@ -321,7 +384,6 @@ public final class StatementUtil
 	 * inserts / updates
 	 */
 	
-	@Deprecated
 	public final static int execute(Connection connection, String sql, IfcStatementInParameter...parameters) throws SQLException
 	{
 		PreparedStatement stmt = null;
@@ -338,6 +400,7 @@ public final class StatementUtil
 		}
 	}
 
+	// untested, what is a IfcStatementProperty? Is it a IfcStatementResult?
 	public final static Object[] execute(Connection connection, IfcStatementProperty<?>[] properties, String sql, IfcStatementInParameter...parameters) throws SQLException
 	{
 		PreparedStatement stmt = null;
@@ -369,6 +432,7 @@ public final class StatementUtil
 		}
 	}
 
+	// untested
 	public final static Object[] executeCall(Connection connection, String sql, IfcStatementParameter... parameters) throws SQLException
 	{
 		return new Call().execute( connection, sql, parameters );
@@ -406,7 +470,7 @@ public final class StatementUtil
 		return stmt;
 	}
 
-
+	// Untested
 	final static class Call
 	{
 		private CallableStatement stmt;

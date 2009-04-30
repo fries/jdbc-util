@@ -11,10 +11,13 @@
  */
 package de.schaeuffelhut.jdbc.xx;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+import de.schaeuffelhut.jdbc.IfcResultSetCollectionReader;
+import de.schaeuffelhut.jdbc.IfcResultSetScalarReader;
 import de.schaeuffelhut.jdbc.IfcResultType;
 import de.schaeuffelhut.jdbc.IfcStatementInParameter;
 import de.schaeuffelhut.jdbc.txn.Transactional;
@@ -29,15 +32,49 @@ public final class TxnStatementUtil
 {
 	private TxnStatementUtil(){}
 
+	public final static <T> Transactional<T> selectInto(Connection connection, final String sql, final IfcResultSetScalarReader<T> resultReader, final IfcStatementInParameter... parameters) throws Exception
+	{
+		return new Transactional<T>(){
+			public T run(TxnContext context) throws Exception
+			{
+				return StatementUtil.selectInto( context.connection, sql, resultReader, parameters );
+			}
+		};
+	}
+
+	public final static <T> Transactional<ArrayList<T>> selectInto(Connection connection, final String sql, final IfcResultSetCollectionReader<T> resultReader, final IfcStatementInParameter... parameters) throws Exception
+	{
+		return new Transactional<ArrayList<T>>(){
+			public ArrayList<T> run(TxnContext context) throws Exception
+			{
+				return StatementUtil.selectInto( context.connection, sql, resultReader, parameters);
+			}
+		};
+	}
+
+	public final static <T> Transactional<Void> selectInto(final Collection<T> results, Connection connection, final String sql, final IfcResultSetCollectionReader<T> resultReader, final IfcStatementInParameter... parameters) throws Exception
+	{
+		return new Transactional<Void>(){
+			public Void run(TxnContext context) throws Exception
+			{
+				selectInto( results,  context.connection, sql, resultReader, parameters );
+				return null;
+			}
+		};
+	}
+
+	
 	/*
 	 * select single row
 	 */
 
+	@Deprecated // use selectInto
 	public final static <T> Transactional<T> selectIntoScalar(final String sql, final IfcResultType<T> resultType)
 	{
 		return selectIntoScalar(sql, resultType, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto
 	public final static <T> Transactional<T> selectIntoScalar(final String sql, final IfcResultType<T> resultType, final IfcStatementInParameter...parameters)
 	{
 		return new Transactional<T>() {
@@ -49,11 +86,13 @@ public final class TxnStatementUtil
 		};
 	}
 
+	@Deprecated // use selectInto
 	public final static Transactional<Object[]> selectIntoTuple(final String sql, final IfcResultType<?>... resultTypes)
 	{
 		return selectIntoTuple(sql, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto
 	public final static Transactional<Object[]> selectIntoTuple(final String sql, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter...parameters)
 	{
 		return new Transactional<Object[]>() {
@@ -65,11 +104,13 @@ public final class TxnStatementUtil
 		};
 	}
 
+	@Deprecated // use selectInto
 	public final static Transactional<Map<String,Object>> selectIntoMap(final String sql, final IfcResultType<?>... resultTypes)
 	{
 		return selectIntoMap(sql, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto
 	public final static Transactional<Map<String,Object>> selectIntoMap(final String sql, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter... parameters)
 	{
 		return new Transactional<Map<String,Object>>() {
@@ -81,11 +122,13 @@ public final class TxnStatementUtil
 		};
 	}
 
+	@Deprecated // use selectInto
 	public final static <T> Transactional<T> selectIntoObject(final String sql, final Class<T> type, final IfcResultType<?>... resultTypes)
 	{
 		return selectIntoObject(sql, type, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto
 	public final static <T> Transactional<T> selectIntoObject(final String sql, final Class<T> type, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter...parameters )
 	{
 		return new Transactional<T>() {
@@ -101,11 +144,13 @@ public final class TxnStatementUtil
 	 * select multiple rows
 	 */
 
+	@Deprecated // use selectInto
 	public final static <T> Transactional<ArrayList<T>> selectIntoScalars(final String sql, final IfcResultType<T> resultType)
 	{
 		return selectIntoScalars(sql, resultType, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto
 	public final static <T> Transactional<ArrayList<T>> selectIntoScalars(final String sql, final IfcResultType<T> resultType, final IfcStatementInParameter... parameters)
 	{
 		return new Transactional<ArrayList<T>>() {
@@ -117,11 +162,13 @@ public final class TxnStatementUtil
 		};
 	}
 
+	@Deprecated // use selectInto
 	public final static <T> Transactional<Void> selectIntoScalars(final Collection<T> results, final String sql, final IfcResultType<T> resultType)
 	{
 		return selectIntoScalars(results, sql, resultType, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto
 	public final static <T> Transactional<Void> selectIntoScalars(final Collection<T> results, final String sql, final IfcResultType<T> resultType, final IfcStatementInParameter...parameters)
 	{
 		return new Transactional<Void>() {
@@ -134,11 +181,13 @@ public final class TxnStatementUtil
 		};
 	}
 
+	@Deprecated // use selectInto
 	public final static Transactional<ArrayList<Object[]>> selectIntoTuples(final String sql, final IfcResultType<?>... resultTypes)
 	{
 		return selectIntoTuples(sql, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto
 	public final static Transactional<ArrayList<Object[]>> selectIntoTuples(final String sql, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter...parameters)
 	{
 		return new Transactional<ArrayList<Object[]>>() {
@@ -149,12 +198,14 @@ public final class TxnStatementUtil
 			}
 		};
 	}
-
+	
+	@Deprecated // use selectInto
 	public final static <T> Transactional<Void> selectIntoTuples(final Collection<Object[]> results, final String sql, final IfcResultType<?>... resultTypes)
 	{
 		return selectIntoTuples(results, sql, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto
 	public final static <T> Transactional<Void> selectIntoTuples(final Collection<Object[]> results, final String sql, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter...parameters)
 	{
 		return new Transactional<Void>() {
@@ -167,11 +218,13 @@ public final class TxnStatementUtil
 		};
 	}
 
+	@Deprecated // use selectInto
 	public final static Transactional<ArrayList<Map<String,Object>>> selectIntoMaps(final String sql, final IfcResultType<?>... resultTypes)
 	{
 		return selectIntoMaps(sql, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto
 	public final static Transactional<ArrayList<Map<String,Object>>> selectIntoMaps(final String sql, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter...parameters)
 	{
 		return new Transactional<ArrayList<Map<String,Object>>>() {
@@ -183,11 +236,13 @@ public final class TxnStatementUtil
 		};
 	}
 
+	@Deprecated // use selectInto
 	public final static <T> Transactional<Void> selectIntoMaps(final Collection<Map<String,Object>> results, final String sql, final IfcResultType<?>... resultTypes)
 	{
 		return selectIntoMaps(results, sql, resultTypes, (IfcStatementInParameter[])null);
 	}
 	
+	@Deprecated // use selectInto
 	public final static <T> Transactional<Void> selectIntoMaps(final Collection<Map<String,Object>> results, final String sql, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter...parameters)
 	{
 		return new Transactional<Void>() {
@@ -200,11 +255,13 @@ public final class TxnStatementUtil
 		};
 	}
 
+	@Deprecated // use selectInto
 	public final static <T> Transactional<ArrayList<T>> selectIntoObjects(final String sql, final Class<T> type, final IfcResultType<?>... resultTypes)
 	{
 		return selectIntoObjects(sql, type, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto
 	public final static <T> Transactional<ArrayList<T>> selectIntoObjects(final String sql, final Class<T> type, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter...parameters)
 	{
 		return new Transactional<ArrayList<T>>() {
@@ -216,11 +273,13 @@ public final class TxnStatementUtil
 		};
 	}
 	
+	@Deprecated // use selectInto
 	public final static <T> Transactional<Void> selectIntoObjects(final Collection<T> results, final String sql, final Class<T> type, final IfcResultType<?>... resultTypes)
 	{
 		return selectIntoObjects(results, sql, type, resultTypes, (IfcStatementInParameter[])null );
 	}
 	
+	@Deprecated // use selectInto
 	public final static <T> Transactional<Void> selectIntoObjects(final Collection<T> results, final String sql, final Class<T> type, final IfcResultType<?>[] resultTypes, final IfcStatementInParameter...parameters)
 	{
 		return new Transactional<Void>() {
@@ -248,5 +307,4 @@ public final class TxnStatementUtil
 			}
 		};
 	}
-
 }

@@ -109,7 +109,7 @@ public final class ResultSetUtil
 	public final static <T> T readResult(
 			ResultSet resultSet,
 			IfcResultFactory<T> resultHolderFactory,
-			IfcResultSetAdaptor<T>[] adaptors
+			IfcResultAdaptor<T>[] adaptors
 	) throws SQLException
 	{
 		final T result;
@@ -269,7 +269,7 @@ public final class ResultSetUtil
 	public final static <T> ArrayList<T> readResults(
 			ResultSet resultSet,
 			IfcResultFactory<T> factory,
-			IfcResultSetAdaptor<T>... adaptors
+			IfcResultAdaptor<T>... adaptors
 	) throws SQLException
 	{
 		ArrayList<T> results = new ArrayList<T>();
@@ -281,7 +281,7 @@ public final class ResultSetUtil
 			Collection<T> results,
 			ResultSet resultSet,
 			IfcResultFactory<T> factory,
-			IfcResultSetAdaptor<T>... adaptors
+			IfcResultAdaptor<T>... adaptors
 	) throws SQLException
 	{
 	    while( resultSet.next() )
@@ -295,7 +295,7 @@ public final class ResultSetUtil
 	public final static <T extends Runnable> void forResultsInvoke(
 			final T resultHandler,
 			ResultSet resultSet, 
-			IfcResultSetAdaptor<T>... adaptors
+			IfcResultAdaptor<T>... adaptors
 	) throws SQLException
 	{
 	    while( resultSet.next() )

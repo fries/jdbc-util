@@ -22,7 +22,7 @@ import java.sql.SQLException;
  * 
  * @param <T> type of object receiving the result set value. 
  */
-public interface IfcResultSetAdaptor<T>
+public interface IfcResultAdaptor<T>
 {
 	public abstract int adapt(T t, ResultSet resultSet, int index) throws SQLException;
 }

@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.schaeuffelhut.jdbc.IfcResultSetAdaptor;
+import de.schaeuffelhut.jdbc.IfcResultAdaptor;
 import de.schaeuffelhut.jdbc.IfcResultFactory;
 import de.schaeuffelhut.jdbc.ResultAdaptors;
 
@@ -40,10 +40,10 @@ public class ExpResultSetUtil
 	public final static class ResultReader<T>
 	{
 		final IfcResultFactory<T> factory;
-		final IfcResultSetAdaptor<T>[] adaptors;
+		final IfcResultAdaptor<T>[] adaptors;
 		
 		private ResultReader(IfcResultFactory<T> factory,
-				IfcResultSetAdaptor<T>[] adaptors)
+				IfcResultAdaptor<T>[] adaptors)
 		{
 			this.factory = factory;
 			this.adaptors = adaptors;
@@ -61,7 +61,7 @@ public class ExpResultSetUtil
 	
 	public final static <T> ResultReader<T> createResultReader(
 			IfcResultFactory<T> factory,
-			IfcResultSetAdaptor<T>... adaptors
+			IfcResultAdaptor<T>... adaptors
 	){
 		return new ResultReader<T>( factory, adaptors );
 	}

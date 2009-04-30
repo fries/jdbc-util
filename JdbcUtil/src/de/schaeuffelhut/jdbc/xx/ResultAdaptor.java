@@ -14,12 +14,12 @@ package de.schaeuffelhut.jdbc.xx;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import de.schaeuffelhut.jdbc.IfcResultSetAdaptor;
+import de.schaeuffelhut.jdbc.IfcResultAdaptor;
 import de.schaeuffelhut.jdbc.IfcResultType;
 
 
 
-public final class ResultAdaptor<T,V> implements IfcResultSetAdaptor<T> 
+public final class ResultAdaptor<T,V> implements IfcResultAdaptor<T> 
 {
 	final IfcResultType<V> resultType;
 	final IfcSetter<T,V> setter;

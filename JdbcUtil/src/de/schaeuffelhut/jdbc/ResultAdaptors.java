@@ -28,7 +28,7 @@ public final class ResultAdaptors
 	 *
 	 */
 	public static final class ArrayResultAdaptor
-	implements IfcResultSetAdaptor<Object[]>
+	implements IfcResultAdaptor<Object[]>
 	{
 		/**
 		 * 
@@ -63,13 +63,13 @@ public final class ResultAdaptors
 
 	
 	@SuppressWarnings("unchecked")
-	public final static IfcResultSetAdaptor<Object[]>[] createArrayResultAdaptors(
+	public final static IfcResultAdaptor<Object[]>[] createArrayResultAdaptors(
 			IfcResultType<?>... resultTypes
 	) throws SQLException
 	{
-		IfcResultSetAdaptor<Object[]>[] adaptors =
-			(IfcResultSetAdaptor<Object[]>[])
-			new IfcResultSetAdaptor[resultTypes.length];
+		IfcResultAdaptor<Object[]>[] adaptors =
+			(IfcResultAdaptor<Object[]>[])
+			new IfcResultAdaptor[resultTypes.length];
 	
 		for(int i = 0; i < resultTypes.length; i++)
 			adaptors[i] = new ArrayResultAdaptor(
@@ -86,7 +86,7 @@ public final class ResultAdaptors
 	 *
 	 */
 	public static final class MapResultAdaptor
-	implements IfcResultSetAdaptor<Map<String, Object>>
+	implements IfcResultAdaptor<Map<String, Object>>
 	{
 		/**
 		 * 
@@ -119,7 +119,7 @@ public final class ResultAdaptors
 		}
 	}
 
-	public final static IfcResultSetAdaptor<Map<String, Object>>[] createMapResultAdaptors(
+	public final static IfcResultAdaptor<Map<String, Object>>[] createMapResultAdaptors(
 			ResultSet resultSet, IfcResultType<?>... resultTypes
 	) throws SQLException
 	{
@@ -128,13 +128,13 @@ public final class ResultAdaptors
 	}
 	
 	@SuppressWarnings("unchecked")
-	public final static IfcResultSetAdaptor<Map<String, Object>>[] createMapResultAdaptors(
+	public final static IfcResultAdaptor<Map<String, Object>>[] createMapResultAdaptors(
 			ResultSet resultSet, int columnIndex, IfcResultType<?>... resultTypes
 	) throws SQLException
 	{
-		IfcResultSetAdaptor<Map<String,Object>>[] adaptors =
-			(IfcResultSetAdaptor<Map<String,Object>>[])
-			new IfcResultSetAdaptor[resultTypes.length];
+		IfcResultAdaptor<Map<String,Object>>[] adaptors =
+			(IfcResultAdaptor<Map<String,Object>>[])
+			new IfcResultAdaptor[resultTypes.length];
 	
 		ResultSetMetaData metaData = resultSet.getMetaData();
 		for(int i = 0; i < resultTypes.length; i++)
@@ -150,7 +150,7 @@ public final class ResultAdaptors
 	 *
 	 */
 	public static final class FieldResultAdaptor<T> 
-	implements IfcResultSetAdaptor<T>
+	implements IfcResultAdaptor<T>
 	{
 		/**
 		 * 
@@ -209,15 +209,15 @@ public final class ResultAdaptors
 	}
 
 	@SuppressWarnings("unchecked")
-	public final static <T> IfcResultSetAdaptor<T>[] createFieldResultAdaptors(
+	public final static <T> IfcResultAdaptor<T>[] createFieldResultAdaptors(
 			ResultSet resultSet,
 			Class<T> clazz,
 			IfcResultType<?>... resultTypes
 	) throws SQLException
 	{
-		IfcResultSetAdaptor<T>[] adaptors =
-			(IfcResultSetAdaptor<T>[])
-			new IfcResultSetAdaptor[resultTypes.length];
+		IfcResultAdaptor<T>[] adaptors =
+			(IfcResultAdaptor<T>[])
+			new IfcResultAdaptor[resultTypes.length];
 	
 		ResultSetMetaData metaData = resultSet.getMetaData();
 		for(int i = 0; i < resultTypes.length; i++)
@@ -238,7 +238,7 @@ public final class ResultAdaptors
 	
 	
 	public final static <T> void adapt(
-			ResultSet rs, T t, IfcResultSetAdaptor<T>... adaptors
+			ResultSet rs, T t, IfcResultAdaptor<T>... adaptors
 	) throws SQLException
 	{
 		final int columnIndex = 1;
@@ -250,7 +250,7 @@ public final class ResultAdaptors
 			ResultSet rs,
 			int columnIndex,
 			T t,
-			IfcResultSetAdaptor<T>... adaptors
+			IfcResultAdaptor<T>... adaptors
 	) throws SQLException
 	{
 		int columnOffset = 0;

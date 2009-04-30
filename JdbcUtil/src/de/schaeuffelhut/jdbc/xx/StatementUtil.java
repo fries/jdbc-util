@@ -24,7 +24,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import de.schaeuffelhut.jdbc.IfcResultFactory;
-import de.schaeuffelhut.jdbc.IfcResultSetAdaptor;
+import de.schaeuffelhut.jdbc.IfcResultAdaptor;
 import de.schaeuffelhut.jdbc.IfcResultSetCollectionReader;
 import de.schaeuffelhut.jdbc.IfcResultSetScalarReader;
 import de.schaeuffelhut.jdbc.IfcResultType;
@@ -192,7 +192,7 @@ public final class StatementUtil
 	}
 
 	@Deprecated // use selectInto()
-	public final static <T> T selectInto(Connection connection, String sql, IfcResultFactory<T> resultFactory, IfcResultSetAdaptor<T>[] resultSetAdaptors, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
+	public final static <T> T selectInto(Connection connection, String sql, IfcResultFactory<T> resultFactory, IfcResultAdaptor<T>[] resultSetAdaptors, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		PreparedStatement stmt = null;
 		try
@@ -354,7 +354,7 @@ public final class StatementUtil
 	}
 
 	@Deprecated // use selectInto()
-	public final static <T> ArrayList<T>  selectIntoCollection(Connection connection, String sql, IfcResultFactory<T> factory, IfcResultSetAdaptor<T>[] resultTypes, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
+	public final static <T> ArrayList<T>  selectIntoCollection(Connection connection, String sql, IfcResultFactory<T> factory, IfcResultAdaptor<T>[] resultTypes, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		ArrayList<T> results = new ArrayList<T>();
 		selectIntoCollection( results, connection, sql, factory, resultTypes, parameters );
@@ -363,7 +363,7 @@ public final class StatementUtil
 	
 	@Deprecated // use selectInto()
 	public final static <T> void selectIntoCollection(
-			Collection<T> results, Connection connection, String sql, IfcResultFactory<T> factory, IfcResultSetAdaptor<T>[] resultTypes, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
+			Collection<T> results, Connection connection, String sql, IfcResultFactory<T> factory, IfcResultAdaptor<T>[] resultTypes, IfcStatementInParameter... parameters) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException
 	{
 		PreparedStatement stmt = null;
 		try

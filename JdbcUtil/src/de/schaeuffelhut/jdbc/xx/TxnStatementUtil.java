@@ -11,7 +11,6 @@
  */
 package de.schaeuffelhut.jdbc.xx;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -32,7 +31,7 @@ public final class TxnStatementUtil
 {
 	private TxnStatementUtil(){}
 
-	public final static <T> Transactional<T> selectInto(Connection connection, final String sql, final IfcResultSetScalarReader<T> resultReader, final IfcStatementInParameter... parameters) throws Exception
+	public final static <T> Transactional<T> selectInto(final String sql, final IfcResultSetScalarReader<T> resultReader, final IfcStatementInParameter... parameters)
 	{
 		return new Transactional<T>(){
 			public T run(TxnContext context) throws Exception
@@ -42,7 +41,7 @@ public final class TxnStatementUtil
 		};
 	}
 
-	public final static <T> Transactional<ArrayList<T>> selectInto(Connection connection, final String sql, final IfcResultSetCollectionReader<T> resultReader, final IfcStatementInParameter... parameters) throws Exception
+	public final static <T> Transactional<ArrayList<T>> selectInto(final String sql, final IfcResultSetCollectionReader<T> resultReader, final IfcStatementInParameter... parameters)
 	{
 		return new Transactional<ArrayList<T>>(){
 			public ArrayList<T> run(TxnContext context) throws Exception
@@ -52,12 +51,12 @@ public final class TxnStatementUtil
 		};
 	}
 
-	public final static <T> Transactional<Void> selectInto(final Collection<T> results, Connection connection, final String sql, final IfcResultSetCollectionReader<T> resultReader, final IfcStatementInParameter... parameters) throws Exception
+	public final static <T> Transactional<Void> selectInto(final Collection<T> results, final String sql, final IfcResultSetCollectionReader<T> resultReader, final IfcStatementInParameter... parameters)
 	{
 		return new Transactional<Void>(){
 			public Void run(TxnContext context) throws Exception
 			{
-				selectInto( results,  context.connection, sql, resultReader, parameters );
+				StatementUtil.selectInto( results,  context.connection, sql, resultReader, parameters );
 				return null;
 			}
 		};

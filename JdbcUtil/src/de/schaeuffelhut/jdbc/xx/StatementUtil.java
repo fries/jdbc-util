@@ -459,15 +459,17 @@ public final class StatementUtil
 	static PreparedStatement prepareStatement(Connection connection, String sql, IfcStatementInParameter... parameters) throws SQLException
 	{
 		sql = modifySql( sql, parameters );
-		
 		PreparedStatement stmt = connection.prepareStatement( sql );
+		configureStatement( stmt, parameters );
+		return stmt;
+	}
 
+	public static void configureStatement(PreparedStatement stmt, IfcStatementInParameter... parameters) throws SQLException
+	{
 		int index = 1;
 		if ( parameters != null )
 			for(IfcStatementInParameter param : parameters )
 				index += param.configure( stmt, index );
-		
-		return stmt;
 	}
 
 	// Untested

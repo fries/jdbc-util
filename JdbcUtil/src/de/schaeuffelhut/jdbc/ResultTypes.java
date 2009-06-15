@@ -11,6 +11,7 @@
  */
 package de.schaeuffelhut.jdbc;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -32,6 +33,7 @@ public final class ResultTypes
 	public final static IfcResultType<Long> Long = new LongResultType();
 	public final static IfcResultType<Float> Float = new FloatResultType();
 	public final static IfcResultType<Double> Double = new DoubleResultType();
+	public final static IfcResultType<BigDecimal> BigDecimal = new BigDecimalResultType();
 	public final static IfcResultType<String> String = new StringResultType();
 	public final static IfcResultType<Date> Date = new DateResultType();
 	public final static IfcResultType<Timestamp> Timestamp = new TimestampResultType();
@@ -117,6 +119,14 @@ final class DoubleResultType implements IfcResultType<Double>
     {
         double value = resultSet.getDouble( index );
 		return resultSet.wasNull() ? null : value;
+    }
+}
+
+final class BigDecimalResultType implements IfcResultType<BigDecimal>
+{
+    public final BigDecimal getResult(ResultSet resultSet, int index) throws SQLException
+    {
+        return resultSet.getBigDecimal( index );
     }
 }
 

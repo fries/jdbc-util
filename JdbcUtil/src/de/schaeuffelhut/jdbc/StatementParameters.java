@@ -11,6 +11,7 @@
  */
 package de.schaeuffelhut.jdbc;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -48,6 +49,9 @@ public class StatementParameters
 
 	public final static IfcStatementInParameterType<Double> Double = new DoubleInParameterType();
 	public final static IfcStatementInParameter Double(Double value) { return bindValue(Double, value); }
+
+	public final static IfcStatementInParameterType<BigDecimal> BigDecimal = new BigDecimalInParameterType();
+	public final static IfcStatementInParameter BigDecimal(java.math.BigDecimal value) { return bindValue(BigDecimal, value); }
 
 	public final static IfcStatementInParameterType<String> String = new StringInParameterType();
 	public final static IfcStatementInParameter String(String value) { return bindValue(String, value); }
@@ -209,6 +213,15 @@ final class DoubleInParameterType extends AbstractStatementInParameterType<Doubl
 			stmt.setNull( pos, Types.DOUBLE );
 		else
 			stmt.setDouble( pos, value );
+		return 1;
+	}
+}
+
+final class BigDecimalInParameterType extends AbstractStatementInParameterType<BigDecimal>
+{
+	public int configure(PreparedStatement stmt, int pos, BigDecimal value) throws SQLException
+	{
+		stmt.setBigDecimal( pos, value );
 		return 1;
 	}
 }

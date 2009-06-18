@@ -31,6 +31,11 @@ public final class TxnStatementUtil
 {
 	private TxnStatementUtil(){}
 
+	public final static <T> Transactional<T> selectInto(final String sql, final IfcResultSetScalarReader<T> resultReader, final Collection<IfcStatementInParameter> parameters)
+	{
+		return selectInto(sql, resultReader, parameters.toArray( new IfcStatementInParameter[parameters.size()] ) );
+	}
+	
 	public final static <T> Transactional<T> selectInto(final String sql, final IfcResultSetScalarReader<T> resultReader, final IfcStatementInParameter... parameters)
 	{
 		return new Transactional<T>(){
@@ -41,6 +46,11 @@ public final class TxnStatementUtil
 		};
 	}
 
+	public final static <T> Transactional<ArrayList<T>> selectInto(final String sql, final IfcResultSetCollectionReader<T> resultReader, final Collection<IfcStatementInParameter> parameters)
+	{
+		return selectInto(sql, resultReader, parameters.toArray( new IfcStatementInParameter[parameters.size()] ) );
+	}
+	
 	public final static <T> Transactional<ArrayList<T>> selectInto(final String sql, final IfcResultSetCollectionReader<T> resultReader, final IfcStatementInParameter... parameters)
 	{
 		return new Transactional<ArrayList<T>>(){
@@ -51,6 +61,11 @@ public final class TxnStatementUtil
 		};
 	}
 
+	public final static <T> Transactional<Void> selectInto(final Collection<T> results, final String sql, final IfcResultSetCollectionReader<T> resultReader, final Collection<IfcStatementInParameter> parameters)
+	{
+		return selectInto(results, sql, resultReader, parameters.toArray( new IfcStatementInParameter[parameters.size()] ) );
+	}
+	
 	public final static <T> Transactional<Void> selectInto(final Collection<T> results, final String sql, final IfcResultSetCollectionReader<T> resultReader, final IfcStatementInParameter... parameters)
 	{
 		return new Transactional<Void>(){

@@ -48,6 +48,11 @@ public final class StatementUtil
 	/*
 	 * selectInto scalar and collection
 	 */
+
+	public final static <T> T selectInto(Connection connection, String sql, IfcResultSetScalarReader<T> resultReader, Collection<IfcStatementInParameter> parameters) throws Exception
+	{
+		return selectInto(connection, sql, resultReader, parameters.toArray( new IfcStatementInParameter[parameters.size()] ) );
+	}
 	
 	public final static <T> T selectInto(Connection connection, String sql, IfcResultSetScalarReader<T> resultReader, IfcStatementInParameter... parameters) throws Exception
 	{
@@ -66,6 +71,11 @@ public final class StatementUtil
 		}
 	}
 
+	public final static <T> ArrayList<T> selectInto(Connection connection, String sql, IfcResultSetCollectionReader<T> resultReader, Collection<IfcStatementInParameter> parameters) throws Exception
+	{
+		return selectInto(connection, sql, resultReader, parameters.toArray( new IfcStatementInParameter[parameters.size()] ) );
+	}
+	
 	public final static <T> ArrayList<T> selectInto(Connection connection, String sql, IfcResultSetCollectionReader<T> resultReader, IfcStatementInParameter... parameters) throws Exception
 	{
 		ArrayList<T> results = new ArrayList<T>();
@@ -73,6 +83,11 @@ public final class StatementUtil
 		return results;
 	}
 
+	public final static <T> void selectInto(Collection<T> results, Connection connection, String sql, IfcResultSetCollectionReader<T> resultReader, Collection<IfcStatementInParameter> parameters) throws Exception
+	{
+		selectInto(results, connection, sql, resultReader, parameters.toArray( new IfcStatementInParameter[parameters.size()] ) );
+	}
+	
 	public final static <T> void selectInto(Collection<T> results, Connection connection, String sql, IfcResultSetCollectionReader<T> resultReader, IfcStatementInParameter... parameters) throws Exception
 	{
 		PreparedStatement stmt = null;

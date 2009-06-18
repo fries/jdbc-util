@@ -22,6 +22,8 @@ import org.apache.log4j.Logger;
  */
 final class BoundValue<T> implements IfcStatementInParameter
 {
+	private static final long	serialVersionUID	= 1324455535658426764L;
+
 	public final static Logger logger = Logger.getLogger( StatementParameters.class );
 	
 	BoundValue(IfcStatementInParameterType<T> parameter, T value)

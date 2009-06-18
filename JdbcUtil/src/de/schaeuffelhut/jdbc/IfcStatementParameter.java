@@ -11,6 +11,8 @@
  */
 package de.schaeuffelhut.jdbc;
 
+import java.io.Serializable;
+
 
 
 
@@ -19,7 +21,7 @@ package de.schaeuffelhut.jdbc;
  * @author M.Sc. Friedrich Schäuffelhut
  *
  */
-public interface IfcStatementParameter
+public interface IfcStatementParameter extends Serializable
 {
 	/**
 	 * Modify the given SQL query string. This method is called before

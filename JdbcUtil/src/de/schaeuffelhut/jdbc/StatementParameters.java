@@ -117,6 +117,8 @@ public class StatementParameters
 
 abstract class AbstractStatementInParameterType<T> implements IfcStatementInParameterType<T>
 {
+	private static final long	serialVersionUID	= 1080506691768998033L;
+
 	public String modify(String sql, T value)
 	{
 		return sql;
@@ -125,6 +127,8 @@ abstract class AbstractStatementInParameterType<T> implements IfcStatementInPara
 
 final class BooleanInParameterType extends AbstractStatementInParameterType<Boolean>
 {
+	private static final long	serialVersionUID	= -7524179426076727748L;
+
 	public int configure(PreparedStatement stmt, int pos, Boolean value) throws SQLException
 	{
 		if ( value == null )
@@ -137,6 +141,8 @@ final class BooleanInParameterType extends AbstractStatementInParameterType<Bool
 
 final class ByteInParameterType extends AbstractStatementInParameterType<Byte>
 {
+	private static final long	serialVersionUID	= 3276543340234344389L;
+
 	public int configure(PreparedStatement stmt, int pos, Byte value) throws SQLException
 	{
 		if ( value == null )
@@ -149,6 +155,8 @@ final class ByteInParameterType extends AbstractStatementInParameterType<Byte>
 
 final class CharacterInParameterType extends AbstractStatementInParameterType<Character>
 {
+	private static final long	serialVersionUID	= 8058124716481598135L;
+
 	public int configure(PreparedStatement stmt, int pos, Character value) throws SQLException
 	{
 		stmt.setString( pos, value == null ? null : Character.toString( value ) );
@@ -158,6 +166,8 @@ final class CharacterInParameterType extends AbstractStatementInParameterType<Ch
 
 final class ShortInParameterType extends AbstractStatementInParameterType<Short>
 {
+	private static final long	serialVersionUID	= -3327050158970549254L;
+
 	public int configure(PreparedStatement stmt, int pos, Short value) throws SQLException
 	{
 		if ( value == null )
@@ -170,6 +180,8 @@ final class ShortInParameterType extends AbstractStatementInParameterType<Short>
 
 final class IntegerInParameterType extends AbstractStatementInParameterType<Integer>
 {
+	private static final long	serialVersionUID	= -5447866886419456863L;
+
 	public int configure(PreparedStatement stmt, int pos, Integer value) throws SQLException
 	{
 		if ( value == null )
@@ -182,6 +194,8 @@ final class IntegerInParameterType extends AbstractStatementInParameterType<Inte
 
 final class LongInParameterType extends AbstractStatementInParameterType<Long>
 {
+	private static final long	serialVersionUID	= 7351810604170815221L;
+
 	public int configure(PreparedStatement stmt, int pos, Long value) throws SQLException
 	{
 		if ( value == null )
@@ -195,6 +209,8 @@ final class LongInParameterType extends AbstractStatementInParameterType<Long>
 
 final class FloatInParameterType extends AbstractStatementInParameterType<Float>
 {
+	private static final long	serialVersionUID	= -2825273022431221813L;
+
 	public int configure(PreparedStatement stmt, int pos, Float value) throws SQLException
 	{
 		if ( value == null )
@@ -207,6 +223,8 @@ final class FloatInParameterType extends AbstractStatementInParameterType<Float>
 
 final class DoubleInParameterType extends AbstractStatementInParameterType<Double>
 {
+	private static final long	serialVersionUID	= 8197048169205460869L;
+
 	public int configure(PreparedStatement stmt, int pos, Double value) throws SQLException
 	{
 		if ( value == null )
@@ -219,6 +237,8 @@ final class DoubleInParameterType extends AbstractStatementInParameterType<Doubl
 
 final class BigDecimalInParameterType extends AbstractStatementInParameterType<BigDecimal>
 {
+	private static final long	serialVersionUID	= -5647542748071958473L;
+
 	public int configure(PreparedStatement stmt, int pos, BigDecimal value) throws SQLException
 	{
 		stmt.setBigDecimal( pos, value );
@@ -228,6 +248,8 @@ final class BigDecimalInParameterType extends AbstractStatementInParameterType<B
 
 final class StringInParameterType extends AbstractStatementInParameterType<String>
 {
+	private static final long	serialVersionUID	= 2569705798808925320L;
+
 	public int configure(PreparedStatement stmt, int pos, String value) throws SQLException
 	{
 		stmt.setString( pos, value );
@@ -237,6 +259,8 @@ final class StringInParameterType extends AbstractStatementInParameterType<Strin
 
 final class DateInParameterType extends AbstractStatementInParameterType<Date>
 {
+	private static final long	serialVersionUID	= 885428146245470564L;
+
 	public int configure(PreparedStatement stmt, int pos, Date value) throws SQLException
 	{
 		stmt.setDate( pos, value );
@@ -246,6 +270,8 @@ final class DateInParameterType extends AbstractStatementInParameterType<Date>
 
 final class TimestampInParameterType extends AbstractStatementInParameterType<Timestamp>
 {
+	private static final long	serialVersionUID	= 8660221331024108074L;
+
 	public int configure(PreparedStatement stmt, int pos, Timestamp value) throws SQLException
 	{
 		stmt.setTimestamp( pos, value );
@@ -256,6 +282,8 @@ final class TimestampInParameterType extends AbstractStatementInParameterType<Ti
 final class EnumByNameParameterType
 extends AbstractStatementInParameterType<Enum<?>>
 {
+	private static final long	serialVersionUID	= 1035562251364382806L;
+
 	public int configure(PreparedStatement stmt, int pos, Enum<?> value) throws SQLException
 	{
 		if ( value == null )
@@ -269,6 +297,8 @@ extends AbstractStatementInParameterType<Enum<?>>
 final class EnumByIntKeyParameterType
 extends AbstractStatementInParameterType<IfcEnumIntKey>
 {
+	private static final long	serialVersionUID	= -854994345818350952L;
+
 	public int configure(PreparedStatement stmt, int pos, IfcEnumIntKey value) throws SQLException
 	{
 		if ( value == null )
@@ -282,6 +312,8 @@ extends AbstractStatementInParameterType<IfcEnumIntKey>
 final class ClassParameterType
 extends AbstractStatementInParameterType<Class<?>>
 {
+	private static final long	serialVersionUID	= 4089853169817835313L;
+
 	public int configure(PreparedStatement stmt, int pos, Class<?> value) throws SQLException
 	{
 		stmt.setString( pos, value == null ? null : value.getName() );
@@ -292,6 +324,8 @@ extends AbstractStatementInParameterType<Class<?>>
 final class DateTimeParameterType
 extends AbstractStatementInParameterType<DateTime>
 {
+	private static final long	serialVersionUID	= 8992085626536517879L;
+
 	public int configure(PreparedStatement stmt, int pos, DateTime value) throws SQLException
 	{
 		stmt.setTimestamp( pos, value == null ? null : new Timestamp( value.getMillis() ) );
@@ -301,6 +335,7 @@ extends AbstractStatementInParameterType<DateTime>
 
 final class ArrayInParameterType<T> implements IfcStatementInParameterType<T[]>
 {
+	private static final long	serialVersionUID	= -4288132322340047766L;
 	final IfcStatementInParameterType<T> type;
 	final String placeholder;
 	final String placeholderReplacement;
@@ -348,6 +383,8 @@ final class ArrayInParameterType<T> implements IfcStatementInParameterType<T[]>
 
 final class DateTimeInParameterType extends AbstractStatementInParameterType<DateTime>
 {
+	private static final long	serialVersionUID	= 362585378891547200L;
+
 	public int configure(PreparedStatement stmt, int pos, DateTime value) throws SQLException
 	{
 		stmt.setTimestamp( pos, value == null ? null : new Timestamp( value.getMillis() ) );

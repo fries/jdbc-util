@@ -4,7 +4,6 @@
 package de.schaeuffelhut.jdbc;
 
 import java.sql.ResultSet;
-import java.util.Collection;
 
 /**
  * Reads a single value from a {@link ResultSet}.

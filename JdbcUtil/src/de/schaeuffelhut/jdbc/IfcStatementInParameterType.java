@@ -11,6 +11,7 @@
  */
 package de.schaeuffelhut.jdbc;
 
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -18,7 +19,7 @@ import java.sql.SQLException;
  * @author M.Sc. Friedrich Schäuffelhut
  *
  */
-public interface IfcStatementInParameterType<T>
+public interface IfcStatementInParameterType<T> extends Serializable
 {
 	/**
 	 * @param sql the SQL query to be modified

@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.Collection;
 
 import org.joda.time.DateTime;
 
@@ -74,6 +75,7 @@ public class StatementParameters
 	public final static IfcStatementInParameterType<DateTime> DateTime = new DateTimeInParameterType();
 	public final static IfcStatementInParameter DateTime(DateTime value) { return bindValue(DateTime, value); }
 	
+	// Array
 	
 	public final static <T> IfcStatementInParameterType<T[]> Array(IfcStatementInParameterType<T> type, String placeholder)
 	{
@@ -95,7 +97,27 @@ public class StatementParameters
 		return bindValue( new ArrayInParameterType<T>(type, placeholder, placeholderReplacement), values );
 	}
 
+	public final static <T> IfcStatementInParameterType<? extends java.util.Collection<T>> Collection(IfcStatementInParameterType<T> type, String placeholder)
+	{
+		return new CollectionInParameterType<T>(type, placeholder);
+	}
+
+	// Collection
 	
+	public final static <T> IfcStatementInParameter Collection(IfcStatementInParameterType<T> type, String placeholder, java.util.Collection<T> values)
+	{
+		return bindValue( new CollectionInParameterType<T>(type, placeholder), values );
+	}
+
+	public final static <T> IfcStatementInParameterType<? extends java.util.Collection<T>> Collection(IfcStatementInParameterType<T> type, String placeholder, String placeholderReplacement)
+	{
+		return new CollectionInParameterType<T>(type, placeholder, placeholderReplacement);
+	}
+
+	public final static <T> IfcStatementInParameter Collection(IfcStatementInParameterType<T> type, String placeholder, String placeholderReplacement, Collection<T> values)
+	{
+		return bindValue( new CollectionInParameterType<T>(type, placeholder, placeholderReplacement), values );
+	}
 	
 	public final static <T> IfcStatementInParameter bindValue(
 			IfcStatementInParameterType<T> type, T value)
@@ -103,15 +125,25 @@ public class StatementParameters
 		return new BoundValue<T>( type, value );
 	}
 	
+	// make a parameter array, allow nulls
 	
 	private final static IfcStatementInParameter[] emptyInParameters = new IfcStatementInParameter[0];
-	public final static IfcStatementInParameter[] inParams(
-			IfcStatementInParameter... parameters)
+	public final static IfcStatementInParameter[] inParams( IfcStatementInParameter... parameters )
 	{
 		if ( parameters == null )
 			return emptyInParameters;
 		else
 			return parameters;
+	}
+
+	public final static IfcStatementInParameter[] inParams( Collection<IfcStatementInParameter> parameters )
+	{
+		if ( parameters == null )
+			return emptyInParameters;
+		else if ( parameters.isEmpty() )
+			return emptyInParameters;
+		else
+			return parameters.toArray( new IfcStatementInParameter[parameters.size()] );
 	}
 }
 
@@ -376,6 +408,55 @@ final class ArrayInParameterType<T> implements IfcStatementInParameterType<T[]>
 		if ( values != null )
 			for(int i = 0; i < values.length; i++)
 				posAdvance += type.configure( stmt, pos + posAdvance, values[i] );
+		return posAdvance;
+	};
+}
+
+final class CollectionInParameterType<T> implements IfcStatementInParameterType<Collection<T>>
+{
+	private static final long	serialVersionUID	= -4288132322340047766L;
+	final IfcStatementInParameterType<T> type;
+	final String placeholder;
+	final String placeholderReplacement;
+
+	CollectionInParameterType(IfcStatementInParameterType<T> type, String placeholder)
+	{
+		this( type, placeholder, "?" );
+	}
+	
+	CollectionInParameterType(IfcStatementInParameterType<T> type, String placeholder, String placeholderReplacement)
+	{
+		this.placeholder = placeholder;
+		this.type = type;
+		this.placeholderReplacement = placeholderReplacement;
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.schaeuffelhut.jdbc.StatementInParameterType#modify(java.lang.String)
+	 */
+	public final String modify(String sql, Collection<T> values)
+	{
+		StringBuilder sb = new StringBuilder();
+		if ( values != null )
+		{
+			int i=0;
+			for(T value : values)
+			{
+				if ( i > 0 )
+					sb.append( ',' );
+				sb.append( type.modify( placeholderReplacement, value ) );
+				i++;
+			}
+		}
+		return sql.replace( placeholder, sb );	
+	}
+	
+	public final int configure(PreparedStatement stmt, int pos, Collection<T> values) throws SQLException
+	{
+		int posAdvance = 0;
+		if ( values != null )
+			for(T value : values)
+				posAdvance += type.configure( stmt, pos + posAdvance, value );
 		return posAdvance;
 	};
 }

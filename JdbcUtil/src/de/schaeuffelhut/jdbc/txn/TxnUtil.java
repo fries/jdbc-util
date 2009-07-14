@@ -172,7 +172,7 @@ public class TxnUtil
 		{
 		    if ( !commited )
 		        JdbcUtil.rollbackQuietly(
-		        		connection, "txn commit: " +transactional.toString() );
+		        		connection, "txn rollback: " +transactional.toString() );
 		    if ( autoCommit != null)
 		    	JdbcUtil.setAutoCommitQuietly( connection, autoCommit );
 		}

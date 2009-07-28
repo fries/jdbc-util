@@ -236,7 +236,8 @@ final class DateTimeResultType implements IfcResultType<DateTime>
 {
     public final DateTime getResult(ResultSet resultSet, int index) throws SQLException
     {
-        return new DateTime( resultSet.getTimestamp( index ) );
+        Timestamp timestamp = resultSet.getTimestamp( index );
+		return timestamp == null ? null : new DateTime( timestamp );
     }
 }
 

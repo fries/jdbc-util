@@ -28,6 +28,7 @@ public final class ResultTypes
 {
 	public final static IfcResultType<Boolean> Boolean = new BooleanResultType();
 	public final static IfcResultType<Byte> Byte = new ByteResultType();
+	public final static IfcResultType<Character> Character = new CharacterResultType();
 	public final static IfcResultType<Short> Short = new ShortResultType();
 	public final static IfcResultType<Integer> Integer = new IntegerResultType();
 	public final static IfcResultType<Long> Long = new LongResultType();
@@ -49,6 +50,11 @@ public final class ResultTypes
 		return new EnumByIntKeyResultType<E>( type );
 	}
 
+	public final static <K,E extends Enum<E> & IfcEnumKey<K>> IfcResultType<E> enumByKey(Class<E> type, IfcResultType<K> resultType)
+	{
+		return new EnumByKeyResultType<K,E>( type, resultType );
+	}
+
 	public final static IfcResultType<Class<?>> Class = new ClassResultType();
 
 	public final static IfcResultType<DateTime> DateTime = new DateTimeResultType();
@@ -61,105 +67,121 @@ public final class ResultTypes
 
 final class BooleanResultType implements IfcResultType<Boolean>
 {
-    public final Boolean getResult(ResultSet resultSet, int index) throws SQLException
-    {
-        boolean value = resultSet.getBoolean( index );
+	public final Boolean getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		boolean value = resultSet.getBoolean( index );
 		return resultSet.wasNull() ? null : value;
-    }
+	}
 }
 
 final class ByteResultType implements IfcResultType<Byte>
 {
-    public final Byte getResult(ResultSet resultSet, int index) throws SQLException
-    {
-        byte value = resultSet.getByte( index );
+	public final Byte getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		byte value = resultSet.getByte( index );
 		return resultSet.wasNull() ? null : value;
-    }
+	}
+}
+
+final class CharacterResultType implements IfcResultType<Character>
+{
+	public final Character getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		String value = resultSet.getString( index );
+		if ( value == null )
+			return null;
+		else if ( value.length() == 0 )
+			return null;
+		else if ( value.length() == 1 )
+			return value.charAt( 0 );
+		else
+			throw new RuntimeException( "returned string contains more than one character" );
+	}
 }
 
 final class ShortResultType implements IfcResultType<Short>
 {
-    public final Short getResult(ResultSet resultSet, int index) throws SQLException
-    {
-        short value = resultSet.getShort( index );
+	public final Short getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		short value = resultSet.getShort( index );
 		return resultSet.wasNull() ? null : value;
-    }
+	}
 }
 
 final class IntegerResultType implements IfcResultType<Integer>
 {
-    public final Integer getResult(ResultSet resultSet, int index) throws SQLException
-    {
-        int value = resultSet.getInt( index );
+	public final Integer getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		int value = resultSet.getInt( index );
 		return resultSet.wasNull() ? null : value;
-    }
+	}
 }
 
 final class LongResultType implements IfcResultType<Long>
 {
-    public final Long getResult(ResultSet resultSet, int index) throws SQLException
-    {
-        long value = resultSet.getLong( index );
+	public final Long getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		long value = resultSet.getLong( index );
 		return resultSet.wasNull() ? null : value;
-    }
+	}
 }
 
 final class FloatResultType implements IfcResultType<Float>
 {
-    public final Float getResult(ResultSet resultSet, int index) throws SQLException
-    {
-        float value = resultSet.getFloat( index );
+	public final Float getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		float value = resultSet.getFloat( index );
 		return resultSet.wasNull() ? null : value;
-    }
+	}
 }
 
 final class DoubleResultType implements IfcResultType<Double>
 {
-    public final Double getResult(ResultSet resultSet, int index) throws SQLException
-    {
-        double value = resultSet.getDouble( index );
+	public final Double getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		double value = resultSet.getDouble( index );
 		return resultSet.wasNull() ? null : value;
-    }
+	}
 }
 
 final class BigDecimalResultType implements IfcResultType<BigDecimal>
 {
-    public final BigDecimal getResult(ResultSet resultSet, int index) throws SQLException
-    {
-        return resultSet.getBigDecimal( index );
-    }
+	public final BigDecimal getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		return resultSet.getBigDecimal( index );
+	}
 }
 
 final class StringResultType implements IfcResultType<String>
 {
-    public final String getResult(ResultSet resultSet, int index) throws SQLException
-    {
-        return resultSet.getString( index );
-    }
+	public final String getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		return resultSet.getString( index );
+	}
 }
 
 final class DateResultType implements IfcResultType<Date>
 {
-    public final Date getResult(ResultSet resultSet, int index) throws SQLException
-    {
-        return resultSet.getDate( index );
-    }
+	public final Date getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		return resultSet.getDate( index );
+	}
 }
 
 final class TimestampResultType implements IfcResultType<Timestamp>
 {
-    public final Timestamp getResult(ResultSet resultSet, int index) throws SQLException
-    {
-        return resultSet.getTimestamp( index );
-    }
+	public final Timestamp getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		return resultSet.getTimestamp( index );
+	}
 }
 
 final class ObjectResultType implements IfcResultType<Object>
 {
-    public final Object getResult(ResultSet resultSet, int index) throws SQLException
-    {
-        return resultSet.getObject( index );
-    }
+	public final Object getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		return resultSet.getObject( index );
+	}
 }
 
 final class EnumByNameResultType<E extends Enum<E>> implements IfcResultType<E>
@@ -169,19 +191,19 @@ final class EnumByNameResultType<E extends Enum<E>> implements IfcResultType<E>
 	{
 		this.type = type;
 	}
-	
-    public final E getResult(ResultSet resultSet, int index) throws SQLException
-    {
-    	String string = resultSet.getString( index );
-    	if ( string == null )
-    		return null;
-    	else
-    		return Enum.valueOf( type, string );
-    }
+
+	public final E getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		String string = resultSet.getString( index );
+		if ( string == null )
+			return null;
+		else
+			return Enum.valueOf( type, string );
+	}
 }
 
 final class EnumByIntKeyResultType<E extends Enum<E> & IfcEnumIntKey>
-		implements IfcResultType<E>
+implements IfcResultType<E>
 {
 	final Class<E>	type;
 
@@ -190,36 +212,64 @@ final class EnumByIntKeyResultType<E extends Enum<E> & IfcEnumIntKey>
 		this.type = type;
 	}
 
-    public final E getResult(ResultSet resultSet, int index) throws SQLException
-    {
-    	int key = resultSet.getInt( index );
-    	if ( resultSet.wasNull() )
-    		return null;
-    	else
-    		return getEnum( key );
-    }
+	public final E getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		int key = resultSet.getInt( index );
+		if ( resultSet.wasNull() )
+			return null;
+		else
+			return getEnum( key );
+	}
 
-    private E getEnum(final int key)
-    {
-    	for ( E t : type.getEnumConstants() )
-    		if ( t.getKey() == key )
-    			return t;
-    	throw new UnexpectedValueException( String.format(
-    			"No %s enum for value %d found", type.getSimpleName(), key ) );
-    }
+	private E getEnum(final int key)
+	{
+		for ( E t : type.getEnumConstants() )
+			if ( t.getKey() == key )
+				return t;
+		throw new UnexpectedValueException( String.format(
+				"No %s enum for value %d found", type.getSimpleName(), key ) );
+	}
+}
+
+final class EnumByKeyResultType<K,E extends Enum<E> & IfcEnumKey<K>>
+implements IfcResultType<E>
+{
+	final Class<E>	type;
+	final IfcResultType<K>	resultType;
+
+	public EnumByKeyResultType(Class<E> type, IfcResultType<K> resultType)
+	{
+		this.type = type;
+		this.resultType = resultType;
+	}
+
+	public final E getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		K key = resultType.getResult( resultSet, index );
+		return key == null ? null : getEnum( key );
+	}
+
+	private final E getEnum(final K key)
+	{
+		for ( E e : type.getEnumConstants() )
+			if ( e.getKey().equals( key ) )
+				return e;
+		throw new UnexpectedValueException( String.format(
+				"No %s enum for value %d found", type.getSimpleName(), key ) );
+	}
 }
 
 final class ClassResultType implements IfcResultType<Class<?>>
 {
-    public final Class<?> getResult(ResultSet resultSet, int index) throws SQLException
-    {
-    	String className = resultSet.getString( index );
-    	Class<?> clazz;
-    	if ( className == null )
-    		clazz = null;
-    	else
-    	{
-    		try
+	public final Class<?> getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		String className = resultSet.getString( index );
+		Class<?> clazz;
+		if ( className == null )
+			clazz = null;
+		else
+		{
+			try
 			{
 				clazz = Class.forName( className );
 			}
@@ -227,17 +277,17 @@ final class ClassResultType implements IfcResultType<Class<?>>
 			{
 				throw new RuntimeException( e );
 			}
-    	}
-        return clazz;
-    }
+		}
+		return clazz;
+	}
 }
 
 final class DateTimeResultType implements IfcResultType<DateTime>
 {
-    public final DateTime getResult(ResultSet resultSet, int index) throws SQLException
-    {
-        Timestamp timestamp = resultSet.getTimestamp( index );
+	public final DateTime getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		Timestamp timestamp = resultSet.getTimestamp( index );
 		return timestamp == null ? null : new DateTime( timestamp );
-    }
+	}
 }
 

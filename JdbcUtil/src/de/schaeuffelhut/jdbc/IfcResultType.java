@@ -1,19 +1,17 @@
-/*
- * $Header: /home/cvs/pme/PME-Client/src/main/java/com/eonis/pme/client/kernel/utils/jdbc/Result.java,v 1.1 2008/04/30 09:06:31 F7152 Exp $
- * 
- * $Revision: 1.1 $ <br>
- * $Name:  $
- * $Date: 2008/04/30 09:06:31 $<br>
- * $Author: F7152 $<br>
+/**
+ * Copyright 2009 Friedrich Schäuffelhut
  *
- * History: <br>
- * $Log: Result.java,v $
- * Revision 1.1  2008/04/30 09:06:31  F7152
- * Initial Checkin
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * Revision 1.1  2008/04/14 10:36:45  R15802
- * dbcUtil moved
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  */
 package de.schaeuffelhut.jdbc;
 

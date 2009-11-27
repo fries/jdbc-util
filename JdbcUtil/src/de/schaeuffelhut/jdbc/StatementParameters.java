@@ -24,6 +24,14 @@ import java.sql.Types;
 import java.util.Collection;
 
 import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Hours;
+import org.joda.time.Minutes;
+import org.joda.time.Months;
+import org.joda.time.Seconds;
+import org.joda.time.Weeks;
+import org.joda.time.Years;
+import org.joda.time.base.BaseSingleFieldPeriod;
 
 /**
  * @author M.Sc. Friedrich Schäuffelhut
@@ -78,6 +86,27 @@ public class StatementParameters
 	
 	public final static IfcStatementInParameterType<DateTime> DateTime = new DateTimeInParameterType();
 	public final static IfcStatementInParameter DateTime(DateTime value) { return bindValue(DateTime, value); }
+
+	public final static IfcStatementInParameterType<Days> Days = new DaysInParameterType();
+	public final static IfcStatementInParameter Days(Days value) { return bindValue(Days, value); }
+	
+	public final static IfcStatementInParameterType<Hours> Hours = new HoursInParameterType();
+	public final static IfcStatementInParameter Hours(Hours value) { return bindValue(Hours, value); }
+	
+	public final static IfcStatementInParameterType<Minutes> Minutes = new MinutesInParameterType();
+	public final static IfcStatementInParameter Minutes(Minutes value) { return bindValue(Minutes, value); }
+	
+	public final static IfcStatementInParameterType<Months> Months = new MonthsInParameterType();
+	public final static IfcStatementInParameter Months(Months value) { return bindValue(Months, value); }
+	
+	public final static IfcStatementInParameterType<Seconds> Seconds = new SecondsInParameterType();
+	public final static IfcStatementInParameter Seconds(Seconds value) { return bindValue(Seconds, value); }
+	
+	public final static IfcStatementInParameterType<Weeks> Weeks = new WeeksInParameterType();
+	public final static IfcStatementInParameter Weeks(Weeks value) { return bindValue(Weeks, value); }
+	
+	public final static IfcStatementInParameterType<Years> Years = new YearsInParameterType();
+	public final static IfcStatementInParameter Years(Years value) { return bindValue(Years, value); }
 	
 	// Array
 	
@@ -474,5 +503,91 @@ final class DateTimeInParameterType extends AbstractStatementInParameterType<Dat
 	{
 		stmt.setTimestamp( pos, value == null ? null : new Timestamp( value.getMillis() ) );
 		return 1;
+	}
+}
+
+abstract class AbstractBaseSingleFieldPeriodInParameterType<T extends BaseSingleFieldPeriod> extends AbstractStatementInParameterType<T>
+{
+	private static final long	serialVersionUID	= 1978434854099312620L;
+
+	public final int configure(PreparedStatement stmt, int pos, T value) throws SQLException
+	{
+		if ( value == null )
+			stmt.setNull( pos, Types.INTEGER );
+		else
+			stmt.setInt( pos, getAmount( value ) );
+		return 1;
+	}
+
+	protected abstract int getAmount(T baseSingleFieldPeriod);
+}
+final class DaysInParameterType extends AbstractBaseSingleFieldPeriodInParameterType<Days>
+{
+	private static final long	serialVersionUID	= 6586725230659394219L;
+
+	@Override
+	protected int getAmount(Days baseSingleFieldPeriod)
+	{
+		return baseSingleFieldPeriod.getDays();
+	}
+}
+final class HoursInParameterType extends AbstractBaseSingleFieldPeriodInParameterType<Hours>
+{
+	private static final long	serialVersionUID	= 2623522654226899799L;
+
+	protected int getAmount(Hours baseSingleFieldPeriod)
+	{
+		return baseSingleFieldPeriod.getHours();
+	};
+}
+
+final class MinutesInParameterType extends AbstractBaseSingleFieldPeriodInParameterType<Minutes>
+{
+	private static final long	serialVersionUID	= 942401460273082257L;
+
+	@Override
+	protected int getAmount(Minutes baseSingleFieldPeriod)
+	{
+		return baseSingleFieldPeriod.getMinutes();
+	}
+}
+final class MonthsInParameterType extends AbstractBaseSingleFieldPeriodInParameterType<Months>
+{
+	private static final long	serialVersionUID	= 3461131092273692150L;
+
+	@Override
+	protected int getAmount(Months baseSingleFieldPeriod)
+	{
+		return baseSingleFieldPeriod.getMonths();
+	}
+}
+final class SecondsInParameterType extends AbstractBaseSingleFieldPeriodInParameterType<Seconds>
+{
+	private static final long	serialVersionUID	= 8922273960196447482L;
+
+	@Override
+	protected int getAmount(Seconds baseSingleFieldPeriod)
+	{
+		return baseSingleFieldPeriod.getSeconds();
+	}
+}
+final class WeeksInParameterType extends AbstractBaseSingleFieldPeriodInParameterType<Weeks>
+{
+	private static final long	serialVersionUID	= -7008193162056461183L;
+
+	@Override
+	protected int getAmount(Weeks baseSingleFieldPeriod)
+	{
+		return baseSingleFieldPeriod.getWeeks();
+	}
+}
+final class YearsInParameterType extends AbstractBaseSingleFieldPeriodInParameterType<Years>
+{
+	private static final long	serialVersionUID	= 5488175347491622019L;
+
+	@Override
+	protected int getAmount(Years baseSingleFieldPeriod)
+	{
+		return baseSingleFieldPeriod.getYears();
 	}
 }

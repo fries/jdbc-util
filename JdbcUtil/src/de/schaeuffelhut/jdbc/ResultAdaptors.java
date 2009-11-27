@@ -143,7 +143,7 @@ public final class ResultAdaptors
 		ResultSetMetaData metaData = resultSet.getMetaData();
 		for(int i = 0; i < resultTypes.length; i++)
 			adaptors[i] = new MapResultAdaptor(
-					metaData.getColumnName( columnIndex + i ),
+					metaData.getColumnLabel( columnIndex + i ),
 					resultTypes[i]
 			);
 		return adaptors;

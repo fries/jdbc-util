@@ -27,8 +27,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import de.schaeuffelhut.jdbc.IfcResultFactory;
 import de.schaeuffelhut.jdbc.IfcResultAdaptor;
+import de.schaeuffelhut.jdbc.IfcResultFactory;
 import de.schaeuffelhut.jdbc.IfcResultSetCollectionReader;
 import de.schaeuffelhut.jdbc.IfcResultSetScalarReader;
 import de.schaeuffelhut.jdbc.IfcResultType;
@@ -419,6 +419,22 @@ public final class StatementUtil
 		}
 	}
 
+	public final static int[] execute(Connection connection, String sql, IfcStatementInParameter[]... parameters) throws SQLException
+	{
+		PreparedStatement stmt = null;
+		try
+		{
+			if ( logger.isTraceEnabled() )
+				logger.trace( "execute: " + sql );
+			stmt = prepareStatement( connection, sql, parameters );
+			return stmt.executeBatch();
+		}
+		finally
+		{
+			JdbcUtil.closeQuietly( stmt );
+		}
+	}
+	
 	// untested, what is a IfcStatementProperty? Is it a IfcStatementResult?
 	public final static Object[] execute(Connection connection, IfcStatementProperty<?>[] properties, String sql, IfcStatementInParameter...parameters) throws SQLException
 	{
@@ -481,6 +497,24 @@ public final class StatementUtil
 		PreparedStatement stmt = connection.prepareStatement( sql );
 		configureStatement( stmt, parameters );
 		return stmt;
+	}
+
+	static PreparedStatement prepareStatement(Connection connection, String sql, IfcStatementInParameter[]... parameters) throws SQLException
+	{
+		if ( parameters != null && parameters.length > 0 )
+		{
+			sql = modifySql( sql, parameters[0] );
+			PreparedStatement stmt = connection.prepareStatement( sql );
+			for(int i = 0; i < parameters.length; i++)
+			{
+				configureStatement( stmt, parameters[i] );
+				if ( logger.isTraceEnabled() )
+					logger.trace( String.format("add batch %d", i ) );
+				stmt.addBatch();
+			}
+			return stmt;
+		}
+		return null;
 	}
 
 	public static void configureStatement(PreparedStatement stmt, IfcStatementInParameter... parameters) throws SQLException

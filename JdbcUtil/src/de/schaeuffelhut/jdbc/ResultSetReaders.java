@@ -33,6 +33,8 @@ public final class ResultSetReaders
 			final IfcResultType<T> resultType
 	){
 		return new IfcResultSetScalarReader<T>(){
+			private static final long	serialVersionUID	= 8911654214633193260L;
+
 			public T readResult(ResultSet resultSet) throws Exception
 			{
 				return ResultSetUtil.readScalar( resultSet, resultType );
@@ -44,6 +46,8 @@ public final class ResultSetReaders
 			final IfcResultType<?>... resultTypes
 	){
 		return new IfcResultSetScalarReader<Object[]>(){
+			private static final long	serialVersionUID	= -2886595304052908844L;
+
 			public Object[] readResult(ResultSet resultSet) throws Exception
 			{
 				return ResultSetUtil.readTuple( resultSet, resultTypes );
@@ -55,6 +59,8 @@ public final class ResultSetReaders
 			final IfcResultType<?>... resultTypes
 	){
 		return new IfcResultSetScalarReader<Map<String,Object>>(){
+			private static final long	serialVersionUID	= 8545376014979236299L;
+
 			public Map<String,Object> readResult(ResultSet resultSet) throws Exception
 			{
 				return ResultSetUtil.readMap( resultSet, resultTypes );
@@ -66,6 +72,8 @@ public final class ResultSetReaders
 			final Class<T> type, final IfcResultType<?>... resultTypes
 	){
 		return new IfcResultSetScalarReader<T>(){
+			private static final long	serialVersionUID	= -8859588960602175157L;
+
 			public T readResult(ResultSet resultSet) throws Exception
 			{
 				return ResultSetUtil.readObject( resultSet, type, resultTypes );
@@ -81,6 +89,8 @@ public final class ResultSetReaders
 			final IfcResultType<T> resultType
 	){
 		return new IfcResultSetCollectionReader<T>(){
+			private static final long	serialVersionUID	= 5008801957885037291L;
+
 			public void readResults(Collection<T> results, ResultSet resultSet) throws Exception
 			{
 				ResultSetUtil.readScalars( results, resultSet, resultType );
@@ -92,6 +102,8 @@ public final class ResultSetReaders
 			final IfcResultType<?>... resultTypes
 	){
 		return new IfcResultSetCollectionReader<Object[]>(){
+			private static final long	serialVersionUID	= -1018835897002057163L;
+
 			public void readResults(Collection<Object[]> results, ResultSet resultSet) throws Exception
 			{
 				ResultSetUtil.readTuples( results, resultSet, resultTypes );
@@ -103,6 +115,8 @@ public final class ResultSetReaders
 			final IfcResultType<?>... resultTypes
 	){
 		return new IfcResultSetCollectionReader<Map<String,Object>>(){
+			private static final long	serialVersionUID	= -4552881760536118694L;
+
 			public void readResults(Collection<Map<String, Object>> results, ResultSet resultSet) throws Exception
 			{
 				ResultSetUtil.readMaps( results, resultSet, resultTypes );
@@ -114,6 +128,8 @@ public final class ResultSetReaders
 			final Class<T> type, final IfcResultType<?>... resultTypes
 	){
 		return new IfcResultSetCollectionReader<T>(){
+			private static final long	serialVersionUID	= -6157564706582485580L;
+
 			public void readResults(Collection<T> results, ResultSet resultSet) throws Exception
 			{
 				ResultSetUtil.readObjects( results, resultSet, type, resultTypes );

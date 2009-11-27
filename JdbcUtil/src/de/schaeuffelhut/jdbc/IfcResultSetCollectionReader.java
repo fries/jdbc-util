@@ -15,6 +15,7 @@
  */
 package de.schaeuffelhut.jdbc;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.util.Collection;
 
@@ -25,7 +26,7 @@ import java.util.Collection;
  *
  * @param <T>
  */
-public interface IfcResultSetCollectionReader<T>
+public interface IfcResultSetCollectionReader<T> extends Serializable
 {
 	/**
 	 * Reads values from the given {@link ResultSet} into the given {@link Collection}.

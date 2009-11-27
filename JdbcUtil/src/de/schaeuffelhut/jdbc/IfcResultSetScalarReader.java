@@ -15,6 +15,7 @@
  */
 package de.schaeuffelhut.jdbc;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 
 /**
@@ -26,7 +27,7 @@ import java.sql.ResultSet;
  *
  * @param <T>
  */
-public interface IfcResultSetScalarReader<T>
+public interface IfcResultSetScalarReader<T> extends Serializable
 {
 	/**
 	 * Reads one value from the given {@link ResultSet}. Might return null or

@@ -543,10 +543,10 @@ public final class StatementUtil
 			this.parameterIndices = new int[parameters.length];
 			this.parameters = new IfcStatementParameter[parameters.length];
 			
-			int i = 0;
-			int index = 1;
 			if ( parameters != null )
 			{
+				int i = 0;
+				int index = 1;
 				for(IfcStatementParameter param : parameters )
 				{
 					this.parameterIndices[i] = index;
@@ -566,6 +566,7 @@ public final class StatementUtil
 								IfcStatementParameter.class,
 								param.getClass()
 						));
+					i++;
 				}
 			}
 

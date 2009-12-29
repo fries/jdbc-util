@@ -118,8 +118,11 @@ public class TxnUtil
         }
     }
 
-	private final static Connection open(ConnectionProvider connectionProvider)
+	final static Connection open(ConnectionProvider connectionProvider)
 	{
+		if ( logger.isTraceEnabled() )
+			logger.trace( "opening connection" );
+
 		try
 		{
 			return connectionProvider.open();
@@ -134,10 +137,13 @@ public class TxnUtil
 		}
 	}
 
-	private final static void close(
+	final static void close(
 			ConnectionProvider connectionProvider,
 			Connection connection
 	) {
+		if ( logger.isTraceEnabled() )
+			logger.trace( "closing connection" );
+
 		try
      	{
 			connectionProvider.close( connection );
@@ -191,5 +197,69 @@ public class TxnUtil
 		    if ( autoCommit != null)
 		    	JdbcUtil.setAutoCommitQuietly( connection, autoCommit );
 		}
+	}
+	
+	/*
+	 * Thread Local Lazy Context 
+	 */
+	
+	private final static ThreadLocal<LazyTxnContext> threadLocalTxnContext = new ThreadLocal<LazyTxnContext>();
+	
+	public final static void executeWithThreadLocalContext( Runnable transactional )
+	{
+		executeWithThreadLocalContext( getDefaultConnectionProvider(), transactional );
+	}
+
+	public final static void executeWithThreadLocalContext( ConnectionProvider connectionProvider, Runnable transactional )
+	{
+		if ( threadLocalTxnContext.get() != null )
+			throw new IllegalStateException( "Already executing a thread local transaction!" );
+		
+		final LazyTxnContext lazyTxnContext = new LazyTxnContext( connectionProvider );
+		boolean commited = false;
+		try
+		{
+			threadLocalTxnContext.set( lazyTxnContext );
+			
+		    if (logger.isTraceEnabled())
+		        logger.trace( "txn invoking: " + transactional );
+
+		    transactional.run();
+
+		    if (logger.isTraceEnabled())
+		        logger.trace("txn commiting: " + transactional);
+		    
+		    if ( lazyTxnContext.hasConnection() && !lazyTxnContext.getConnection().getAutoCommit() )
+		    	lazyTxnContext.getConnection().commit();
+		    
+		    commited = true;
+		}
+		catch (SQLException e)
+		{
+			throw new RuntimeException( e );
+		}
+		finally
+		{
+		    if ( !commited && lazyTxnContext.hasConnection() )
+		        JdbcUtil.rollbackQuietly(
+		        		lazyTxnContext.getConnection(), "txn rollback: " +transactional.toString()
+		        );
+		    
+			threadLocalTxnContext.remove();
+			lazyTxnContext.close();
+		}
+	}
+	
+	public final static LazyTxnContext getThreadLocalTxnContext()
+	{
+		LazyTxnContext lazyTxnContext = threadLocalTxnContext.get();
+		if ( lazyTxnContext == null )
+			throw new IllegalStateException( "Not executing a thread local transaction" );
+		return lazyTxnContext;
+	}
+	
+	public final static Connection getThreadLocalConnection()
+	{
+		return getThreadLocalTxnContext().getConnection();
 	}
 }

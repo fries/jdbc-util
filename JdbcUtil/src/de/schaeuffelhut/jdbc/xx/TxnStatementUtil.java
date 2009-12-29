@@ -45,7 +45,7 @@ public final class TxnStatementUtil
 		return new Transactional<T>(){
 			public T run(TxnContext context) throws Exception
 			{
-				return StatementUtil.selectInto( context.connection, sql, resultReader, parameters );
+				return StatementUtil.selectInto( context.getConnection(), sql, resultReader, parameters );
 			}
 		};
 	}
@@ -60,7 +60,7 @@ public final class TxnStatementUtil
 		return new Transactional<ArrayList<T>>(){
 			public ArrayList<T> run(TxnContext context) throws Exception
 			{
-				return StatementUtil.selectInto( context.connection, sql, resultReader, parameters);
+				return StatementUtil.selectInto( context.getConnection(), sql, resultReader, parameters);
 			}
 		};
 	}
@@ -75,7 +75,7 @@ public final class TxnStatementUtil
 		return new Transactional<Void>(){
 			public Void run(TxnContext context) throws Exception
 			{
-				StatementUtil.selectInto( results,  context.connection, sql, resultReader, parameters );
+				StatementUtil.selectInto( results,  context.getConnection(), sql, resultReader, parameters );
 				return null;
 			}
 		};
@@ -99,7 +99,7 @@ public final class TxnStatementUtil
 			public T run(TxnContext context) throws Exception
 			{
 				return StatementUtil.selectIntoScalar(
-						context.connection, sql, resultType, parameters );
+						context.getConnection(), sql, resultType, parameters );
 			}
 		};
 	}
@@ -117,7 +117,7 @@ public final class TxnStatementUtil
 			public Object[] run(TxnContext context) throws Exception
 			{
 				return StatementUtil.selectIntoTuple(
-						context.connection, sql, resultTypes, parameters );
+						context.getConnection(), sql, resultTypes, parameters );
 			}
 		};
 	}
@@ -135,7 +135,7 @@ public final class TxnStatementUtil
 			public Map<String,Object> run(TxnContext context) throws Exception
 			{
 				return StatementUtil.selectIntoMap(
-						context.connection, sql, resultTypes, parameters);
+						context.getConnection(), sql, resultTypes, parameters);
 			}
 		};
 	}
@@ -153,7 +153,7 @@ public final class TxnStatementUtil
 			public T run(TxnContext context) throws Exception
 			{
 				return StatementUtil.selectIntoObject(
-						context.connection, sql, type, resultTypes, parameters );
+						context.getConnection(), sql, type, resultTypes, parameters );
 			}
 		};
 	}
@@ -175,7 +175,7 @@ public final class TxnStatementUtil
 			public ArrayList<T> run(TxnContext context) throws Exception
 			{
 				return StatementUtil.selectIntoScalars(
-						context.connection, sql, resultType, parameters );
+						context.getConnection(), sql, resultType, parameters );
 			}
 		};
 	}
@@ -193,7 +193,7 @@ public final class TxnStatementUtil
 			public Void run(TxnContext context) throws Exception
 			{
 				StatementUtil.selectIntoScalars(
-						results, context.connection, sql, resultType, parameters );
+						results, context.getConnection(), sql, resultType, parameters );
 				return null;
 			}
 		};
@@ -212,7 +212,7 @@ public final class TxnStatementUtil
 			public ArrayList<Object[]> run(TxnContext context) throws Exception
 			{
 				return StatementUtil.selectIntoTuples(
-						context.connection, sql, resultTypes, parameters );
+						context.getConnection(), sql, resultTypes, parameters );
 			}
 		};
 	}
@@ -230,7 +230,7 @@ public final class TxnStatementUtil
 			public Void run(TxnContext context) throws Exception
 			{
 				StatementUtil.selectIntoTuples(
-						results, context.connection, sql, resultTypes, parameters );
+						results, context.getConnection(), sql, resultTypes, parameters );
 				return null;
 			}
 		};
@@ -249,7 +249,7 @@ public final class TxnStatementUtil
 			public ArrayList<Map<String,Object>> run(TxnContext context) throws Exception
 			{
 				return StatementUtil.selectIntoMaps(
-						context.connection, sql, resultTypes, parameters );
+						context.getConnection(), sql, resultTypes, parameters );
 			}
 		};
 	}
@@ -267,7 +267,7 @@ public final class TxnStatementUtil
 			public Void run(TxnContext context) throws Exception
 			{
 				StatementUtil.selectIntoMaps(
-						results, context.connection, sql, resultTypes, parameters );
+						results, context.getConnection(), sql, resultTypes, parameters );
 				return null;
 			}
 		};
@@ -286,7 +286,7 @@ public final class TxnStatementUtil
 			public ArrayList<T> run(TxnContext context) throws Exception
 			{
 				return StatementUtil.selectIntoObjects(
-						context.connection, sql, type, resultTypes, parameters );
+						context.getConnection(), sql, type, resultTypes, parameters );
 			}
 		};
 	}
@@ -304,7 +304,7 @@ public final class TxnStatementUtil
 			public Void run(TxnContext context) throws Exception
 			{
 				StatementUtil.selectIntoObjects( 
-						results, context.connection, sql, type, resultTypes, parameters );
+						results, context.getConnection(), sql, type, resultTypes, parameters );
 				return null;
 			}
 		};
@@ -320,7 +320,7 @@ public final class TxnStatementUtil
 			public Integer run(TxnContext context) throws Exception
 			{
 				StatementUtil.execute( 
-						context.connection, sql, parameters );
+						context.getConnection(), sql, parameters );
 				return null;
 			}
 		};
@@ -332,7 +332,7 @@ public final class TxnStatementUtil
 			public Integer run(TxnContext context) throws Exception
 			{
 				StatementUtil.execute( 
-						context.connection, sql, parameters );
+						context.getConnection(), sql, parameters );
 				return null;
 			}
 		};

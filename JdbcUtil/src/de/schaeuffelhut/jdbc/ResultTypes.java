@@ -110,6 +110,8 @@ final class ByteResultType implements IfcResultType<Byte>
 
 final class CharacterResultType implements IfcResultType<Character>
 {
+	private static final long	serialVersionUID	= -1419579095293210858L;
+
 	public final Character getResult(ResultSet resultSet, int index) throws SQLException
 	{
 		String value = resultSet.getString( index );
@@ -283,6 +285,8 @@ implements IfcResultType<E>
 final class EnumByKeyResultType<K,E extends Enum<E> & IfcEnumKey<K>>
 implements IfcResultType<E>
 {
+	private static final long	serialVersionUID	= 3148528685112236111L;
+
 	final Class<E>	type;
 	final IfcResultType<K>	resultType;
 

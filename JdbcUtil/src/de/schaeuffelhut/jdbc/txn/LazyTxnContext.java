@@ -17,8 +17,6 @@ package de.schaeuffelhut.jdbc.txn;
 
 import java.sql.Connection;
 
-import org.apache.log4j.Logger;
-
 import de.schaeuffelhut.jdbc.JdbcUtil;
 
 public final class LazyTxnContext

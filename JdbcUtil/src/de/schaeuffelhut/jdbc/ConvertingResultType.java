@@ -3,8 +3,6 @@ package de.schaeuffelhut.jdbc;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import de.schaeuffelhut.jdbc.IfcResultType;
-
 /**
  * A JdbcUtil {@link IfcResultType} which delegates the data retrieval to an
  * other {@link IfcResultType} and then converts to the actual type.

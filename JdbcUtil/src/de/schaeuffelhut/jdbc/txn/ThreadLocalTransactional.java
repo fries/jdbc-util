@@ -16,7 +16,7 @@ public abstract class ThreadLocalTransactional<T> implements Transactional<T>
 
 	public T run(TxnContext context) throws Exception
 	{
-		threadLocalConnection.set( context.connection );
+		threadLocalConnection.set( context.getConnection() );
 		try
 		{
 			return run();

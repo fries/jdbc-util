@@ -15,14 +15,14 @@
  */
 package de.schaeuffelhut.jdbc.txn;
 
+import static org.apache.log4j.Logger.getLogger;
+
 import java.sql.Connection;
 import java.sql.Driver;
 import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-
-import static org.apache.log4j.Logger.getLogger;
 
 /**
  * @author M.Sc. Friedrich Schäuffelhut

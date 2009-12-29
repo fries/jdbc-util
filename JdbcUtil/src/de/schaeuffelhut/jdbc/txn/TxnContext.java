@@ -19,10 +19,21 @@ import java.sql.Connection;
 
 public final class TxnContext
 {
+	/**
+	 * The connection.
+	 * 
+	 *  @deprecated use getter instead of direct field access.
+	 */
+	@Deprecated
     public final Connection connection;
 
     TxnContext(final Connection connection)
     {
         this.connection = connection;
     }
+    
+    public final Connection getConnection()
+	{
+		return connection;
+	}
 }

@@ -25,7 +25,6 @@ public abstract class ConvertingResultType<Tout,Tin> implements IfcResultType<To
 		this.delegate = delegate;
 	}
 
-	@Override
 	public Tout getResult(ResultSet resultSet, int index) throws SQLException
 	{
 		return convert( delegate.getResult( resultSet, index ) );

@@ -130,13 +130,19 @@ public class DefaultConnectionProvider implements ConnectionProvider
 		return connection;
 	}
 	
-	protected void onOpen(Connection connection) throws Exception{
-		// overried if desired
+	protected void onOpen(Connection connection) throws Exception
+	{
+		// override if desired
 	}
 	
 	public final void close(Connection connection) throws Exception
 	{
-		if ( connection != null )
-			connection.close();
+		onClose( connection );
+		connection.close();
+	}
+	
+	protected void onClose(Connection connection) throws Exception
+	{
+		// override if desired
 	}
 }

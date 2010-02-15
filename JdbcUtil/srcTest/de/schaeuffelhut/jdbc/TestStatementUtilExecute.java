@@ -111,9 +111,9 @@ public class TestStatementUtilExecute
 		
 		Assert.assertEquals( 
 				(Integer)1,
-				StatementUtil.selectIntoScalar( connection,
+				StatementUtil.selectInto( connection,
 						"SELECT count(*) FROM person",
-						ResultTypes.Integer
+						ResultSetReaders.readScalar( ResultTypes.Integer )
 				)
 		);
 
@@ -129,9 +129,9 @@ public class TestStatementUtilExecute
 		
 		Assert.assertEquals( 
 				(Integer)0,
-				StatementUtil.selectIntoScalar( connection,
+				StatementUtil.selectInto( connection,
 						"SELECT count(*) FROM person",
-						ResultTypes.Integer
+						ResultSetReaders.readScalar( ResultTypes.Integer )
 				)
 		);
 	}

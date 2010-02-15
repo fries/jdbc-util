@@ -30,7 +30,8 @@ public final class ResultSetUtil
 	 */
 	
     public final static <T> T readScalar(
-    		ResultSet resultSet, IfcResultType<T> resultType
+    		ResultSet resultSet,
+    		IfcResultType<T> resultType
     ) throws SQLException
     {
 		final T result;
@@ -177,7 +178,8 @@ public final class ResultSetUtil
 	 */
 
     public final static ArrayList<Object[]> readTuples(
-    		ResultSet resultSet, IfcResultType<?>... resultTypes
+    		ResultSet resultSet,
+    		IfcResultType<?>... resultTypes
     ) throws SQLException
     {
     	return readResults(
@@ -202,7 +204,8 @@ public final class ResultSetUtil
 	}
 
     public final static ArrayList<Map<String, Object>> readMaps(
-    		ResultSet resultSet, IfcResultType<?>... resultTypes
+    		ResultSet resultSet,
+    		IfcResultType<?>... resultTypes
     ) throws SQLException
     {
 		return readResults(
@@ -233,7 +236,9 @@ public final class ResultSetUtil
 	}
 
 	public final static <T> ArrayList<T> readObjects(
-			ResultSet resultSet, Class<T> type, IfcResultType<?>... resultTypes
+			ResultSet resultSet,
+			Class<T> type,
+			IfcResultType<?>... resultTypes
 	) throws SQLException
     {
         return readResults(

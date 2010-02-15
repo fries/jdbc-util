@@ -104,9 +104,9 @@ public class TestStatementUtilWithParams
 	{
 		Assert.assertEquals( 
 				"John",
-				StatementUtil.selectIntoScalar( connection,
+				StatementUtil.selectInto( connection,
 						"SELECT name FROM person WHERE name = ?",
-						ResultTypes.String,
+						ResultSetReaders.readScalar( ResultTypes.String ),
 						StatementParameters.String("John ")
 				)
 		);
@@ -115,9 +115,9 @@ public class TestStatementUtilWithParams
 	@Test
 	public void testselectIntoTuple() throws Exception
 	{
-		Object[] tuple = StatementUtil.selectIntoTuple( connection,
+		Object[] tuple = StatementUtil.selectInto( connection,
 				"SELECT name, address FROM person WHERE name = ?",
-				ResultTypes.resultTypes( ResultTypes.String, ResultTypes.String ),
+				ResultSetReaders.readTuple( ResultTypes.String, ResultTypes.String ),
 				StatementParameters.String("John ")
 		);
 		Assert.assertEquals( "John", tuple[0] );
@@ -127,9 +127,9 @@ public class TestStatementUtilWithParams
 	@Test
 	public void testselectIntoMap() throws Exception
 	{
-		Map<String, Object> result = StatementUtil.selectIntoMap( connection, 
+		Map<String, Object> result = StatementUtil.selectInto( connection, 
 				"SELECT name, address FROM person WHERE name = ?",
-				ResultTypes.resultTypes( ResultTypes.String, ResultTypes.String ),
+				ResultSetReaders.readMap( ResultTypes.String, ResultTypes.String ),
 				StatementParameters.String("John ")
 		);
 		Assert.assertEquals( "John", result.get( "name" ) );
@@ -144,10 +144,13 @@ public class TestStatementUtilWithParams
 	@Test
 	public void testselectIntoObject() throws Exception
 	{
-		Result result = StatementUtil.selectIntoObject( connection,
+		Result result = StatementUtil.selectInto( connection,
 				"SELECT name, address FROM person WHERE name = ?",
-				Result.class,
-				ResultTypes.resultTypes( ResultTypes.String, ResultTypes.String ),
+				ResultSetReaders.readObject( 
+						Result.class,
+						ResultTypes.String,
+						ResultTypes.String
+				),
 				StatementParameters.String("John ")
 		);
 		Assert.assertEquals( "John", result.name );

@@ -107,9 +107,9 @@ public class TestStatementUtilNoParams
 	{
 		Assert.assertEquals( 
 				"John",
-				StatementUtil.selectIntoScalar( connection,
+				StatementUtil.selectInto( connection,
 						"SELECT name FROM person WHERE name = 'John'",
-						ResultTypes.String
+						ResultSetReaders.readScalar( ResultTypes.String )
 				)
 		);
 	}
@@ -117,9 +117,12 @@ public class TestStatementUtilNoParams
 	@Test
 	public void testselectIntoTuple() throws Exception
 	{
-		Object[] tuple = StatementUtil.selectIntoTuple( connection,
+		Object[] tuple = StatementUtil.selectInto( connection,
 				"SELECT name, address FROM person WHERE name = 'John'",
-				ResultTypes.String, ResultTypes.String
+				ResultSetReaders.readTuple( 
+						ResultTypes.String,
+						ResultTypes.String
+				)
 		);
 		Assert.assertEquals( "John", tuple[0] );
 		Assert.assertEquals( "Samplestreet 12", tuple[1] );
@@ -128,9 +131,12 @@ public class TestStatementUtilNoParams
 	@Test
 	public void testselectIntoMap() throws Exception
 	{
-		Map<String, Object> result = StatementUtil.selectIntoMap( connection, 
+		Map<String, Object> result = StatementUtil.selectInto( connection, 
 				"SELECT name, address FROM person WHERE name = 'John'",
-				ResultTypes.String, ResultTypes.String
+				ResultSetReaders.readMap( 
+						ResultTypes.String,
+						ResultTypes.String
+				)
 		);
 		Assert.assertEquals( "John", result.get( "name" ) );
 		Assert.assertEquals( "Samplestreet 12", result.get( "address" ) );
@@ -144,10 +150,13 @@ public class TestStatementUtilNoParams
 	@Test
 	public void testselectIntoObject() throws Exception
 	{
-		Result result = StatementUtil.selectIntoObject( connection,
+		Result result = StatementUtil.selectInto( connection,
 				"SELECT name, address FROM person WHERE name = 'John'",
-				Result.class,
-				ResultTypes.String, ResultTypes.String
+				ResultSetReaders.readObject( 
+						Result.class,
+						ResultTypes.String,
+						ResultTypes.String
+				)
 		);
 		Assert.assertEquals( "John", result.name );
 		Assert.assertEquals( "Samplestreet 12", result.address );
@@ -160,9 +169,10 @@ public class TestStatementUtilNoParams
 	@Test
 	public void testselectIntoScalars() throws Exception
 	{
-		Collection<String> results = StatementUtil.selectIntoScalars( connection,
+		Collection<String> results = StatementUtil.selectInto(
+				connection,
 				"SELECT name FROM person ORDER BY birthday",
-				ResultTypes.String
+				ResultSetReaders.readScalars( ResultTypes.String )
 		);
 		
 		Assert.assertEquals( 2, results.size() );
@@ -176,9 +186,12 @@ public class TestStatementUtilNoParams
 	@Test
 	public void testselectIntoTuples() throws Exception
 	{
-		ArrayList<Object[]> tuples = StatementUtil.selectIntoTuples( connection,
+		ArrayList<Object[]> tuples = StatementUtil.selectInto( connection,
 				"SELECT name, address FROM person ORDER BY birthday",
-				ResultTypes.String, ResultTypes.String
+				ResultSetReaders.readTuples( 
+						ResultTypes.String,
+						ResultTypes.String
+				)
 		);
 
 		Assert.assertEquals( 2, tuples.size() );
@@ -198,9 +211,12 @@ public class TestStatementUtilNoParams
 	@Test
 	public void testselectIntoMaps() throws Exception
 	{
-		Collection<Map<String, Object>> maps = StatementUtil.selectIntoMaps( connection,
+		Collection<Map<String, Object>> maps = StatementUtil.selectInto( connection,
 				"SELECT name, address FROM person ORDER BY birthday",
-				ResultTypes.String, ResultTypes.String
+				ResultSetReaders.readMaps( 
+						ResultTypes.String,
+						ResultTypes.String
+				)
 		);
 
 		Assert.assertEquals( 2, maps.size() );
@@ -220,9 +236,13 @@ public class TestStatementUtilNoParams
 	@Test
 	public void testselectIntoObjects() throws Exception
 	{
-		Collection<Result> objects = StatementUtil.selectIntoObjects( connection,
+		Collection<Result> objects = StatementUtil.selectInto( connection,
 				"SELECT name, address FROM person ORDER BY birthday",
-				Result.class, ResultTypes.String, ResultTypes.String
+				ResultSetReaders.readObjects( 
+						Result.class,
+						ResultTypes.String,
+						ResultTypes.String
+				)
 		);
 
 		Assert.assertEquals( 2, objects.size() );

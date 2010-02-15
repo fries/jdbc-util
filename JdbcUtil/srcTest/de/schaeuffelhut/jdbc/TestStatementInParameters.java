@@ -141,9 +141,9 @@ public class TestStatementInParameters
 	@Test
 	public void testSubArray() throws Exception
 	{
-		Object[] result = StatementUtil.selectIntoTuple( connection, 
+		Object[] result = StatementUtil.selectInto( connection, 
 				"SELECT @array",
-				ResultTypes.resultTypes( 
+				ResultSetReaders.readTuple( 
 						ResultTypes.Integer,ResultTypes.Integer,
 						ResultTypes.Integer,ResultTypes.Integer,
 						ResultTypes.Integer,ResultTypes.Integer
@@ -170,17 +170,21 @@ public class TestStatementInParameters
 	
 	private <T> void check(IfcResultType<T> resultType, IfcStatementInParameterType<T> statementParameter, T value) throws Exception
 	{
-		assertEquals( value, StatementUtil.selectIntoScalar( connection, 
-				"SELECT ?", resultType, bindValue( statementParameter, value )
+		assertEquals( value, StatementUtil.selectInto( connection, 
+				"SELECT ?",
+				ResultSetReaders.readScalar( resultType ),
+				bindValue( statementParameter, value )
 		));
 	}
 	
 	@SuppressWarnings("unchecked")
 	private <T> void check(IfcResultType<T> resultType, IfcStatementInParameterType<T> statementParameter, T value1, T value2) throws Exception
 	{
-		Object[] result = StatementUtil.selectIntoTuple( connection, 
+		Object[] result = StatementUtil.selectInto( connection, 
 				"SELECT @array",
-				ResultTypes.resultTypes( resultType, resultType ), 
+				ResultSetReaders.readTuple( 
+						ResultTypes.resultTypes( resultType, resultType )
+				), 
 				StatementParameters.Array( statementParameter, "@array", value1, value2 )
 		);
 		assertEquals( value1, result[0] );

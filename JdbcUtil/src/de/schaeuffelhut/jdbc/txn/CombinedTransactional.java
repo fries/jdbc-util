@@ -15,10 +15,17 @@
  */
 package de.schaeuffelhut.jdbc.txn;
 
+import java.util.Collection;
+
 
 public final class CombinedTransactional implements Transactional<Object[]>
 {
 	final Transactional<?>[] transactionals;
+	
+	public CombinedTransactional(Collection<?> transactionals)
+	{
+		this( transactionals.toArray( new Transactional<?>[transactionals.size()] ) );
+	}
 	
 	public CombinedTransactional(Transactional<?>... transactionals)
 	{

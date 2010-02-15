@@ -16,7 +16,7 @@
 package de.schaeuffelhut.jdbc.txn;
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public interface VoidTransactional extends Transactional<Void>

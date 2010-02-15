@@ -28,7 +28,7 @@ import de.schaeuffelhut.jdbc.txn.TxnContext;
 
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public final class TxnStatementUtil

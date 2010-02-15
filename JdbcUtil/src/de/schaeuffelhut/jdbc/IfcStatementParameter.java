@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public interface IfcStatementParameter extends Serializable

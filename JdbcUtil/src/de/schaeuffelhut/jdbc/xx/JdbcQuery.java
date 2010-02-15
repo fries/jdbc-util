@@ -18,7 +18,7 @@ package de.schaeuffelhut.jdbc.xx;
 import java.sql.ResultSet;
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public abstract class JdbcQuery

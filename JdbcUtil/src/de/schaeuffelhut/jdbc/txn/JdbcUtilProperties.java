@@ -23,7 +23,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public final class JdbcUtilProperties

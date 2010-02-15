@@ -34,7 +34,7 @@ import org.joda.time.Years;
 import org.joda.time.base.BaseSingleFieldPeriod;
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  * 
  */
 public class StatementParameters

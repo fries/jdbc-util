@@ -24,7 +24,7 @@ import java.util.UUID;
 import de.schaeuffelhut.jdbc.IfcResultType;
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public final class MappedUUIDResultType<T> implements IfcResultType<UUID>

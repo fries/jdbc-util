@@ -22,7 +22,7 @@ import java.sql.SQLException;
  * Transfers a single value from the given {@link ResultSet} into the given
  * {@link Object} of type <code>T</code>.
  * 
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  * 
  * @param <T> type of object receiving the result set value. 
  */

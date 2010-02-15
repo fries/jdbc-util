@@ -33,7 +33,7 @@ import de.schaeuffelhut.jdbc.xx.StatementUtil;
 
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public class TestStatementUtilExecute
@@ -104,9 +104,9 @@ public class TestStatementUtilExecute
 		StatementUtil.execute( connection,
 				"INSERT INTO person (name, birthday, address)" +
 				" VALUES (?, ?, ?)",
-				StatementParameters.String("fries"),
+				StatementParameters.String("John"),
 				StatementParameters.Date( new Date( cal.getTimeInMillis() ) ),
-				StatementParameters.String("Hofmarkweg 12")
+				StatementParameters.String("Samplestreet 12")
 		);
 		
 		Assert.assertEquals( 
@@ -122,9 +122,9 @@ public class TestStatementUtilExecute
 				" WHERE name = ?" +
 				"   AND birthday = ?" +
 				"   AND address = ?",
-				StatementParameters.String("fries"),
+				StatementParameters.String("John"),
 				StatementParameters.Date( new Date( cal.getTimeInMillis() ) ),
-				StatementParameters.String("Hofmarkweg 12")
+				StatementParameters.String("Samplestreet 12")
 		);
 		
 		Assert.assertEquals( 

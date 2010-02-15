@@ -21,7 +21,7 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 final class BoundValue<T> implements IfcStatementInParameter

@@ -22,7 +22,7 @@ import de.schaeuffelhut.jdbc.txn.Transactional;
 import de.schaeuffelhut.jdbc.txn.TxnContext;
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public final class CombinedTransactional implements Transactional<Object[]>

@@ -23,7 +23,7 @@ import org.junit.Test;
 
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public class TestTxn

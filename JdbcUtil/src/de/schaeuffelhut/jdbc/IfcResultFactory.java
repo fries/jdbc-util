@@ -16,7 +16,7 @@
 package de.schaeuffelhut.jdbc;
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public interface IfcResultFactory<T>

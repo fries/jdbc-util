@@ -33,7 +33,7 @@ import static junit.framework.Assert.assertEquals;
 
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public class TestStatementInParameters

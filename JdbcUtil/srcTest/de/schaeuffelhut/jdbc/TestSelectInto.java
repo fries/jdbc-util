@@ -37,7 +37,7 @@ import de.schaeuffelhut.jdbc.xx.StatementUtil;
 
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public class TestSelectInto
@@ -64,13 +64,13 @@ public class TestSelectInto
 				")"
 		);
 		connection.createStatement().execute(
-				"INSERT INTO person (name, birthday, address) VALUES ('Friedrich','1975-12-27','Unterhaching')"
+				"INSERT INTO person (name, birthday, address) VALUES ('John','1975-12-27','Samplecity')"
 		);
 		connection.createStatement().execute(
-				"INSERT INTO person (name, birthday, address) VALUES ('Sarah','1973-05-23','Unterhaching')"
+				"INSERT INTO person (name, birthday, address) VALUES ('Paul','1973-05-23','Samplecity')"
 		);
 		connection.createStatement().execute(
-				"INSERT INTO person (name, birthday, address) VALUES ('Sylvia','2008-08-11','Unterhaching')"
+				"INSERT INTO person (name, birthday, address) VALUES ('Claudia','2008-08-11','Samplecity')"
 		);
 	}
 
@@ -122,7 +122,7 @@ public class TestSelectInto
 				ResultSetReaders.readScalar( ResultTypes.String ),
 				StatementParameters.String( "1975-12-27" )
 		);
-		assertEquals( "Friedrich", name );
+		assertEquals( "John", name );
 	}
 
 	@Test
@@ -133,8 +133,8 @@ public class TestSelectInto
 				ResultSetReaders.readTuple( ResultTypes.String, ResultTypes.String ),
 				StatementParameters.String( "1975-12-27" )
 		);
-		assertEquals( "Friedrich", person[0] );
-		assertEquals( "Unterhaching", person[1] );
+		assertEquals( "John", person[0] );
+		assertEquals( "Samplecity", person[1] );
 	}
 
 	@Test
@@ -145,8 +145,8 @@ public class TestSelectInto
 				ResultSetReaders.readMap( ResultTypes.String, ResultTypes.String ),
 				StatementParameters.String( "1975-12-27" )
 		);
-		assertEquals( "Friedrich", person.get( "name" ) );
-		assertEquals( "Unterhaching", person.get( "address" ) );
+		assertEquals( "John", person.get( "name" ) );
+		assertEquals( "Samplecity", person.get( "address" ) );
 	}
 
 	@Test
@@ -157,9 +157,9 @@ public class TestSelectInto
 				ResultSetReaders.readObject( Person.class, ResultTypes.String, ResultTypes.String ),
 				StatementParameters.String( "1975-12-27" )
 		);
-		assertEquals( "Friedrich", person.name );
+		assertEquals( "John", person.name );
 		assertEquals( null, person.birthday);
-		assertEquals( "Unterhaching", person.address );
+		assertEquals( "Samplecity", person.address );
 	}
 
 	/*
@@ -172,11 +172,11 @@ public class TestSelectInto
 		ArrayList<String> names = StatementUtil.selectInto( connection, 
 				"SELECT name FROM person WHERE address = ? ORDER BY name",
 				ResultSetReaders.readScalars( ResultTypes.String ),
-				StatementParameters.String( "Unterhaching" )
+				StatementParameters.String( "Samplecity" )
 		);
-		Assert.assertTrue( names.contains( "Friedrich" ) );
-		Assert.assertTrue( names.contains( "Sarah" ) );
-		Assert.assertTrue( names.contains( "Sylvia" ) );
+		Assert.assertTrue( names.contains( "John" ) );
+		Assert.assertTrue( names.contains( "Paul" ) );
+		Assert.assertTrue( names.contains( "Claudia" ) );
 	}
 	
 	@Test
@@ -185,23 +185,23 @@ public class TestSelectInto
 		ArrayList<Object[]> persons = StatementUtil.selectInto( connection, 
 				"SELECT name, address FROM person WHERE address = ? ORDER BY name",
 				ResultSetReaders.readTuples( ResultTypes.String, ResultTypes.String ),
-				StatementParameters.String( "Unterhaching" )
+				StatementParameters.String( "Samplecity" )
 		);
 		
 		Iterator<Object[]> iterator = persons.iterator();
 		Object[] person;
 		
 		person = iterator.next();
-		assertEquals( "Friedrich", person[0] );
-		assertEquals( "Unterhaching", person[1] );
+		assertEquals( "John", person[0] );
+		assertEquals( "Samplecity", person[1] );
 
 		person = iterator.next();
-		assertEquals( "Sarah", person[0] );
-		assertEquals( "Unterhaching", person[1] );
+		assertEquals( "Paul", person[0] );
+		assertEquals( "Samplecity", person[1] );
 
 		person = iterator.next();
-		assertEquals( "Sylvia", person[0] );
-		assertEquals( "Unterhaching", person[1] );
+		assertEquals( "Claudia", person[0] );
+		assertEquals( "Samplecity", person[1] );
 	}
 
 	@Test
@@ -210,23 +210,23 @@ public class TestSelectInto
 		ArrayList<Map<String, Object>> persons = StatementUtil.selectInto( connection, 
 				"SELECT name, address FROM person WHERE address = ? ORDER BY name",
 				ResultSetReaders.readMaps( ResultTypes.String, ResultTypes.String ),
-				StatementParameters.String( "Unterhaching" )
+				StatementParameters.String( "Samplecity" )
 		);
 		
 		Iterator<Map<String, Object>> iterator = persons.iterator();
 		Map<String, Object> person;
 		
 		person = iterator.next();
-		assertEquals( "Friedrich", person.get( "name" ) );
-		assertEquals( "Unterhaching", person.get( "address" ) );
+		assertEquals( "John", person.get( "name" ) );
+		assertEquals( "Samplecity", person.get( "address" ) );
 
 		person = iterator.next();
-		assertEquals( "Sarah", person.get( "name" ) );
-		assertEquals( "Unterhaching", person.get( "address" ) );
+		assertEquals( "Paul", person.get( "name" ) );
+		assertEquals( "Samplecity", person.get( "address" ) );
 
 		person = iterator.next();
-		assertEquals( "Sylvia", person.get( "name" ) );
-		assertEquals( "Unterhaching", person.get( "address" ) );
+		assertEquals( "Claudia", person.get( "name" ) );
+		assertEquals( "Samplecity", person.get( "address" ) );
 	}
 
 	@Test
@@ -235,26 +235,26 @@ public class TestSelectInto
 		ArrayList<Person> persons = StatementUtil.selectInto( connection, 
 				"SELECT name, address FROM person WHERE address = ? ORDER BY name",
 				ResultSetReaders.readObjects( Person.class, ResultTypes.String, ResultTypes.String ),
-				StatementParameters.String( "Unterhaching" )
+				StatementParameters.String( "Samplecity" )
 		);
 
 		Iterator<Person> iterator = persons.iterator();
 		Person person;
 		
 		person = iterator.next();
-		assertEquals( "Friedrich", person.name );
+		assertEquals( "John", person.name );
 		assertEquals( null, person.birthday);
-		assertEquals( "Unterhaching", person.address );
+		assertEquals( "Samplecity", person.address );
 
 		person = iterator.next();
-		assertEquals( "Sarah", person.name );
+		assertEquals( "Paul", person.name );
 		assertEquals( null, person.birthday);
-		assertEquals( "Unterhaching", person.address );
+		assertEquals( "Samplecity", person.address );
 
 		person = iterator.next();
-		assertEquals( "Sylvia", person.name );
+		assertEquals( "Claudia", person.name );
 		assertEquals( null, person.birthday);
-		assertEquals( "Unterhaching", person.address );
+		assertEquals( "Samplecity", person.address );
 	}
 
 }

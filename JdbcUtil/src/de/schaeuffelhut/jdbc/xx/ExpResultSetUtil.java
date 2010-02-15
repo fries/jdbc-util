@@ -30,7 +30,7 @@ import de.schaeuffelhut.jdbc.ResultAdaptors;
 
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public class ExpResultSetUtil

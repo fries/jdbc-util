@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public final class ResultFactories
@@ -37,7 +37,7 @@ public final class ResultFactories
 	}
 	
 	/**
-	 * @author M.Sc. Friedrich Schäuffelhut
+	 * @author Friedrich Schäuffelhut
 	 *
 	 */
 	public static final class ArrayResultFactory implements
@@ -62,7 +62,7 @@ public final class ResultFactories
 	}
 
 	/**
-	 * @author M.Sc. Friedrich Schäuffelhut
+	 * @author Friedrich Schäuffelhut
 	 *
 	 */
 	private static final class HashMapResultFactory
@@ -82,7 +82,7 @@ public final class ResultFactories
 		new HashMapResultFactory();
 
 	/**
-	 * @author M.Sc. Friedrich Schäuffelhut
+	 * @author Friedrich Schäuffelhut
 	 *
 	 */
 	public final static class ReflectionResultFactory<T>

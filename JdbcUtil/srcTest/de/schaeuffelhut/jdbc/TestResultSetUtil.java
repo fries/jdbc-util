@@ -32,7 +32,7 @@ import org.junit.Test;
 
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public class TestResultSetUtil
@@ -61,8 +61,8 @@ public class TestResultSetUtil
 		connection.createStatement().execute(
 				"INSERT INTO person (name, birthday, address)" +
 				" VALUES " +
-				"('fries', '1975-12-27', 'Hofmarkweg 12')," +
-				"('sarah', '1973-05-23', 'Hofmarkweg 12')"
+				"('John', '1966-10-20', 'Samplestreet 12')," +
+				"('Paul', '1993-07-26', 'Samplestreet 12')"
 		);
 	}
 
@@ -105,10 +105,10 @@ public class TestResultSetUtil
 	public void testReadScalar() throws Exception
 	{
 		ResultSet rs = connection.createStatement().executeQuery(
-				"SELECT name FROM person WHERE name = 'fries'"
+				"SELECT name FROM person WHERE name = 'John'"
 		);
 		Assert.assertEquals( 
-				"fries",
+				"John",
 				ResultSetUtil.readScalar( rs, ResultTypes.String )
 		);
 	}
@@ -117,22 +117,22 @@ public class TestResultSetUtil
 	public void testReadTuple() throws Exception
 	{
 		ResultSet rs = connection.createStatement().executeQuery(
-				"SELECT name, address FROM person WHERE name = 'fries'"
+				"SELECT name, address FROM person WHERE name = 'John'"
 		);
 		Object[] tuple = ResultSetUtil.readTuple( rs, ResultTypes.String, ResultTypes.String );
-		Assert.assertEquals( "fries", tuple[0] );
-		Assert.assertEquals( "Hofmarkweg 12", tuple[1] );
+		Assert.assertEquals( "John", tuple[0] );
+		Assert.assertEquals( "Samplestreet 12", tuple[1] );
 	}
 
 	@Test
 	public void testReadMap() throws Exception
 	{
 		ResultSet rs = connection.createStatement().executeQuery(
-				"SELECT name, address FROM person WHERE name = 'fries'"
+				"SELECT name, address FROM person WHERE name = 'John'"
 		);
 		Map<String, Object> result = ResultSetUtil.readMap( rs, ResultTypes.String, ResultTypes.String );
-		Assert.assertEquals( "fries", result.get( "name" ) );
-		Assert.assertEquals( "Hofmarkweg 12", result.get( "address" ) );
+		Assert.assertEquals( "John", result.get( "name" ) );
+		Assert.assertEquals( "Samplestreet 12", result.get( "address" ) );
 	}
 
 	public static class Result {
@@ -144,22 +144,22 @@ public class TestResultSetUtil
 	public void testReadObject() throws Exception
 	{
 		ResultSet rs = connection.createStatement().executeQuery(
-				"SELECT name, address FROM person WHERE name = 'fries'"
+				"SELECT name, address FROM person WHERE name = 'John'"
 		);
 		Result result = ResultSetUtil.readObject( rs, Result.class, ResultTypes.String, ResultTypes.String );
-		Assert.assertEquals( "fries", result.name );
-		Assert.assertEquals( "Hofmarkweg 12", result.address );
+		Assert.assertEquals( "John", result.name );
+		Assert.assertEquals( "Samplestreet 12", result.address );
 	}
 
 	@Test
 	public void testReadObject2() throws Exception
 	{
 		ResultSet rs = connection.createStatement().executeQuery(
-				"SELECT name, address FROM person WHERE name = 'fries'"
+				"SELECT name, address FROM person WHERE name = 'John'"
 		);
 		Result result = ResultSetUtil.readObject( rs, new Result(), ResultTypes.String, ResultTypes.String );
-		Assert.assertEquals( "fries", result.name );
-		Assert.assertEquals( "Hofmarkweg 12", result.address );
+		Assert.assertEquals( "John", result.name );
+		Assert.assertEquals( "Samplestreet 12", result.address );
 	}
 
 	@Test
@@ -189,8 +189,8 @@ public class TestResultSetUtil
 		
 		Iterator<String> it = results.iterator();
 
-		Assert.assertEquals( "sarah", it.next() );
-		Assert.assertEquals( "fries", it.next() );
+		Assert.assertEquals( "Paul", it.next() );
+		Assert.assertEquals( "John", it.next() );
 	}
 
 	@Test
@@ -207,12 +207,12 @@ public class TestResultSetUtil
 		Object[] tuple;
 		
 		tuple = iterator.next();
-		Assert.assertEquals( "sarah", tuple[0] );
-		Assert.assertEquals( "Hofmarkweg 12", tuple[1] );
+		Assert.assertEquals( "Paul", tuple[0] );
+		Assert.assertEquals( "Samplestreet 12", tuple[1] );
 		
 		tuple = iterator.next();
-		Assert.assertEquals( "fries", tuple[0] );
-		Assert.assertEquals( "Hofmarkweg 12", tuple[1] );
+		Assert.assertEquals( "John", tuple[0] );
+		Assert.assertEquals( "Samplestreet 12", tuple[1] );
 	}
 
 	@Test
@@ -229,12 +229,12 @@ public class TestResultSetUtil
 		Map<String, Object> map;
 
 		map = iterator.next();
-		Assert.assertEquals( "sarah", map.get( "name" ) );
-		Assert.assertEquals( "Hofmarkweg 12", map.get( "address" ) );
+		Assert.assertEquals( "Paul", map.get( "name" ) );
+		Assert.assertEquals( "Samplestreet 12", map.get( "address" ) );
 
 		map = iterator.next();
-		Assert.assertEquals( "fries", map.get( "name" ) );
-		Assert.assertEquals( "Hofmarkweg 12", map.get( "address" ) );
+		Assert.assertEquals( "John", map.get( "name" ) );
+		Assert.assertEquals( "Samplestreet 12", map.get( "address" ) );
 	}
 
 	@Test
@@ -251,12 +251,12 @@ public class TestResultSetUtil
 		Result result;
 
 		result = iterator.next();
-		Assert.assertEquals( "sarah", result.name );
-		Assert.assertEquals( "Hofmarkweg 12", result.address );
+		Assert.assertEquals( "Paul", result.name );
+		Assert.assertEquals( "Samplestreet 12", result.address );
 
 		result = iterator.next();
-		Assert.assertEquals( "fries", result.name );
-		Assert.assertEquals( "Hofmarkweg 12", result.address );
+		Assert.assertEquals( "John", result.name );
+		Assert.assertEquals( "Samplestreet 12", result.address );
 	}
 
 	@Test
@@ -283,12 +283,12 @@ public class TestResultSetUtil
 //		Result result;
 //
 //		result = iterator.next();
-//		Assert.assertEquals( "sarah", result.name );
-//		Assert.assertEquals( "Hofmarkweg 12", result.address );
+//		Assert.assertEquals( "Paul", result.name );
+//		Assert.assertEquals( "Samplestreet 12", result.address );
 //
 //		result = iterator.next();
-//		Assert.assertEquals( "fries", result.name );
-//		Assert.assertEquals( "Hofmarkweg 12", result.address );
+//		Assert.assertEquals( "John", result.name );
+//		Assert.assertEquals( "Samplestreet 12", result.address );
 	}
 
 }

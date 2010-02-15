@@ -21,7 +21,7 @@ import java.sql.SQLException;
 import de.schaeuffelhut.jdbc.IfcStatementParameter;
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public interface IfcStatementProperty<T> extends IfcStatementParameter

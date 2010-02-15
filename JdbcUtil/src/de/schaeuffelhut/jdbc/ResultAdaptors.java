@@ -22,13 +22,13 @@ import java.sql.SQLException;
 import java.util.Map;
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public final class ResultAdaptors
 {
 	/**
-	 * @author M.Sc. Friedrich Schäuffelhut
+	 * @author Friedrich Schäuffelhut
 	 *
 	 */
 	public static final class ArrayResultAdaptor
@@ -86,7 +86,7 @@ public final class ResultAdaptors
 
 
 	/**
-	 * @author M.Sc. Friedrich Schäuffelhut
+	 * @author Friedrich Schäuffelhut
 	 *
 	 */
 	public static final class MapResultAdaptor
@@ -150,7 +150,7 @@ public final class ResultAdaptors
 	}
 
 	/**
-	 * @author M.Sc. Friedrich Schäuffelhut
+	 * @author Friedrich Schäuffelhut
 	 *
 	 */
 	public static final class FieldResultAdaptor<T> 

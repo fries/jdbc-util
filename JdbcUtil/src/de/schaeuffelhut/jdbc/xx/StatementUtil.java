@@ -41,7 +41,7 @@ import de.schaeuffelhut.jdbc.ResultSetUtil;
 
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public final class StatementUtil

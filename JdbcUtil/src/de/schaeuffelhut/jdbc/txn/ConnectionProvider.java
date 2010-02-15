@@ -18,7 +18,7 @@ package de.schaeuffelhut.jdbc.txn;
 import java.sql.Connection;
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public interface ConnectionProvider

@@ -16,7 +16,7 @@
 package de.schaeuffelhut.jdbc.xx;
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public interface IfcGetter<T,V>

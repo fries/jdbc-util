@@ -22,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -411,7 +412,10 @@ public final class StatementUtil
 			if ( logger.isTraceEnabled() )
 				logger.trace( "execute: " + sql );
 			stmt = prepareStatement( connection, sql, parameters );
-			return stmt.executeUpdate();
+			int count = stmt.executeUpdate();
+			if ( logger.isTraceEnabled() )
+				logger.trace( String.format( "updated %d records", count ) );			
+			return count;
 		}
 		finally
 		{
@@ -427,7 +431,10 @@ public final class StatementUtil
 			if ( logger.isTraceEnabled() )
 				logger.trace( "execute: " + sql );
 			stmt = prepareStatement( connection, sql, parameters );
-			return stmt.executeBatch();
+			int[] count = stmt.executeBatch();
+			if ( logger.isTraceEnabled() )
+				logger.trace( String.format( "updated %d records", Arrays.asList( count ) ) );			
+			return count;
 		}
 		finally
 		{

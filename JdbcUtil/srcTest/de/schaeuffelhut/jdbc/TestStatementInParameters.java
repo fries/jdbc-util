@@ -15,6 +15,9 @@
  */
 package de.schaeuffelhut.jdbc;
 
+import static de.schaeuffelhut.jdbc.StatementParameters.bindValue;
+import static junit.framework.Assert.assertEquals;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 
@@ -27,9 +30,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.schaeuffelhut.jdbc.xx.StatementUtil;
-
-import static de.schaeuffelhut.jdbc.StatementParameters.bindValue;
-import static junit.framework.Assert.assertEquals;
 
 
 /**

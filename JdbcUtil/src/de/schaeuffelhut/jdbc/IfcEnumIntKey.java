@@ -15,7 +15,7 @@
  */
 package de.schaeuffelhut.jdbc;
 
-// TODO: generalize, any class which impelements this interface can be persistet, just reading needs mapping
+// TODO: generalize, any class which implements this interface can be persisted, just reading needs mapping
 public interface IfcEnumIntKey
 {
 	public abstract int getKey();

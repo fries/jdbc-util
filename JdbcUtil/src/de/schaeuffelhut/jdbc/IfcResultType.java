@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-//TODO: rename, eg IfcResultReader 
+//TODO: rename, e.g. IfcResultReader 
 public interface IfcResultType<T> extends Serializable
 {
     public abstract T getResult(ResultSet resultSet, int index) throws SQLException;

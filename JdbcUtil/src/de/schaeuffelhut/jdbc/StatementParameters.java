@@ -23,6 +23,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Collection;
 
+import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Hours;
@@ -86,6 +87,9 @@ public class StatementParameters
 	
 	public final static IfcStatementInParameterType<DateTime> DateTime = new DateTimeInParameterType();
 	public final static IfcStatementInParameter DateTime(DateTime value) { return bindValue(DateTime, value); }
+
+	public final static IfcStatementInParameterType<DateMidnight> DateMidnight = new DateMidnightInParameterType();
+	public final static IfcStatementInParameter DateMidnight(org.joda.time.DateMidnight value) { return bindValue(DateMidnight, value); }
 
 	public final static IfcStatementInParameterType<Days> Days = new DaysInParameterType();
 	public final static IfcStatementInParameter Days(Days value) { return bindValue(Days, value); }
@@ -500,6 +504,17 @@ final class DateTimeInParameterType extends AbstractStatementInParameterType<Dat
 	private static final long	serialVersionUID	= 362585378891547200L;
 
 	public int configure(PreparedStatement stmt, int pos, DateTime value) throws SQLException
+	{
+		stmt.setTimestamp( pos, value == null ? null : new Timestamp( value.getMillis() ) );
+		return 1;
+	}
+}
+
+final class DateMidnightInParameterType extends AbstractStatementInParameterType<DateMidnight>
+{
+	private static final long	serialVersionUID	= 362585378891547200L;
+
+	public int configure(PreparedStatement stmt, int pos, DateMidnight value) throws SQLException
 	{
 		stmt.setTimestamp( pos, value == null ? null : new Timestamp( value.getMillis() ) );
 		return 1;

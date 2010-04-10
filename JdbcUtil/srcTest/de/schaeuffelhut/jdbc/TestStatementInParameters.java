@@ -1,15 +1,22 @@
 /**
- * (C) Copyright 2007 M.Sc. Friedrich Schäuffelhut
+ * Copyright 2009 Friedrich Schäuffelhut
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * $Revison$
- * $Author$
- * $Date$
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  */
 package de.schaeuffelhut.jdbc;
+
+import static de.schaeuffelhut.jdbc.StatementParameters.bindValue;
+import static junit.framework.Assert.assertEquals;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,14 +29,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.schaeuffelhut.jdbc.xx.StatementUtil;
-
-import static de.schaeuffelhut.jdbc.StatementParameters.bindValue;
-import static junit.framework.Assert.assertEquals;
 
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public class TestStatementInParameters
@@ -137,9 +140,9 @@ public class TestStatementInParameters
 	@Test
 	public void testSubArray() throws Exception
 	{
-		Object[] result = StatementUtil.selectIntoTuple( connection, 
+		Object[] result = StatementUtil.selectInto( connection, 
 				"SELECT @array",
-				ResultTypes.resultTypes( 
+				ResultSetReaders.readTuple( 
 						ResultTypes.Integer,ResultTypes.Integer,
 						ResultTypes.Integer,ResultTypes.Integer,
 						ResultTypes.Integer,ResultTypes.Integer
@@ -166,17 +169,21 @@ public class TestStatementInParameters
 	
 	private <T> void check(IfcResultType<T> resultType, IfcStatementInParameterType<T> statementParameter, T value) throws Exception
 	{
-		assertEquals( value, StatementUtil.selectIntoScalar( connection, 
-				"SELECT ?", resultType, bindValue( statementParameter, value )
+		assertEquals( value, StatementUtil.selectInto( connection, 
+				"SELECT ?",
+				ResultSetReaders.readScalar( resultType ),
+				bindValue( statementParameter, value )
 		));
 	}
 	
 	@SuppressWarnings("unchecked")
 	private <T> void check(IfcResultType<T> resultType, IfcStatementInParameterType<T> statementParameter, T value1, T value2) throws Exception
 	{
-		Object[] result = StatementUtil.selectIntoTuple( connection, 
+		Object[] result = StatementUtil.selectInto( connection, 
 				"SELECT @array",
-				ResultTypes.resultTypes( resultType, resultType ), 
+				ResultSetReaders.readTuple( 
+						ResultTypes.resultTypes( resultType, resultType )
+				), 
 				StatementParameters.Array( statementParameter, "@array", value1, value2 )
 		);
 		assertEquals( value1, result[0] );

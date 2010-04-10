@@ -7,5 +7,7 @@
 <wb-resource deploy-path="/" source-path="/srcXX"/>
 <wb-resource deploy-path="/" source-path="/srcJet"/>
 <wb-resource deploy-path="/" source-path="/srcGenerated"/>
+        <wb-resource deploy-path="/" source-path="/resources"/>
+<wb-resource deploy-path="/" source-path="/srcTestMysql"/>
 </wb-module>
 </project-modules>

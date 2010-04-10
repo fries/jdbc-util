@@ -1,13 +1,17 @@
 /**
- * (C) Copyright 2007 M.Sc. Friedrich Schäuffelhut
+ * Copyright 2009 Friedrich Schäuffelhut
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * $Revison$
- * $Author$
- * $Date$
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  */
 package de.schaeuffelhut.jdbc;
 
@@ -23,11 +27,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.schaeuffelhut.jdbc.xx.StatementUtil;
 
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public class TestStatementUtilWithParams
@@ -56,8 +59,8 @@ public class TestStatementUtilWithParams
 		connection.createStatement().execute(
 				"INSERT INTO person (name, birthday, address)" +
 				" VALUES " +
-				"('fries', '1975-12-27', 'Hofmarkweg 12')," +
-				"('sarah', '1973-05-23', 'Hofmarkweg 12')"
+				"('John', '1975-12-27', 'Samplestreet 12')," +
+				"('Paul', '1973-05-23', 'Samplestreet 12')"
 		);
 	}
 
@@ -99,11 +102,11 @@ public class TestStatementUtilWithParams
 	public void testselectIntoScalar() throws Exception
 	{
 		Assert.assertEquals( 
-				"fries",
-				StatementUtil.selectIntoScalar( connection,
+				"John",
+				StatementUtil.selectInto( connection,
 						"SELECT name FROM person WHERE name = ?",
-						ResultTypes.String,
-						StatementParameters.String("fries ")
+						ResultSetReaders.readScalar( ResultTypes.String ),
+						StatementParameters.String("John ")
 				)
 		);
 	}
@@ -111,25 +114,25 @@ public class TestStatementUtilWithParams
 	@Test
 	public void testselectIntoTuple() throws Exception
 	{
-		Object[] tuple = StatementUtil.selectIntoTuple( connection,
+		Object[] tuple = StatementUtil.selectInto( connection,
 				"SELECT name, address FROM person WHERE name = ?",
-				ResultTypes.resultTypes( ResultTypes.String, ResultTypes.String ),
-				StatementParameters.String("fries ")
+				ResultSetReaders.readTuple( ResultTypes.String, ResultTypes.String ),
+				StatementParameters.String("John ")
 		);
-		Assert.assertEquals( "fries", tuple[0] );
-		Assert.assertEquals( "Hofmarkweg 12", tuple[1] );
+		Assert.assertEquals( "John", tuple[0] );
+		Assert.assertEquals( "Samplestreet 12", tuple[1] );
 	}
 
 	@Test
 	public void testselectIntoMap() throws Exception
 	{
-		Map<String, Object> result = StatementUtil.selectIntoMap( connection, 
+		Map<String, Object> result = StatementUtil.selectInto( connection, 
 				"SELECT name, address FROM person WHERE name = ?",
-				ResultTypes.resultTypes( ResultTypes.String, ResultTypes.String ),
-				StatementParameters.String("fries ")
+				ResultSetReaders.readMap( ResultTypes.String, ResultTypes.String ),
+				StatementParameters.String("John ")
 		);
-		Assert.assertEquals( "fries", result.get( "name" ) );
-		Assert.assertEquals( "Hofmarkweg 12", result.get( "address" ) );
+		Assert.assertEquals( "John", result.get( "name" ) );
+		Assert.assertEquals( "Samplestreet 12", result.get( "address" ) );
 	}
 
 	public static class Result {
@@ -140,14 +143,17 @@ public class TestStatementUtilWithParams
 	@Test
 	public void testselectIntoObject() throws Exception
 	{
-		Result result = StatementUtil.selectIntoObject( connection,
+		Result result = StatementUtil.selectInto( connection,
 				"SELECT name, address FROM person WHERE name = ?",
-				Result.class,
-				ResultTypes.resultTypes( ResultTypes.String, ResultTypes.String ),
-				StatementParameters.String("fries ")
+				ResultSetReaders.readObject( 
+						Result.class,
+						ResultTypes.String,
+						ResultTypes.String
+				),
+				StatementParameters.String("John ")
 		);
-		Assert.assertEquals( "fries", result.name );
-		Assert.assertEquals( "Hofmarkweg 12", result.address );
+		Assert.assertEquals( "John", result.name );
+		Assert.assertEquals( "Samplestreet 12", result.address );
 	}
 	
 	/*
@@ -166,8 +172,8 @@ public class TestStatementUtilWithParams
 //		
 //		Iterator<String> it = results.iterator();
 //
-//		Assert.assertEquals( "sarah", it.next() );
-//		Assert.assertEquals( "fries", it.next() );
+//		Assert.assertEquals( "Paul", it.next() );
+//		Assert.assertEquals( "John", it.next() );
 //	}
 //
 //	@Test
@@ -184,12 +190,12 @@ public class TestStatementUtilWithParams
 //		Object[] tuple;
 //		
 //		tuple = iterator.next();
-//		Assert.assertEquals( "sarah", tuple[0] );
-//		Assert.assertEquals( "Hofmarkweg 12", tuple[1] );
+//		Assert.assertEquals( "Paul", tuple[0] );
+//		Assert.assertEquals( "Samplestreet 12", tuple[1] );
 //		
 //		tuple = iterator.next();
-//		Assert.assertEquals( "fries", tuple[0] );
-//		Assert.assertEquals( "Hofmarkweg 12", tuple[1] );
+//		Assert.assertEquals( "John", tuple[0] );
+//		Assert.assertEquals( "Samplestreet 12", tuple[1] );
 //	}
 //
 //	@Test
@@ -206,12 +212,12 @@ public class TestStatementUtilWithParams
 //		Map<String, Object> map;
 //
 //		map = iterator.next();
-//		Assert.assertEquals( "sarah", map.get( "name" ) );
-//		Assert.assertEquals( "Hofmarkweg 12", map.get( "address" ) );
+//		Assert.assertEquals( "Paul", map.get( "name" ) );
+//		Assert.assertEquals( "Samplestreet 12", map.get( "address" ) );
 //
 //		map = iterator.next();
-//		Assert.assertEquals( "fries", map.get( "name" ) );
-//		Assert.assertEquals( "Hofmarkweg 12", map.get( "address" ) );
+//		Assert.assertEquals( "John", map.get( "name" ) );
+//		Assert.assertEquals( "Samplestreet 12", map.get( "address" ) );
 //	}
 //
 //	@Test
@@ -228,11 +234,11 @@ public class TestStatementUtilWithParams
 //		Result result;
 //
 //		result = iterator.next();
-//		Assert.assertEquals( "sarah", result.name );
-//		Assert.assertEquals( "Hofmarkweg 12", result.address );
+//		Assert.assertEquals( "Paul", result.name );
+//		Assert.assertEquals( "Samplestreet 12", result.address );
 //
 //		result = iterator.next();
-//		Assert.assertEquals( "fries", result.name );
-//		Assert.assertEquals( "Hofmarkweg 12", result.address );
+//		Assert.assertEquals( "John", result.name );
+//		Assert.assertEquals( "Samplestreet 12", result.address );
 //	}
 }

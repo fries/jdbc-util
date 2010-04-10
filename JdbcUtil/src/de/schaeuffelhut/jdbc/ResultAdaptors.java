@@ -1,13 +1,17 @@
 /**
- * (C) Copyright 2007 M.Sc. Friedrich Schäuffelhut
+ * Copyright 2009 Friedrich Schäuffelhut
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * $Revison$
- * $Author$
- * $Date$
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  */
 package de.schaeuffelhut.jdbc;
 
@@ -18,17 +22,17 @@ import java.sql.SQLException;
 import java.util.Map;
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
 public final class ResultAdaptors
 {
 	/**
-	 * @author M.Sc. Friedrich Schäuffelhut
+	 * @author Friedrich Schäuffelhut
 	 *
 	 */
 	public static final class ArrayResultAdaptor
-	implements IfcResultSetAdaptor<Object[]>
+	implements IfcResultAdaptor<Object[]>
 	{
 		/**
 		 * 
@@ -63,13 +67,13 @@ public final class ResultAdaptors
 
 	
 	@SuppressWarnings("unchecked")
-	public final static IfcResultSetAdaptor<Object[]>[] createArrayResultAdaptors(
+	public final static IfcResultAdaptor<Object[]>[] createArrayResultAdaptors(
 			IfcResultType<?>... resultTypes
 	) throws SQLException
 	{
-		IfcResultSetAdaptor<Object[]>[] adaptors =
-			(IfcResultSetAdaptor<Object[]>[])
-			new IfcResultSetAdaptor[resultTypes.length];
+		IfcResultAdaptor<Object[]>[] adaptors =
+			(IfcResultAdaptor<Object[]>[])
+			new IfcResultAdaptor[resultTypes.length];
 	
 		for(int i = 0; i < resultTypes.length; i++)
 			adaptors[i] = new ArrayResultAdaptor(
@@ -82,11 +86,11 @@ public final class ResultAdaptors
 
 
 	/**
-	 * @author M.Sc. Friedrich Schäuffelhut
+	 * @author Friedrich Schäuffelhut
 	 *
 	 */
 	public static final class MapResultAdaptor
-	implements IfcResultSetAdaptor<Map<String, Object>>
+	implements IfcResultAdaptor<Map<String, Object>>
 	{
 		/**
 		 * 
@@ -119,7 +123,7 @@ public final class ResultAdaptors
 		}
 	}
 
-	public final static IfcResultSetAdaptor<Map<String, Object>>[] createMapResultAdaptors(
+	public final static IfcResultAdaptor<Map<String, Object>>[] createMapResultAdaptors(
 			ResultSet resultSet, IfcResultType<?>... resultTypes
 	) throws SQLException
 	{
@@ -128,29 +132,29 @@ public final class ResultAdaptors
 	}
 	
 	@SuppressWarnings("unchecked")
-	public final static IfcResultSetAdaptor<Map<String, Object>>[] createMapResultAdaptors(
+	public final static IfcResultAdaptor<Map<String, Object>>[] createMapResultAdaptors(
 			ResultSet resultSet, int columnIndex, IfcResultType<?>... resultTypes
 	) throws SQLException
 	{
-		IfcResultSetAdaptor<Map<String,Object>>[] adaptors =
-			(IfcResultSetAdaptor<Map<String,Object>>[])
-			new IfcResultSetAdaptor[resultTypes.length];
+		IfcResultAdaptor<Map<String,Object>>[] adaptors =
+			(IfcResultAdaptor<Map<String,Object>>[])
+			new IfcResultAdaptor[resultTypes.length];
 	
 		ResultSetMetaData metaData = resultSet.getMetaData();
 		for(int i = 0; i < resultTypes.length; i++)
 			adaptors[i] = new MapResultAdaptor(
-					metaData.getColumnName( columnIndex + i ),
+					metaData.getColumnLabel( columnIndex + i ),
 					resultTypes[i]
 			);
 		return adaptors;
 	}
 
 	/**
-	 * @author M.Sc. Friedrich Schäuffelhut
+	 * @author Friedrich Schäuffelhut
 	 *
 	 */
 	public static final class FieldResultAdaptor<T> 
-	implements IfcResultSetAdaptor<T>
+	implements IfcResultAdaptor<T>
 	{
 		/**
 		 * 
@@ -209,15 +213,15 @@ public final class ResultAdaptors
 	}
 
 	@SuppressWarnings("unchecked")
-	public final static <T> IfcResultSetAdaptor<T>[] createFieldResultAdaptors(
+	public final static <T> IfcResultAdaptor<T>[] createFieldResultAdaptors(
 			ResultSet resultSet,
 			Class<T> clazz,
 			IfcResultType<?>... resultTypes
 	) throws SQLException
 	{
-		IfcResultSetAdaptor<T>[] adaptors =
-			(IfcResultSetAdaptor<T>[])
-			new IfcResultSetAdaptor[resultTypes.length];
+		IfcResultAdaptor<T>[] adaptors =
+			(IfcResultAdaptor<T>[])
+			new IfcResultAdaptor[resultTypes.length];
 	
 		ResultSetMetaData metaData = resultSet.getMetaData();
 		for(int i = 0; i < resultTypes.length; i++)
@@ -238,7 +242,7 @@ public final class ResultAdaptors
 	
 	
 	public final static <T> void adapt(
-			ResultSet rs, T t, IfcResultSetAdaptor<T>... adaptors
+			ResultSet rs, T t, IfcResultAdaptor<T>... adaptors
 	) throws SQLException
 	{
 		final int columnIndex = 1;
@@ -250,7 +254,7 @@ public final class ResultAdaptors
 			ResultSet rs,
 			int columnIndex,
 			T t,
-			IfcResultSetAdaptor<T>... adaptors
+			IfcResultAdaptor<T>... adaptors
 	) throws SQLException
 	{
 		int columnOffset = 0;

@@ -15,30 +15,18 @@
  */
 package de.schaeuffelhut.jdbc;
 
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
-
 /**
+ * Transfers a single value from the given {@link ResultSet} into the given
+ * {@link Object} of type <code>T</code>.
  * 
  * @author Friedrich Schäuffelhut
- *
+ * 
+ * @param <T> type of object receiving the result set value. 
  */
-public interface IfcStatementInParameter extends IfcStatementParameter
+public interface IfcResultAdaptor<T>
 {
-	/**
-	 * Configures one or more statement in parameters beginning at position
-	 * {code index}. This method is called after {@code modify()} and before the
-	 * statement is executed. This method should configure the statement
-	 * paremeter with an appropriate value (usually by using
-	 * Statement.setObject() or friends)
-	 * 
-	 * @param stmt
-	 * @param index
-	 * @return number of filled in place holders (amount by which {@code index}
-	 *         should be advanced)
-	 * @throws SQLException
-	 */
-	public abstract int configure(PreparedStatement stmt, int index) throws SQLException;
+	public abstract int adapt(T t, ResultSet resultSet, int index) throws SQLException;
 }

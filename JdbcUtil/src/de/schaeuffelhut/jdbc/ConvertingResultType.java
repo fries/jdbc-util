@@ -15,30 +15,33 @@
  */
 package de.schaeuffelhut.jdbc;
 
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
-
 /**
+ * A JdbcUtil {@link IfcResultType} which delegates the data retrieval to an
+ * other {@link IfcResultType} and then converts to the actual type.
  * 
  * @author Friedrich Schäuffelhut
- *
+ * 
+ * @param <Tout>
+ * @param <Tin>
  */
-public interface IfcStatementInParameter extends IfcStatementParameter
+public abstract class ConvertingResultType<Tout,Tin> implements IfcResultType<Tout>
 {
-	/**
-	 * Configures one or more statement in parameters beginning at position
-	 * {code index}. This method is called after {@code modify()} and before the
-	 * statement is executed. This method should configure the statement
-	 * paremeter with an appropriate value (usually by using
-	 * Statement.setObject() or friends)
-	 * 
-	 * @param stmt
-	 * @param index
-	 * @return number of filled in place holders (amount by which {@code index}
-	 *         should be advanced)
-	 * @throws SQLException
-	 */
-	public abstract int configure(PreparedStatement stmt, int index) throws SQLException;
+	private static final long	serialVersionUID	= -4995146891207196356L;
+
+	final IfcResultType<Tin> delegate;
+	
+	public ConvertingResultType(IfcResultType<Tin> delegate)
+	{
+		this.delegate = delegate;
+	}
+
+	public Tout getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		return convert( delegate.getResult( resultSet, index ) );
+	}
+	
+	protected abstract Tout convert(Tin value);
 }

@@ -16,29 +16,27 @@
 package de.schaeuffelhut.jdbc;
 
 import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.ResultSet;
 
 /**
- * @author Friedrich Schäuffelhut
+ * Reads a single value from a {@link ResultSet}.
+ * This may be a single primitive value that maps onto one column or
+ * one complex object, that maps onto multiple columns. 
+ *  
+ * @author fries
  *
+ * @param <T>
  */
-public interface IfcStatementInParameterType<T> extends Serializable
+public interface IfcResultSetScalarReader<T> extends Serializable
 {
 	/**
-	 * @param sql the SQL query to be modified
-	 * @param value TODO
-	 * @return the modified SQL query
+	 * Reads one value from the given {@link ResultSet}. Might return null or
+	 * throw an expection if the {@link ResultSet} is empty. Might throw a
+	 * Exception if the {@link ResultSet} contains more than one row.
+	 * 
+	 * @param results
+	 * @param resultSet
+	 * @throws Exception
 	 */
-	public abstract String modify(String sql, T value);
-
-	/**
-	 * Configures statement parameter at position {code index} with teh given {code value}.
-	 * @param stmt
-	 * @param pos
-	 * @param value
-	 * @return number of filled in place holders
-	 * @throws SQLException 
-	 */
-	public abstract int configure(PreparedStatement stmt, int pos, T value) throws SQLException;
+	public abstract T readResult( ResultSet resultSet  ) throws Exception;
 }

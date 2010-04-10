@@ -13,19 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package de.schaeuffelhut.jdbc.txn;
+package de.schaeuffelhut.jdbc;
 
-import java.sql.Connection;
-
-/**
- * @author Friedrich Schäuffelhut
- *
- */
-public interface ConnectionProvider
+// TODO: generalize; any class which implements this interface can be persisted, just reading needs mapping
+public interface IfcEnumKey<T>
 {
-	static final String PROP_CONN_PROVIDER = "jdbcutil.connection.provider";
-	public static final String PROP_CONN_PROVIDER_PREFIX = "jdbcutil.connection.provider.";
-
-	public abstract Connection open() throws Exception;
-	public abstract void close(Connection connection) throws Exception;
+	public abstract T getKey();
 }

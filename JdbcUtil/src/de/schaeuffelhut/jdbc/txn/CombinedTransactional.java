@@ -15,25 +15,28 @@
  */
 package de.schaeuffelhut.jdbc.txn;
 
-import java.sql.Connection;
+import java.util.Collection;
 
-public final class TxnContext
+
+public final class CombinedTransactional implements Transactional<Object[]>
 {
-	/**
-	 * The connection.
-	 * 
-	 *  @deprecated use getter instead of direct field access.
-	 */
-	@Deprecated
-    public final Connection connection;
-
-    TxnContext(final Connection connection)
-    {
-        this.connection = connection;
-    }
-    
-    public final Connection getConnection()
+	final Transactional<?>[] transactionals;
+	
+	public CombinedTransactional(Collection<?> transactionals)
 	{
-		return connection;
+		this( transactionals.toArray( new Transactional<?>[transactionals.size()] ) );
+	}
+	
+	public CombinedTransactional(Transactional<?>... transactionals)
+	{
+		this.transactionals = transactionals;
+	}
+
+	public final Object[] run(TxnContext context) throws Exception
+	{
+		Object[] results = new Object[transactionals.length];
+		for(int i = 0; i < transactionals.length; i++)
+			results[i] = transactionals[i].run( context );
+		return results;
 	}
 }

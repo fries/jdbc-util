@@ -13,19 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package de.schaeuffelhut.jdbc.txn;
+package de.schaeuffelhut.jdbc;
 
-import java.sql.Connection;
+import java.io.Serializable;
+import java.sql.ResultSet;
+import java.util.Collection;
 
 /**
- * @author Friedrich Schäuffelhut
+ * Reads values from a {@link ResultSet} into a {@link Collection}.
+ *  
+ * @author fries
  *
+ * @param <T>
  */
-public interface ConnectionProvider
+public interface IfcResultSetCollectionReader<T> extends Serializable
 {
-	static final String PROP_CONN_PROVIDER = "jdbcutil.connection.provider";
-	public static final String PROP_CONN_PROVIDER_PREFIX = "jdbcutil.connection.provider.";
-
-	public abstract Connection open() throws Exception;
-	public abstract void close(Connection connection) throws Exception;
+	/**
+	 * Reads values from the given {@link ResultSet} into the given {@link Collection}.
+	 * 
+	 * @param results
+	 * @param resultSet
+	 * @throws Exception 
+	 */
+	public abstract void readResults( Collection<T> results, ResultSet resultSet  ) throws Exception;
 }

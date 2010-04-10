@@ -17,15 +17,30 @@ package de.schaeuffelhut.jdbc.txn;
 
 import java.sql.Connection;
 
-/**
- * @author Friedrich Schäuffelhut
- *
- */
-public interface ConnectionProvider
+public abstract class ThreadLocalTransactional<T> implements Transactional<T>
 {
-	static final String PROP_CONN_PROVIDER = "jdbcutil.connection.provider";
-	public static final String PROP_CONN_PROVIDER_PREFIX = "jdbcutil.connection.provider.";
+	private final static ThreadLocal<Connection> threadLocalConnection = new ThreadLocal<Connection>();
+		
+	public static Connection getConnection()
+	{
+		if ( threadLocalConnection.get() == null )
+			throw new RuntimeException( "no thread local connection, not in transaction" );
+		return threadLocalConnection.get();
+	}
 
-	public abstract Connection open() throws Exception;
-	public abstract void close(Connection connection) throws Exception;
+
+	public T run(TxnContext context) throws Exception
+	{
+		threadLocalConnection.set( context.getConnection() );
+		try
+		{
+			return run();
+		}
+		finally
+		{
+			threadLocalConnection.remove();
+		}
+	}
+
+	protected abstract T run() throws Exception;
 }

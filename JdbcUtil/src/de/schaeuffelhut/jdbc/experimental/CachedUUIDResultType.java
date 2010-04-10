@@ -1,15 +1,19 @@
 /**
- * (C) Copyright 2007 M.Sc. Friedrich Schäuffelhut
+ * Copyright 2009 Friedrich Schäuffelhut
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * $Revison$
- * $Author$
- * $Date$
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  */
-package de.schaeuffelhut.jdbc.xx;
+package de.schaeuffelhut.jdbc.experimental;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,11 +24,14 @@ import java.util.UUID;
 import de.schaeuffelhut.jdbc.IfcResultType;
 
 /**
- * @author M.Sc. Friedrich Schäuffelhut
+ * @author Friedrich Schäuffelhut
  *
  */
-public final class MappedUUIDResultType<T> implements IfcResultType<UUID>
+public final class CachedUUIDResultType<T> implements IfcResultType<UUID>
 {
+	private static final long	serialVersionUID	= 5910873367702192783L;
+
+
 	public final static class Key<T>
 	{
 		public final String domain;
@@ -87,7 +94,7 @@ public final class MappedUUIDResultType<T> implements IfcResultType<UUID>
 	
 	final IfcResultType<T> resultType;
 	
-    public MappedUUIDResultType(String domain, IfcResultType<T> resultType)
+    public CachedUUIDResultType(String domain, IfcResultType<T> resultType)
 	{
 		this.domain = domain;
 		this.resultType = resultType;
@@ -108,10 +115,10 @@ public final class MappedUUIDResultType<T> implements IfcResultType<UUID>
         return uuid;
     }
 	
-	public final static <T> MappedUUIDResultType<T> mappedUUID(
+	public final static <T> CachedUUIDResultType<T> mappedUUID(
 			String domain, IfcResultType<T> resultType
 	){
-		return new MappedUUIDResultType<T>(domain,resultType);
+		return new CachedUUIDResultType<T>(domain,resultType);
 	}
 
 

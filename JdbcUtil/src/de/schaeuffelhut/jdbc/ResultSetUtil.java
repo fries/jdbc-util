@@ -1,3 +1,18 @@
+/**
+ * Copyright 2009 Friedrich Schäuffelhut
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
 package de.schaeuffelhut.jdbc;
 
 import java.sql.ResultSet;
@@ -15,7 +30,8 @@ public final class ResultSetUtil
 	 */
 	
     public final static <T> T readScalar(
-    		ResultSet resultSet, IfcResultType<T> resultType
+    		ResultSet resultSet,
+    		IfcResultType<T> resultType
     ) throws SQLException
     {
 		final T result;
@@ -109,7 +125,7 @@ public final class ResultSetUtil
 	public final static <T> T readResult(
 			ResultSet resultSet,
 			IfcResultFactory<T> resultHolderFactory,
-			IfcResultSetAdaptor<T>[] adaptors
+			IfcResultAdaptor<T>[] adaptors
 	) throws SQLException
 	{
 		final T result;
@@ -162,7 +178,8 @@ public final class ResultSetUtil
 	 */
 
     public final static ArrayList<Object[]> readTuples(
-    		ResultSet resultSet, IfcResultType<?>... resultTypes
+    		ResultSet resultSet,
+    		IfcResultType<?>... resultTypes
     ) throws SQLException
     {
     	return readResults(
@@ -187,7 +204,8 @@ public final class ResultSetUtil
 	}
 
     public final static ArrayList<Map<String, Object>> readMaps(
-    		ResultSet resultSet, IfcResultType<?>... resultTypes
+    		ResultSet resultSet,
+    		IfcResultType<?>... resultTypes
     ) throws SQLException
     {
 		return readResults(
@@ -218,7 +236,9 @@ public final class ResultSetUtil
 	}
 
 	public final static <T> ArrayList<T> readObjects(
-			ResultSet resultSet, Class<T> type, IfcResultType<?>... resultTypes
+			ResultSet resultSet,
+			Class<T> type,
+			IfcResultType<?>... resultTypes
 	) throws SQLException
     {
         return readResults(
@@ -269,7 +289,7 @@ public final class ResultSetUtil
 	public final static <T> ArrayList<T> readResults(
 			ResultSet resultSet,
 			IfcResultFactory<T> factory,
-			IfcResultSetAdaptor<T>... adaptors
+			IfcResultAdaptor<T>... adaptors
 	) throws SQLException
 	{
 		ArrayList<T> results = new ArrayList<T>();
@@ -281,7 +301,7 @@ public final class ResultSetUtil
 			Collection<T> results,
 			ResultSet resultSet,
 			IfcResultFactory<T> factory,
-			IfcResultSetAdaptor<T>... adaptors
+			IfcResultAdaptor<T>... adaptors
 	) throws SQLException
 	{
 	    while( resultSet.next() )
@@ -295,7 +315,7 @@ public final class ResultSetUtil
 	public final static <T extends Runnable> void forResultsInvoke(
 			final T resultHandler,
 			ResultSet resultSet, 
-			IfcResultSetAdaptor<T>... adaptors
+			IfcResultAdaptor<T>... adaptors
 	) throws SQLException
 	{
 	    while( resultSet.next() )

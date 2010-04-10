@@ -19,26 +19,11 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 
-
 /**
- * 
  * @author Friedrich Schäuffelhut
  *
  */
-public interface IfcStatementInParameter extends IfcStatementParameter
+public interface IfcStatementProperty<T> extends IfcStatementParameter
 {
-	/**
-	 * Configures one or more statement in parameters beginning at position
-	 * {code index}. This method is called after {@code modify()} and before the
-	 * statement is executed. This method should configure the statement
-	 * paremeter with an appropriate value (usually by using
-	 * Statement.setObject() or friends)
-	 * 
-	 * @param stmt
-	 * @param index
-	 * @return number of filled in place holders (amount by which {@code index}
-	 *         should be advanced)
-	 * @throws SQLException
-	 */
-	public abstract int configure(PreparedStatement stmt, int index) throws SQLException;
+	public T get(PreparedStatement stmt) throws SQLException;
 }

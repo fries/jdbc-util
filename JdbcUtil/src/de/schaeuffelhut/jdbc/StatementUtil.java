@@ -167,7 +167,7 @@ public final class StatementUtil
 			stmt = prepareStatement( connection, sql, parameters );
 			int[] count = stmt.executeBatch();
 			if ( logger.isTraceEnabled() )
-				logger.trace( String.format( "updated %d records", Arrays.asList( count ) ) );			
+				logger.trace( String.format( "updated %s records", Arrays.asList( count ) ) );			
 			return count;
 		}
 		finally

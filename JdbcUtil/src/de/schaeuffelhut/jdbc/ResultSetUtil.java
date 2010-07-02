@@ -263,25 +263,6 @@ public final class ResultSetUtil
         );
 	}
 
-	@SuppressWarnings("unchecked")
-	public final static <T extends Runnable> void forResultsInvoke(
-			final T resultHandler,
-			ResultSet resultSet,
-			IfcResultType<?>... resultTypes
-	) throws SQLException
-	{
-		forResultsInvoke(
-				resultHandler,
-				resultSet,
-				ResultAdaptors.createFieldResultAdaptors(
-						resultSet,
-						(Class<T>)resultHandler.getClass(),
-						resultTypes
-				)
-		);
-	}
-	
-	
 	/*
 	 * most general, read into single result holder
 	 */
@@ -312,6 +293,32 @@ public final class ResultSetUtil
 	    }
 	}
 	
+	
+	/*
+	 * invoking a result set handler for each result 
+	 */
+	
+
+	@SuppressWarnings("unchecked")
+	@Deprecated
+	public final static <T extends Runnable> void forResultsInvoke(
+			final T resultHandler,
+			ResultSet resultSet,
+			IfcResultType<?>... resultTypes
+	) throws SQLException
+	{
+		forResultsInvoke(
+				resultHandler,
+				resultSet,
+				ResultAdaptors.createFieldResultAdaptors(
+						resultSet,
+						(Class<T>)resultHandler.getClass(),
+						resultTypes
+				)
+		);
+	}
+
+	@Deprecated
 	public final static <T extends Runnable> void forResultsInvoke(
 			final T resultHandler,
 			ResultSet resultSet, 
@@ -324,4 +331,84 @@ public final class ResultSetUtil
 			resultHandler.run();
 	    }
 	}
+	
+	
+	public final static <V,T> V processScalars(
+			IfcRowProcessor<V,T> processor,
+			ResultSet resultSet,
+			IfcResultType<T> resultType
+	) throws Exception
+	{
+		while( resultSet.next() )
+			processor.process( resultType.getResult(resultSet, 1) );
+		return processor.getResult();
+	}
+
+	
+	/*
+	 * process multiple rows, multiple values
+	 */
+
+	public final static <V> V processTuples(
+			IfcRowProcessor<V,Object[]> processor,
+			ResultSet resultSet,
+			IfcResultType<?>... resultTypes
+	) throws Exception
+	{
+		return ResultSetUtil.processResults(
+        		processor,
+        		resultSet,
+        		new ResultFactories.ArrayResultFactory( resultTypes.length ),
+        		ResultAdaptors.createArrayResultAdaptors( resultTypes )
+        );
+	}
+
+	public final static <V> V processMaps(
+			IfcRowProcessor<V,Map<String,Object>> processor,
+			ResultSet resultSet,
+			IfcResultType<?>... resultTypes
+	) throws Exception
+	{
+		return ResultSetUtil.processResults(
+        		processor,
+        		resultSet,
+        		ResultFactories.HashMapResultFactory,
+        		ResultAdaptors.createMapResultAdaptors(
+        				resultSet,
+						resultTypes
+        		)
+        );
+	}
+
+	public final static <V,T> V  processObjects(
+			IfcRowProcessor<V,T> processor,
+			ResultSet resultSet,
+			Class<T> type,
+			IfcResultType<?>... resultTypes
+	) throws Exception
+	{
+		return ResultSetUtil.processResults(
+        		processor,
+        		resultSet,
+        		ResultFactories.ReflectionResultFactory.create( type ),
+        		ResultAdaptors.createFieldResultAdaptors( resultSet, type, resultTypes )
+        );
+	}
+	
+	public final static <V,T> V  processResults(
+			IfcRowProcessor<V,T> processor,
+			ResultSet resultSet,
+			IfcResultFactory<T> factory,
+			IfcResultAdaptor<T>... adaptors
+	) throws Exception
+	{
+	    while( resultSet.next() )
+	    {
+	    	T t = factory.newInstance();
+	    	ResultAdaptors.adapt( resultSet, t, adaptors );
+			processor.process( t );
+	    }
+	    return processor.getResult();
+	}
+
 }

@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 
 
 
+
 /**
  * @author Friedrich Schäuffelhut
  *
@@ -134,6 +135,28 @@ public final class StatementUtil
 		}
 	}
 
+	public final static <V,T> V process(
+			Connection connection,
+			String sql,
+			IfcResultSetProcessor<V,T> resultSetProcessor,
+			IfcStatementInParameter... parameters
+	) throws Exception
+	{
+		PreparedStatement stmt = null;
+		try
+		{
+			if ( logger.isTraceEnabled() )
+				logger.trace( "selectIntoObjects: " + sql );
+			stmt = prepareStatement( connection, sql, parameters );
+			ResultSet resultSet = stmt.executeQuery();
+			return resultSetProcessor.readResults( resultSet );
+		}
+		finally
+		{
+			JdbcUtil.closeQuietly( stmt );
+		}
+	}
+
 	/*
 	 * inserts / updates
 	 */
@@ -156,26 +179,6 @@ public final class StatementUtil
 			JdbcUtil.closeQuietly( stmt );
 		}
 	}
-
-	public final static int[] execute(Connection connection, String sql, IfcStatementInParameter[]... parameters) throws SQLException
-	{
-		PreparedStatement stmt = null;
-		try
-		{
-			if ( logger.isTraceEnabled() )
-				logger.trace( "execute: " + sql );
-			stmt = prepareStatement( connection, sql, parameters );
-			int[] count = stmt.executeBatch();
-			if ( logger.isTraceEnabled() )
-				logger.trace( String.format( "updated %d records", Arrays.asList( count ) ) );			
-			return count;
-		}
-		finally
-		{
-			JdbcUtil.closeQuietly( stmt );
-		}
-	}
-
 	
 	public final static <T> T execute(Connection connection, GeneratedKeys generatedKeys, IfcStatementProperty<T> statementProperty, String sql, IfcStatementInParameter...parameters) throws SQLException
 	{
@@ -238,6 +241,63 @@ public final class StatementUtil
 		}
 	}
 
+	/*
+	 * executing bulk statements
+	 */
+
+	public final static int[] execute(Connection connection, String sql, IfcStatementInParameter[]... parameters) throws SQLException
+	{
+		PreparedStatement stmt = null;
+		try
+		{
+			if ( logger.isTraceEnabled() )
+				logger.trace( "execute: " + sql );
+			stmt = prepareStatement( connection, sql, parameters );
+			final int[] count;
+			if ( stmt == null ) // happens if parameters == null
+			{
+				count = new int[0];
+			}
+			else
+			{
+				count = stmt.executeBatch();
+				if ( logger.isTraceEnabled() )
+					logger.trace( String.format( "updated %d records", Arrays.asList( count ) ) );			
+			}
+			return count;
+		}
+		finally
+		{
+			JdbcUtil.closeQuietly( stmt );
+		}
+	}
+
+	public final static <T> T execute(Connection connection, GeneratedKeys generatedKeys, IfcStatementProperty<T> statementProperty, String sql, IfcStatementInParameter[]...parameters) throws SQLException
+	{
+		PreparedStatement stmt = null;
+		try
+		{
+			if ( logger.isTraceEnabled() )
+				logger.trace( "execute: " + sql );
+			
+			stmt = prepareStatement( connection, sql, generatedKeys, parameters );
+			stmt.executeBatch();
+			
+			final T returnValue;
+			if ( statementProperty == null )
+				returnValue = null;
+			else
+				returnValue = statementProperty.get( stmt );
+			return returnValue;
+		}
+		finally
+		{
+			JdbcUtil.closeQuietly( stmt );
+		}
+	}
+
+	
+	
 	// untested
 	public final static Object[] executeCall(Connection connection, String sql, IfcStatementParameter... parameters) throws SQLException
 	{
@@ -275,12 +335,12 @@ public final class StatementUtil
 		}
 	}
 	
-	static PreparedStatement prepareStatement(Connection connection, String sql, IfcStatementInParameter... parameters) throws SQLException
+	public static PreparedStatement prepareStatement(Connection connection, String sql, IfcStatementInParameter... parameters) throws SQLException
 	{
 		return prepareStatement(connection, sql, null, parameters);
 	}
 	
-	static PreparedStatement prepareStatement(Connection connection, String sql, GeneratedKeys generatedKeys, IfcStatementInParameter... parameters) throws SQLException
+	public static PreparedStatement prepareStatement(Connection connection, String sql, GeneratedKeys generatedKeys, IfcStatementInParameter... parameters) throws SQLException
 	{
 		sql = modifySql( sql, parameters );
 		
@@ -294,12 +354,12 @@ public final class StatementUtil
 		return stmt;
 	}
 
-	static PreparedStatement prepareStatement(Connection connection, String sql, IfcStatementInParameter[]... parameters) throws SQLException
+	public static PreparedStatement prepareStatement(Connection connection, String sql, IfcStatementInParameter[]... parameters) throws SQLException
 	{
 		return prepareStatement(connection, sql, null, parameters);
 	}
 	
-	static PreparedStatement prepareStatement(Connection connection, String sql, GeneratedKeys generatedKeys, IfcStatementInParameter[]... parameters) throws SQLException
+	public static PreparedStatement prepareStatement(Connection connection, String sql, GeneratedKeys generatedKeys, IfcStatementInParameter[]... parameters) throws SQLException
 	{
 		if ( parameters != null && parameters.length > 0 )
 		{

@@ -16,6 +16,11 @@ public class StatementProperties
 	{
 		return new GeneratedKeyStatementProperty<T>( resultType );
 	}
+
+	public final static <T> IfcStatementProperty<ArrayList<T>> GENERATED_KEYS(IfcResultType<T> resultType)
+	{
+		return new GeneratedKeysStatementProperty<T>( resultType );
+	}
 }
 
 final class GeneratedKeyStatementProperty<T> implements IfcStatementProperty<T>
@@ -60,8 +65,8 @@ final class GeneratedKeysStatementProperty<T> implements IfcStatementProperty<Ar
 		this.resultType = resultType;
 	}
 
-	public final ArrayList<T> get(PreparedStatement stmt) throws SQLException {
-
+	public final ArrayList<T> get(PreparedStatement stmt) throws SQLException 
+	{
 		ResultSet generatedKeys = stmt.getGeneratedKeys();
 		try
 		{

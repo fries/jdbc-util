@@ -262,7 +262,7 @@ public final class StatementUtil
 			{
 				count = stmt.executeBatch();
 				if ( logger.isTraceEnabled() )
-					logger.trace( String.format( "updated %d records", Arrays.asList( count ) ) );			
+					logger.trace( String.format( "updated %s records", Arrays.asList( count ) ) );			
 			}
 			return count;
 		}

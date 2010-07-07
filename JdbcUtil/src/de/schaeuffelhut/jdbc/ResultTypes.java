@@ -52,6 +52,7 @@ public final class ResultTypes
 	public final static IfcResultType<Date> Date = new DateResultType();
 	public final static IfcResultType<Timestamp> Timestamp = new TimestampResultType();
 	public final static IfcResultType<Object> Object = new ObjectResultType();
+	public final static IfcResultType<byte[]> Bytes = new BytesResultType();
 
 	public final static <E extends Enum<E>> IfcResultType<E> enumByName(Class<E> type)
 	{
@@ -229,6 +230,16 @@ final class ObjectResultType implements IfcResultType<Object>
     {
         return resultSet.getObject( index );
     }
+}
+
+final class BytesResultType implements IfcResultType<byte[]>
+{
+	private static final long serialVersionUID = -4879761216153157461L;
+
+	public final byte[] getResult(ResultSet resultSet, int i) throws SQLException
+	{
+		return resultSet.getBytes( i );
+	}
 }
 
 final class EnumByNameResultType<E extends Enum<E>> implements IfcResultType<E>

@@ -76,6 +76,10 @@ public class StatementParameters
 	public final static IfcStatementInParameterType<Timestamp> Timestamp = new TimestampInParameterType();
 	public final static IfcStatementInParameter Timestamp(Timestamp value) { return bindValue(Timestamp, value); }
 
+	public final static IfcStatementInParameterType<byte[]> Bytes = new BytesInParameterType();
+	public final static IfcStatementInParameter Bytes(byte[] value) { return bindValue(Bytes, value); }
+	
+	
 	public final static IfcStatementInParameterType<Enum<?>> EnumByName = new EnumByNameParameterType();
 	public final static IfcStatementInParameter EnumByName(Enum<?> value) { return bindValue(EnumByName, value); }
 
@@ -344,6 +348,17 @@ final class TimestampInParameterType extends AbstractStatementInParameterType<Ti
 	public int configure(PreparedStatement stmt, int pos, Timestamp value) throws SQLException
 	{
 		stmt.setTimestamp( pos, value );
+		return 1;
+	}
+}
+
+final class BytesInParameterType extends AbstractStatementInParameterType<byte[]>
+{
+	private static final long serialVersionUID = -6579733936577772939L;
+
+	public int configure(PreparedStatement stmt, int pos, byte[] value) throws SQLException
+	{
+		stmt.setBytes( pos, value );
 		return 1;
 	}
 }

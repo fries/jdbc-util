@@ -23,4 +23,5 @@ import java.sql.SQLException;
 public interface IfcResultType<T> extends Serializable
 {
     public abstract T getResult(ResultSet resultSet, int index) throws SQLException;
+    public abstract Class<T> getResultType();
 }

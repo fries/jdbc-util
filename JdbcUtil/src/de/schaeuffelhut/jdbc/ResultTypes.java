@@ -27,10 +27,12 @@ import org.joda.time.Days;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
 import org.joda.time.Months;
+import org.joda.time.Period;
 import org.joda.time.Seconds;
 import org.joda.time.Weeks;
 import org.joda.time.Years;
 import org.joda.time.base.BaseSingleFieldPeriod;
+import org.joda.time.format.ISOPeriodFormat;
 
 
 /**
@@ -80,7 +82,9 @@ public final class ResultTypes
 	public final static IfcResultType<Seconds>	Seconds = new SecondsResultType();
 	public final static IfcResultType<Weeks>	Weeks = new WeeksResultType();
 	public final static IfcResultType<Years>	Years = new YearsResultType();
-
+	public final static IfcResultType<Period>	PeriodIsoEncoded = new PeriodIsoEncodedResultType();
+	
+	
 	public final static <T> IfcResultType<T> ifNull(IfcResultType<T> resultType, T defaultValue)
 	{
 		return new IfNullResultType<T>(resultType, defaultValue);
@@ -598,6 +602,27 @@ final class YearsResultType extends AbstractBaseSingleFieldPeriodResultType<Year
 	public Class<Years> getResultType()
 	{
 		return Years.class;
+	}
+}
+final class PeriodIsoEncodedResultType extends ConvertingResultType<Period, String>
+{
+	private static final long serialVersionUID = -2500916560042647993L;
+	
+	public PeriodIsoEncodedResultType()
+	{
+		super( ResultTypes.String );
+	}
+	
+	@Override
+	protected final Period convert(String value)
+	{
+		return value == null ? null : ISOPeriodFormat.standard().parsePeriod( value );
+	}
+	
+	@Override
+	public final Class<Period> getResultType()
+	{
+		return Period.class;
 	}
 }
 

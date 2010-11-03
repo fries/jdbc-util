@@ -62,4 +62,9 @@ final class BoundValue<T> implements IfcStatementInParameter
 			
 		return parameter.configure( stmt, index, value );
 	}
+
+	@Override
+	public String toString() {
+		return "BoundValue [parameter=" + parameter + ", value=" + value + "]";
+	}
 }

@@ -81,6 +81,19 @@ public final class ResultSetReaders
 		};
 	}
 
+	public final static <T> IfcResultSetScalarReader<T> readObjectByConstructor(
+			final Class<T> type, final IfcResultType<?>... resultTypes
+	){
+		return new IfcResultSetScalarReader<T>(){
+			private static final long	serialVersionUID	= -8859588960602175157L;
+
+			public T readResult(ResultSet resultSet) throws Exception
+			{
+				return ResultSetUtil.readObjectByConstructor( resultSet, type, resultTypes );
+			}
+		};
+	}
+
 	/*
 	 * select into collection
 	 */

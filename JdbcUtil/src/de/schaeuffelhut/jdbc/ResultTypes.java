@@ -27,10 +27,12 @@ import org.joda.time.Days;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
 import org.joda.time.Months;
+import org.joda.time.Period;
 import org.joda.time.Seconds;
 import org.joda.time.Weeks;
 import org.joda.time.Years;
 import org.joda.time.base.BaseSingleFieldPeriod;
+import org.joda.time.format.ISOPeriodFormat;
 
 
 /**
@@ -52,6 +54,7 @@ public final class ResultTypes
 	public final static IfcResultType<Date> Date = new DateResultType();
 	public final static IfcResultType<Timestamp> Timestamp = new TimestampResultType();
 	public final static IfcResultType<Object> Object = new ObjectResultType();
+	public final static IfcResultType<byte[]> Bytes = new BytesResultType();
 
 	public final static <E extends Enum<E>> IfcResultType<E> enumByName(Class<E> type)
 	{
@@ -79,7 +82,14 @@ public final class ResultTypes
 	public final static IfcResultType<Seconds>	Seconds = new SecondsResultType();
 	public final static IfcResultType<Weeks>	Weeks = new WeeksResultType();
 	public final static IfcResultType<Years>	Years = new YearsResultType();
-
+	public final static IfcResultType<Period>	PeriodIsoEncoded = new PeriodIsoEncodedResultType();
+	
+	
+	public final static <T> IfcResultType<T> ifNull(IfcResultType<T> resultType, T defaultValue)
+	{
+		return new IfNullResultType<T>(resultType, defaultValue);
+	}
+ 	
 	public final static IfcResultType<?>[] resultTypes(IfcResultType<?>... resultTypes)
 	{
 		return resultTypes;
@@ -95,6 +105,11 @@ final class BooleanResultType implements IfcResultType<Boolean>
 		boolean value = resultSet.getBoolean( index );
 		return resultSet.wasNull() ? null : value;
 	}
+	
+	public Class<Boolean> getResultType()
+	{
+		return Boolean.class;
+	}
 }
 
 final class ByteResultType implements IfcResultType<Byte>
@@ -105,6 +120,11 @@ final class ByteResultType implements IfcResultType<Byte>
     {
         byte value = resultSet.getByte( index );
 		return resultSet.wasNull() ? null : value;
+	}
+	
+	public Class<Byte> getResultType()
+	{
+		return Byte.class;
 	}
 }
 
@@ -124,6 +144,11 @@ final class CharacterResultType implements IfcResultType<Character>
 		else
 			throw new RuntimeException( "returned string contains more than one character" );
 	}
+	
+	public Class<Character> getResultType()
+	{
+		return Character.class;
+	}
 }
 
 final class ShortResultType implements IfcResultType<Short>
@@ -134,6 +159,11 @@ final class ShortResultType implements IfcResultType<Short>
     {
         short value = resultSet.getShort( index );
 		return resultSet.wasNull() ? null : value;
+	}
+	
+	public Class<Short> getResultType()
+	{
+		return Short.class;
 	}
 }
 
@@ -146,6 +176,11 @@ final class IntegerResultType implements IfcResultType<Integer>
         int value = resultSet.getInt( index );
 		return resultSet.wasNull() ? null : value;
 	}
+	
+	public Class<Integer> getResultType()
+	{
+		return Integer.class;
+	}
 }
 
 final class LongResultType implements IfcResultType<Long>
@@ -156,6 +191,11 @@ final class LongResultType implements IfcResultType<Long>
     {
         long value = resultSet.getLong( index );
 		return resultSet.wasNull() ? null : value;
+	}
+	
+	public Class<Long> getResultType()
+	{
+		return Long.class;
 	}
 }
 
@@ -168,6 +208,11 @@ final class FloatResultType implements IfcResultType<Float>
         float value = resultSet.getFloat( index );
 		return resultSet.wasNull() ? null : value;
 	}
+	
+	public Class<Float> getResultType()
+	{
+		return Float.class;
+	}
 }
 
 final class DoubleResultType implements IfcResultType<Double>
@@ -179,6 +224,11 @@ final class DoubleResultType implements IfcResultType<Double>
         double value = resultSet.getDouble( index );
 		return resultSet.wasNull() ? null : value;
 	}
+	
+	public Class<Double> getResultType()
+	{
+		return Double.class;
+	}
 }
 
 final class BigDecimalResultType implements IfcResultType<BigDecimal>
@@ -189,6 +239,11 @@ final class BigDecimalResultType implements IfcResultType<BigDecimal>
     {
         return resultSet.getBigDecimal( index );
     }
+	
+	public Class<BigDecimal> getResultType()
+	{
+		return BigDecimal.class;
+	}
 }
 
 final class StringResultType implements IfcResultType<String>
@@ -199,6 +254,11 @@ final class StringResultType implements IfcResultType<String>
     {
         return resultSet.getString( index );
     }
+	
+	public Class<String> getResultType()
+	{
+		return String.class;
+	}
 }
 
 final class DateResultType implements IfcResultType<Date>
@@ -209,6 +269,11 @@ final class DateResultType implements IfcResultType<Date>
     {
         return resultSet.getDate( index );
     }
+	
+	public Class<Date> getResultType()
+	{
+		return Date.class;
+	}
 }
 
 final class TimestampResultType implements IfcResultType<Timestamp>
@@ -219,6 +284,11 @@ final class TimestampResultType implements IfcResultType<Timestamp>
     {
         return resultSet.getTimestamp( index );
     }
+	
+	public Class<Timestamp> getResultType()
+	{
+		return Timestamp.class;
+	}
 }
 
 final class ObjectResultType implements IfcResultType<Object>
@@ -229,6 +299,26 @@ final class ObjectResultType implements IfcResultType<Object>
     {
         return resultSet.getObject( index );
     }
+	
+	public Class<Object> getResultType()
+	{
+		return Object.class;
+	}
+}
+
+final class BytesResultType implements IfcResultType<byte[]>
+{
+	private static final long serialVersionUID = -4879761216153157461L;
+
+	public final byte[] getResult(ResultSet resultSet, int i) throws SQLException
+	{
+		return resultSet.getBytes( i );
+	}
+	
+	public Class<byte[]> getResultType()
+	{
+		return byte[].class;
+	}
 }
 
 final class EnumByNameResultType<E extends Enum<E>> implements IfcResultType<E>
@@ -248,6 +338,11 @@ final class EnumByNameResultType<E extends Enum<E>> implements IfcResultType<E>
 			return null;
 		else
 			return Enum.valueOf( type, string );
+	}
+	
+	public Class<E> getResultType()
+	{
+		return type;
 	}
 }
 
@@ -280,6 +375,11 @@ implements IfcResultType<E>
 		throw new UnexpectedValueException( String.format(
 				"No %s enum for value %d found", type.getSimpleName(), key ) );
 	}
+	
+	public Class<E> getResultType()
+	{
+		return type;
+	}
 }
 
 final class EnumByKeyResultType<K,E extends Enum<E> & IfcEnumKey<K>>
@@ -310,6 +410,11 @@ implements IfcResultType<E>
 		throw new UnexpectedValueException( String.format(
 				"No %s enum for value %d found", type.getSimpleName(), key ) );
 	}
+	
+	public Class<E> getResultType()
+	{
+		return type;
+	}
 }
 
 final class ClassResultType implements IfcResultType<Class<?>>
@@ -335,6 +440,12 @@ final class ClassResultType implements IfcResultType<Class<?>>
 		}
 		return clazz;
 	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public Class<Class<?>> getResultType()
+	{
+		return (Class)Class.class;
+	}
 }
 
 final class DateTimeResultType implements IfcResultType<DateTime>
@@ -345,6 +456,11 @@ final class DateTimeResultType implements IfcResultType<DateTime>
     {
         Timestamp timestamp = resultSet.getTimestamp( index );
 		return timestamp == null ? null : new DateTime( timestamp );
+	}
+	
+	public Class<DateTime> getResultType()
+	{
+		return DateTime.class;
 	}
 }
 
@@ -357,6 +473,11 @@ final class DateMidnightResultType implements IfcResultType<DateMidnight>
         Timestamp timestamp = resultSet.getTimestamp( index );
 		return timestamp == null ? null : new DateMidnight( timestamp );
     }
+	
+	public Class<DateMidnight> getResultType()
+	{
+		return DateMidnight.class;
+	}
 }
 
 abstract class AbstractBaseSingleFieldPeriodResultType<T extends BaseSingleFieldPeriod> implements IfcResultType<T>
@@ -387,6 +508,11 @@ final class DaysResultType extends AbstractBaseSingleFieldPeriodResultType<Days>
 	{
 		return Days.days( amount );
 	}
+	
+	public Class<Days> getResultType()
+	{
+		return Days.class;
+	}
 }
 final class HoursResultType extends AbstractBaseSingleFieldPeriodResultType<Hours>
 {
@@ -396,6 +522,11 @@ final class HoursResultType extends AbstractBaseSingleFieldPeriodResultType<Hour
 	protected final Hours createBaseSingleFieldPeriod(int amount)
 	{
 		return Hours.hours( amount );
+	}
+	
+	public Class<Hours> getResultType()
+	{
+		return Hours.class;
 	}
 }
 final class MinutesResultType extends AbstractBaseSingleFieldPeriodResultType<Minutes>
@@ -407,6 +538,11 @@ final class MinutesResultType extends AbstractBaseSingleFieldPeriodResultType<Mi
 	{
 		return Minutes.minutes( amount );
 	}
+	
+	public Class<Minutes> getResultType()
+	{
+		return Minutes.class;
+	}
 }
 final class MonthsResultType extends AbstractBaseSingleFieldPeriodResultType<Months>
 {
@@ -416,6 +552,11 @@ final class MonthsResultType extends AbstractBaseSingleFieldPeriodResultType<Mon
 	protected final Months createBaseSingleFieldPeriod(int amount)
 	{
 		return Months.months( amount );
+	}
+	
+	public Class<Months> getResultType()
+	{
+		return Months.class;
 	}
 }
 final class SecondsResultType extends AbstractBaseSingleFieldPeriodResultType<Seconds>
@@ -427,6 +568,11 @@ final class SecondsResultType extends AbstractBaseSingleFieldPeriodResultType<Se
 	{
 		return Seconds.seconds( amount );
 	}
+	
+	public Class<Seconds> getResultType()
+	{
+		return Seconds.class;
+	}
 }
 final class WeeksResultType extends AbstractBaseSingleFieldPeriodResultType<Weeks>
 {
@@ -436,6 +582,11 @@ final class WeeksResultType extends AbstractBaseSingleFieldPeriodResultType<Week
 	protected final Weeks createBaseSingleFieldPeriod(int amount)
 	{
 		return Weeks.weeks( amount );
+	}
+	
+	public Class<Weeks> getResultType()
+	{
+		return Weeks.class;
 	}
 }
 final class YearsResultType extends AbstractBaseSingleFieldPeriodResultType<Years>
@@ -447,4 +598,55 @@ final class YearsResultType extends AbstractBaseSingleFieldPeriodResultType<Year
 	{
 		return Years.years( amount );
 	}
+	
+	public Class<Years> getResultType()
+	{
+		return Years.class;
+	}
 }
+final class PeriodIsoEncodedResultType extends ConvertingResultType<Period, String>
+{
+	private static final long serialVersionUID = -2500916560042647993L;
+	
+	public PeriodIsoEncodedResultType()
+	{
+		super( ResultTypes.String );
+	}
+	
+	@Override
+	protected final Period convert(String value)
+	{
+		return value == null ? null : ISOPeriodFormat.standard().parsePeriod( value );
+	}
+	
+	@Override
+	public final Class<Period> getResultType()
+	{
+		return Period.class;
+	}
+}
+
+final class IfNullResultType<T> implements IfcResultType<T>
+{
+	private static final long serialVersionUID = 186179726802807891L;
+	
+	private final IfcResultType<T> resultType;
+	private final T defaultValue;
+	
+	IfNullResultType(IfcResultType<T> resultType, T defaultValue)
+	{
+		this.resultType = resultType;
+		this.defaultValue = defaultValue;
+	}
+
+	public T getResult(ResultSet resultSet, int index) throws SQLException
+	{
+		T result = resultType.getResult(resultSet, index);
+		return result == null ? defaultValue : result;
+	}
+
+	public java.lang.Class<T> getResultType() {
+		return resultType.getResultType();
+	}
+}
+

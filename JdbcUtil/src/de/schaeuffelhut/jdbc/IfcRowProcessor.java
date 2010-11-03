@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
+
 package de.schaeuffelhut.jdbc;
 
 import java.io.Serializable;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-//TODO: rename, e.g. IfcResultReader 
-public interface IfcResultType<T> extends Serializable
+public interface IfcRowProcessor<V,T> extends Serializable 
 {
-    public abstract T getResult(ResultSet resultSet, int index) throws SQLException;
-    public abstract Class<T> getResultType();
+	void process(T t) throws Exception;
+	V getResult();
 }

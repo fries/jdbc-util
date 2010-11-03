@@ -187,7 +187,7 @@ public final class ResultAdaptors
 			}
 			catch (NoSuchFieldException e)
 			{
-				throw new RuntimeException( e );
+				throw new RuntimeException( String.format( "class=%s, columnName=%s", clazz.getName(), columnName ), e );
 			}
 		}
 	
@@ -212,9 +212,19 @@ public final class ResultAdaptors
 		}
 	}
 
+	public final static <T> IfcResultAdaptor<T>[] createFieldResultAdaptors(
+			ResultSet resultSet,
+			Class<T> clazz,
+			IfcResultType<?>... resultTypes
+	) throws SQLException
+	{
+		return createFieldResultAdaptors(resultSet, 1, clazz, resultTypes);
+	}
+	
 	@SuppressWarnings("unchecked")
 	public final static <T> IfcResultAdaptor<T>[] createFieldResultAdaptors(
 			ResultSet resultSet,
+			int beginIndex,
 			Class<T> clazz,
 			IfcResultType<?>... resultTypes
 	) throws SQLException
@@ -227,7 +237,7 @@ public final class ResultAdaptors
 		for(int i = 0; i < resultTypes.length; i++)
 			adaptors[i] = new FieldResultAdaptor(
 					clazz,
-					metaData.getColumnName( i + 1 ),
+					metaData.getColumnName( i + beginIndex ),
 					resultTypes[i]
 			);
 		return adaptors;

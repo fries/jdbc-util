@@ -44,4 +44,6 @@ public abstract class ConvertingResultType<Tout,Tin> implements IfcResultType<To
 	}
 	
 	protected abstract Tout convert(Tin value);
+	
+	public abstract Class<Tout> getResultType();
 }

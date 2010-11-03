@@ -126,4 +126,10 @@ public final class CachedUUIDResultType<T> implements IfcResultType<UUID>
 	{
 		return uuid2key.get( uuid );
 	}
+
+
+	public Class<UUID> getResultType()
+	{
+		return UUID.class;
+	}
 }

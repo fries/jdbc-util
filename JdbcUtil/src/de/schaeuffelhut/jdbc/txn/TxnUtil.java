@@ -199,6 +199,20 @@ public class TxnUtil
 		}
 	}
 	
+	public final static <T> T executeWithoutTxn(
+			Connection connection,
+			Transactional<T> transactional
+	) {
+		try
+		{
+			return transactional.run( new TxnContext( connection ) );
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException( e );
+		}
+	}
+	
 	/*
 	 * Thread Local Lazy Context 
 	 */

@@ -76,6 +76,9 @@ public class StatementParameters
 	public final static IfcStatementInParameterType<Timestamp> Timestamp = new TimestampInParameterType();
 	public final static IfcStatementInParameter Timestamp(Timestamp value) { return bindValue(Timestamp, value); }
 
+	public final static IfcStatementInParameterType<Object> Object = new ObjectInParameterType();
+	public final static IfcStatementInParameter Object(Object value) { return bindValue(Object, value); }
+
 	public final static IfcStatementInParameterType<Enum<?>> EnumByName = new EnumByNameParameterType();
 	public final static IfcStatementInParameter EnumByName(Enum<?> value) { return bindValue(EnumByName, value); }
 
@@ -344,6 +347,17 @@ final class TimestampInParameterType extends AbstractStatementInParameterType<Ti
 	public int configure(PreparedStatement stmt, int pos, Timestamp value) throws SQLException
 	{
 		stmt.setTimestamp( pos, value );
+		return 1;
+	}
+}
+
+final class ObjectInParameterType extends AbstractStatementInParameterType<Object>
+{
+	private static final long	serialVersionUID	= 8360037598038980033L;
+
+	public int configure(PreparedStatement stmt, int pos, Object value) throws SQLException
+	{
+		stmt.setObject( pos, value );
 		return 1;
 	}
 }

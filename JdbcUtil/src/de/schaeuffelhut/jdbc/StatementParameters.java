@@ -29,10 +29,12 @@ import org.joda.time.Days;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
 import org.joda.time.Months;
+import org.joda.time.Period;
 import org.joda.time.Seconds;
 import org.joda.time.Weeks;
 import org.joda.time.Years;
 import org.joda.time.base.BaseSingleFieldPeriod;
+import org.joda.time.format.ISOPeriodFormat;
 
 /**
  * @author Friedrich Schäuffelhut
@@ -117,6 +119,9 @@ public class StatementParameters
 	
 	public final static IfcStatementInParameterType<Years> Years = new YearsInParameterType();
 	public final static IfcStatementInParameter Years(Years value) { return bindValue(Years, value); }
+	
+	public final static IfcStatementInParameterType<Period> PeriodIsoEncoded = new PeriodIsoEncodedInParameterType();
+	public final static IfcStatementInParameter PeriodIsoEncoded(Period value) { return bindValue(PeriodIsoEncoded, value); }
 	
 	// Array
 	
@@ -632,5 +637,15 @@ final class YearsInParameterType extends AbstractBaseSingleFieldPeriodInParamete
 	protected int getAmount(Years baseSingleFieldPeriod)
 	{
 		return baseSingleFieldPeriod.getYears();
+	}
+}
+final class PeriodIsoEncodedInParameterType extends AbstractStatementInParameterType<Period>
+{
+	private static final long serialVersionUID = 4651346503732024719L;
+
+	public int configure(PreparedStatement stmt, int pos, Period value) throws SQLException
+	{
+		stmt.setString( pos, value == null ? null : ISOPeriodFormat.standard().print( value ) );
+		return 1;
 	}
 }

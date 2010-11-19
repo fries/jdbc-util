@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.xml.crypto.NoSuchMechanismException;
 
 public final class ResultSetUtil
 {
@@ -200,7 +199,7 @@ public final class ResultSetUtil
 				args += ", ";
 			args += argType.getName();
 		}
-		throw new NoSuchMechanismException( type.getName()+".<init>("+args+")"  );
+		throw new NoSuchMethodError( type.getName()+".<init>("+args+")"  );
 	}
 	
 	public final static <T> T readResult(

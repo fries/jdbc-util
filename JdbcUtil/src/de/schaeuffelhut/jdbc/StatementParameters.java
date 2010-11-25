@@ -26,6 +26,7 @@ import java.util.Collection;
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.Duration;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
 import org.joda.time.Months;
@@ -122,7 +123,10 @@ public class StatementParameters
 	
 	public final static IfcStatementInParameterType<Period> PeriodIsoEncoded = new PeriodIsoEncodedInParameterType();
 	public final static IfcStatementInParameter PeriodIsoEncoded(Period value) { return bindValue(PeriodIsoEncoded, value); }
-	
+
+	public final static IfcStatementInParameterType<Duration> DurationAsLong = new DurationAsLongInParameterType();
+	public final static IfcStatementInParameter DurationAsLong(org.joda.time.Duration value) { return bindValue(DurationAsLong, value); }
+
 	// Array
 	
 	public final static <T> IfcStatementInParameterType<T[]> Array(IfcStatementInParameterType<T> type, String placeholder)
@@ -646,6 +650,19 @@ final class PeriodIsoEncodedInParameterType extends AbstractStatementInParameter
 	public int configure(PreparedStatement stmt, int pos, Period value) throws SQLException
 	{
 		stmt.setString( pos, value == null ? null : ISOPeriodFormat.standard().print( value ) );
+		return 1;
+	}
+}
+final class DurationAsLongInParameterType extends AbstractStatementInParameterType<Duration>
+{
+	private static final long serialVersionUID = 4651346503732024719L;
+
+	public int configure(PreparedStatement stmt, int pos, Duration value) throws SQLException
+	{
+		if ( value == null )
+			stmt.setNull( pos, Types.BIGINT );
+		else
+			stmt.setLong( pos, value.getMillis() );
 		return 1;
 	}
 }

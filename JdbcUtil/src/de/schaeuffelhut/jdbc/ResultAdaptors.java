@@ -177,7 +177,8 @@ public final class ResultAdaptors
 		){
 			try
 			{
-				this.field = clazz.getDeclaredField( columnName );
+//				this.field = clazz.getDeclaredField( columnName );
+				this.field = serachFields( clazz, columnName );
 				this.field.setAccessible( true );
 				this.resultType = resultType;
 			}
@@ -192,6 +193,16 @@ public final class ResultAdaptors
 		}
 	
 		
+		private Field serachFields(Class<T> clazz, String columnName) throws NoSuchFieldException
+		{
+			for( Class<?> c = clazz; c != null; c = c.getSuperclass() )
+				for(Field f : c.getDeclaredFields() )
+					if ( f.getName().equals( columnName ) )
+						return f;
+			throw new NoSuchFieldException( columnName );
+		}
+
+
 		public final int adapt(
 				T object, ResultSet resultSet, int index
 		) throws SQLException

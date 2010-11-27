@@ -18,6 +18,7 @@ package de.schaeuffelhut.jdbc;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.sql.Statement;
 
 import org.apache.log4j.Logger;
@@ -89,24 +90,39 @@ public final class JdbcUtil
 
 	public final static void rollbackQuietly(Connection connection)
 	{
-		rollbackQuietly( connection, null );
+		rollbackQuietly( connection, null, null );
 	}
 
 	public final static void rollbackQuietly(Connection connection, String msg)
+	{
+		rollbackQuietly( connection, null, msg );
+	}
+	
+	public static void rollbackQuietly(Connection connection, Savepoint savePoint)
+	{
+		rollbackQuietly( connection, savePoint, null );
+	}
+	
+	public static void rollbackQuietly(Connection connection, Savepoint savePoint, String msg)
 	{
 		try
 		{
 			if ( msg != null && logger.isTraceEnabled() )
 				logger.trace( msg );
 			if ( connection != null && !connection.getAutoCommit() )
-				connection.rollback();
+			{
+				if ( savePoint == null )
+					connection.rollback();
+				else
+					connection.rollback( savePoint );
+			}
 		}
 		catch (SQLException err)
 		{
 			logger.error( "Exception during rollback", err );
 		}
 	}
-	
+
 	public final static void setAutoCommitQuietly(Connection connection, boolean autoCommit)
 	{
 		try
@@ -119,5 +135,4 @@ public final class JdbcUtil
 			logger.error( "Exception during rollback", err );
 		}
 	}
-
 }

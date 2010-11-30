@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Date;
 
 import org.joda.time.DateMidnight;
@@ -345,7 +346,7 @@ final class EnumByNameResultType<E extends Enum<E>> implements IfcResultType<E>
 		if ( string == null )
 			return null;
 		else
-			return Enum.valueOf( type, string );
+			return Enum.valueOf( type, string.trim() );
 	}
 	
 	public Class<E> getResultType()

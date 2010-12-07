@@ -74,6 +74,7 @@ public final class ResultTypes
 	}
 
 	public final static IfcResultType<Class<?>> Class = new ClassResultType();
+	public final static IfcResultType<Class<?>> Class(ClassLoader classLoader) { return new ClassResultType( classLoader ); }
 
 	public final static IfcResultType<DateTime> DateTime = new DateTimeResultType();
 	public final static IfcResultType<DateMidnight> DateMidnight = new DateMidnightResultType();
@@ -429,6 +430,17 @@ implements IfcResultType<E>
 final class ClassResultType implements IfcResultType<Class<?>>
 {
 	private static final long	serialVersionUID	= -3217514556414780833L;
+	private final ClassLoader classLoader;
+
+	public ClassResultType()
+	{
+		this( ClassResultType.class.getClassLoader() );
+	}
+	
+	public ClassResultType(ClassLoader classLoader)
+	{
+		this.classLoader = classLoader;
+	}
 
 	public final Class<?> getResult(ResultSet resultSet, int index) throws SQLException
     {
@@ -440,7 +452,7 @@ final class ClassResultType implements IfcResultType<Class<?>>
     	{
     		try
 			{
-				clazz = Class.forName( className );
+				clazz = Class.forName( className, true, classLoader );
 			}
 			catch (ClassNotFoundException e)
 			{

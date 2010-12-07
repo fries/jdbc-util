@@ -79,44 +79,42 @@ public final class StatementUtil
 		}
 	}
 
-	public final static <T> ArrayList<T> selectInto(
+	public final static <E> ArrayList<E> selectInto(
 			Connection connection,
 			String sql,
-			IfcResultSetCollectionReader<T> resultReader,
+			IfcResultSetCollectionReader<E> resultReader,
 			Collection<IfcStatementInParameter> parameters
 	) throws Exception
 	{
 		return selectInto(connection, sql, resultReader, parameters.toArray( new IfcStatementInParameter[parameters.size()] ) );
 	}
 	
-	public final static <T> ArrayList<T> selectInto(
+	public final static <E> ArrayList<E> selectInto(
 			Connection connection,
 			String sql,
-			IfcResultSetCollectionReader<T> resultReader,
+			IfcResultSetCollectionReader<E> resultReader,
 			IfcStatementInParameter... parameters
 	) throws Exception
 	{
-		ArrayList<T> results = new ArrayList<T>();
-		selectInto( results, connection, sql, resultReader, parameters );
-		return results;
+		return selectInto( new ArrayList<E>(), connection, sql, resultReader, parameters );
 	}
 
-	public final static <T> void selectInto(
-			Collection<T> results,
+	public final static <T extends Collection<E>,E> T selectInto(
+			T results,
 			Connection connection,
 			String sql,
-			IfcResultSetCollectionReader<T> resultReader,
+			IfcResultSetCollectionReader<E> resultReader,
 			Collection<IfcStatementInParameter> parameters
 	) throws Exception
 	{
-		selectInto(results, connection, sql, resultReader, parameters.toArray( new IfcStatementInParameter[parameters.size()] ) );
+		return selectInto(results, connection, sql, resultReader, parameters.toArray( new IfcStatementInParameter[parameters.size()] ) );
 	}
 	
-	public final static <T> void selectInto(
-			Collection<T> results,
+	public final static <T extends Collection<E>,E> T selectInto(
+			T results,
 			Connection connection,
 			String sql,
-			IfcResultSetCollectionReader<T> resultReader,
+			IfcResultSetCollectionReader<E> resultReader,
 			IfcStatementInParameter... parameters
 	) throws Exception
 	{
@@ -128,6 +126,7 @@ public final class StatementUtil
 			stmt = prepareStatement( connection, sql, parameters );
 			ResultSet resultSet = stmt.executeQuery();
 			resultReader.readResults( results, resultSet );
+			return results;
 		}
 		finally
 		{

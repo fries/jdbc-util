@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.Date;
 
 import org.joda.time.DateMidnight;
@@ -33,6 +32,7 @@ import org.joda.time.Seconds;
 import org.joda.time.Weeks;
 import org.joda.time.Years;
 import org.joda.time.base.BaseSingleFieldPeriod;
+import org.joda.time.format.ISODateTimeFormat;
 import org.joda.time.format.ISOPeriodFormat;
 
 
@@ -78,6 +78,7 @@ public final class ResultTypes
 
 	public final static IfcResultType<DateTime> DateTime = new DateTimeResultType();
 	public final static IfcResultType<DateMidnight> DateMidnight = new DateMidnightResultType();
+	public final static IfcResultType<DateMidnight> DateMidnightAsIsoString = new DateMidnightAsIsoStringResultType();
 	public final static IfcResultType<Days>		Days = new DaysResultType();
 	public final static IfcResultType<Hours>	Hours = new HoursResultType();
 	public final static IfcResultType<Minutes>	Minutes = new MinutesResultType();
@@ -493,6 +494,22 @@ final class DateMidnightResultType implements IfcResultType<DateMidnight>
     {
         Timestamp timestamp = resultSet.getTimestamp( index );
 		return timestamp == null ? null : new DateMidnight( timestamp );
+    }
+	
+	public Class<DateMidnight> getResultType()
+	{
+		return DateMidnight.class;
+	}
+}
+
+final class DateMidnightAsIsoStringResultType implements IfcResultType<DateMidnight>
+{
+	private static final long	serialVersionUID	= -3087814275246876350L;
+
+	public final DateMidnight getResult(ResultSet resultSet, int index) throws SQLException
+    {
+        String timestamp = resultSet.getString( index );
+		return timestamp == null ? null : ISODateTimeFormat.date().parseDateTime( timestamp ).toDateMidnight();
     }
 	
 	public Class<DateMidnight> getResultType()

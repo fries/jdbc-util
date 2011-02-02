@@ -37,7 +37,7 @@ public final class JdbcUtilProperties
 	{
 	}
 
-	final static Properties findProperties()
+	public final static Properties findProperties()
 	{
 		logger.debug( "locating connection properties for jdbc util" );
 		try

@@ -33,15 +33,15 @@ public class DefaultConnectionProvider implements ConnectionProvider
 	final static Logger logger = getLogger(DefaultConnectionProvider.class);
 
 
-	private static final String PROP_CONN_INFO_PREFIX = "jdbcutil.connection.info.";
+	public static final String PROP_CONN_INFO_PREFIX = "jdbcutil.connection.info.";
 
-	private static final String PROP_CONN_INFO_PASSWORD = PROP_CONN_INFO_PREFIX + "password";
+	public static final String PROP_CONN_INFO_PASSWORD = PROP_CONN_INFO_PREFIX + "password";
 
-	private static final String PROP_CONN_INFO_USER = PROP_CONN_INFO_PREFIX + "user";
+	public static final String PROP_CONN_INFO_USER = PROP_CONN_INFO_PREFIX + "user";
 
-	private static final String PROP_CONN_URL = "jdbcutil.connection.url";
+	public static final String PROP_CONN_URL = "jdbcutil.connection.url";
 
-	private static final String PROP_DRIVER = "jdbcutil.jdbcdriver";
+	public static final String PROP_DRIVER = "jdbcutil.jdbcdriver";
     
     
     final Properties jdbcUtilProperties;

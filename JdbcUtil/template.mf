@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: ${project.artifactId}
 Bundle-Name: JdbcUtil
-Bundle-Version: ${project.version}
+Bundle-Version: 0.3.2.SNAPSHOT
 Import-Package: javax.naming,
  javax.net,
  javax.net.ssl,

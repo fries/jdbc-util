@@ -5,7 +5,7 @@
 
 	<groupId>de.schaeuffelhut</groupId>
 	<artifactId>de.schaeuffelhut.jdbc</artifactId>
-	<version>0.3.2.SNAPSHOT</version>
+	<version>0.3.2-SNAPSHOT</version>
 
 	<name>JdbcUtil</name>
 	<description>Simplify common JDBC idioms.</description>

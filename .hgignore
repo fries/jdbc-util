@@ -1,0 +1,6 @@
+glob:.metadata
+glob:*/build
+glob:*/bin
+
+glob:*/dist
+glob:*/target

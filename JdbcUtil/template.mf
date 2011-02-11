@@ -1,14 +1,8 @@
 Manifest-Version: 1.0
-Export-Package: de.schaeuffelhut.jdbc;uses:="de.schaeuffelhut.jdbc.txn
- ,org.joda.time,org.joda.time.base",de.schaeuffelhut.jdbc.experimental
- ;uses:="de.schaeuffelhut.jdbc",de.schaeuffelhut.jdbc.txn;uses:="javax
- .naming,javax.sql"
-Class-Path: 
-Bundle-Version: 1.0.0
-Tool: Bundlor 1.0.0.RELEASE
-Bundle-Name: JdbcUtil
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: de.schaeuffelhut.jdbc
+Bundle-SymbolicName: ${project.artifactId}
+Bundle-Name: JdbcUtil
+Bundle-Version: ${project.version}
 Import-Package: javax.naming,
  javax.net,
  javax.net.ssl,
@@ -17,4 +11,4 @@ Import-Package: javax.naming,
  org.joda.time,
  org.joda.time.base,
  org.joda.time.format
-
+Excluded-Imports: org.junit

@@ -20,7 +20,7 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.util.Calendar;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.After;
 import org.junit.AfterClass;

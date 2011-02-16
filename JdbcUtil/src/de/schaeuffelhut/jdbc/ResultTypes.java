@@ -15,6 +15,9 @@
  */
 package de.schaeuffelhut.jdbc;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -56,6 +59,8 @@ public final class ResultTypes
 	public final static IfcResultType<Timestamp> Timestamp = new TimestampResultType();
 	public final static IfcResultType<Object> Object = new ObjectResultType<Object>( Object.class );
 	public final static <T> IfcResultType<T> Object(Class<T> type) { return new ObjectResultType<T>( type ); }
+	public static final IfcResultType<Object>	Serializeable	= new SerializeableResultType<Object>( Object.class );
+	public static final <T> IfcResultType<T>	Serializeable(Class<T> type) { return new SerializeableResultType<T>( type ); }
 	public final static IfcResultType<byte[]> Bytes = new BytesResultType();
 	
 	public final static <E extends Enum<E>> IfcResultType<E> enumByName(Class<E> type)
@@ -308,6 +313,43 @@ final class ObjectResultType<T> implements IfcResultType<T>
 	public final T getResult(ResultSet resultSet, int index) throws SQLException
     {
         return type.cast( resultSet.getObject( index ) );
+    }
+	
+	public Class<T> getResultType()
+	{
+		return type;
+	}
+}
+
+final class SerializeableResultType<T> implements IfcResultType<T>
+{
+	private static final long	serialVersionUID	= -4223724941291746384L;
+
+	final Class<T> type;
+	
+	public SerializeableResultType(Class<T> type)
+	{
+		this.type = type;
+	}
+	
+	public final T getResult(ResultSet resultSet, int index) throws SQLException
+    {
+		try
+		{
+			byte[] bytes = resultSet.getBytes( index );
+			ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
+			ObjectInputStream ois = new ObjectInputStream( bais );
+			Object object = ois.readObject();
+			return type.cast( object );
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException( e );
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new RuntimeException( e );
+		}
     }
 	
 	public Class<T> getResultType()

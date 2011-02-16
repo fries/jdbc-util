@@ -15,6 +15,10 @@
  */
 package de.schaeuffelhut.jdbc;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -81,6 +85,9 @@ public class StatementParameters
 
 	public final static IfcStatementInParameterType<Object> Object = new ObjectInParameterType();
 	public final static IfcStatementInParameter Object(Object value) { return bindValue(Object, value); }
+
+	public final static IfcStatementInParameterType<Object> Serializeable = new SerializableInParameterType();
+	public final static IfcStatementInParameter Serializeable(Object value) { return bindValue(Serializeable, value); }
 
 	public final static IfcStatementInParameterType<byte[]> Bytes = new BytesInParameterType();
 	public final static IfcStatementInParameter Bytes(byte[] value) { return bindValue(Bytes, value); }
@@ -197,6 +204,7 @@ public class StatementParameters
 		else
 			return parameters.toArray( new IfcStatementInParameter[parameters.size()] );
 	}
+
 }
 
 abstract class AbstractStatementInParameterType<T> implements IfcStatementInParameterType<T>
@@ -371,6 +379,31 @@ final class ObjectInParameterType extends AbstractStatementInParameterType<Objec
 	{
 		stmt.setObject( pos, value );
 		return 1;
+	}
+}
+
+final class SerializableInParameterType extends AbstractStatementInParameterType<Object>
+{
+	private static final long	serialVersionUID	= 8360037598038980033L;
+
+	public int configure(PreparedStatement stmt, int pos, Object value) throws SQLException
+	{
+		try
+		{
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos;
+			oos = new ObjectOutputStream( baos );
+			oos.writeObject( value );
+			oos.close();
+			
+			stmt.setBytes( pos, baos.toByteArray() );
+			return 1;
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException( e );
+		}
+		
 	}
 }
 

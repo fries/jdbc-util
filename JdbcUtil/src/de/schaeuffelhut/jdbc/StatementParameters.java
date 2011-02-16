@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.joda.time.DateMidnight;
@@ -39,6 +40,7 @@ import org.joda.time.Seconds;
 import org.joda.time.Weeks;
 import org.joda.time.Years;
 import org.joda.time.base.BaseSingleFieldPeriod;
+import org.joda.time.format.ISODateTimeFormat;
 import org.joda.time.format.ISOPeriodFormat;
 
 /**
@@ -106,6 +108,9 @@ public class StatementParameters
 
 	public final static IfcStatementInParameterType<DateMidnight> DateMidnight = new DateMidnightInParameterType();
 	public final static IfcStatementInParameter DateMidnight(org.joda.time.DateMidnight value) { return bindValue(DateMidnight, value); }
+
+	public final static IfcStatementInParameterType<DateMidnight> DateMidnightAsIsoString = new DateMidnightAsIsoStringInParameterType();
+	public final static IfcStatementInParameter DateMidnightAsIsoString(org.joda.time.DateMidnight value) { return bindValue(DateMidnightAsIsoString, value); }
 
 	public final static IfcStatementInParameterType<Days> Days = new DaysInParameterType();
 	public final static IfcStatementInParameter Days(Days value) { return bindValue(Days, value); }
@@ -185,8 +190,25 @@ public class StatementParameters
 	}
 	
 	// make a parameter array, allow nulls
-	
+
 	private final static IfcStatementInParameter[] emptyInParameters = new IfcStatementInParameter[0];
+
+	public final static IfcStatementInParameter[] filterNulls( IfcStatementInParameter... parameters )
+	{
+		if ( parameters == null )
+		{
+			return emptyInParameters;
+		}
+		else
+		{
+			ArrayList<IfcStatementInParameter> params = new ArrayList<IfcStatementInParameter>( parameters.length );
+			for( IfcStatementInParameter p : parameters )
+				if ( p != null )
+					params.add( p );
+			return params.toArray( new IfcStatementInParameter[params.size()] );
+		}
+	}
+
 	public final static IfcStatementInParameter[] inParams( IfcStatementInParameter... parameters )
 	{
 		if ( parameters == null )
@@ -587,6 +609,17 @@ final class DateMidnightInParameterType extends AbstractStatementInParameterType
 	public int configure(PreparedStatement stmt, int pos, DateMidnight value) throws SQLException
 	{
 		stmt.setTimestamp( pos, value == null ? null : new Timestamp( value.getMillis() ) );
+		return 1;
+	}
+}
+
+final class DateMidnightAsIsoStringInParameterType extends AbstractStatementInParameterType<DateMidnight>
+{
+	private static final long	serialVersionUID	= 362585378891547200L;
+
+	public int configure(PreparedStatement stmt, int pos, DateMidnight value) throws SQLException
+	{
+		stmt.setString( pos, value == null ? null : ISODateTimeFormat.date().print( value ) );
 		return 1;
 	}
 }

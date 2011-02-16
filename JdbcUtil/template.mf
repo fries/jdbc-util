@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: ${project.artifactId}
+Bundle-Name: JdbcUtil
+Bundle-Version: 0.3.2.SNAPSHOT
+Import-Package: javax.naming,
+ javax.net,
+ javax.net.ssl,
+ javax.sql,
+ org.apache.log4j,
+ org.joda.time,
+ org.joda.time.base,
+ org.joda.time.format
+Excluded-Imports: org.junit

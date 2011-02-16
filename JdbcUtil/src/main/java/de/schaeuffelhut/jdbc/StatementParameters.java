@@ -226,7 +226,6 @@ public class StatementParameters
 		else
 			return parameters.toArray( new IfcStatementInParameter[parameters.size()] );
 	}
-
 }
 
 abstract class AbstractStatementInParameterType<T> implements IfcStatementInParameterType<T>

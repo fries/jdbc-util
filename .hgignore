@@ -1,4 +1,6 @@
-glob: */bin
-glob: */target
-glob: */src/main/resources/META-INF/MANIFEST.MF
+glob:*/bin
+glob:*/build
+glob:*/dist
+glob:*/target
+glob:*/src/main/resources/META-INF/MANIFEST.MF
 

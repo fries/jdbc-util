@@ -224,6 +224,29 @@ public class TxnUtil
 		executeWithThreadLocalContext( getDefaultConnectionProvider(), transactional );
 	}
 
+	public final static void executeWithThreadLocalContext( final DataSource dataSource, Runnable transactional )
+	{
+		executeWithThreadLocalContext(
+				new ConnectionProvider() {
+					private Connection	connection = null;
+					
+					public Connection open() throws Exception
+					{
+						if ( connection == null )
+							connection = dataSource.getConnection();
+						return connection;
+					}
+					
+					public void close(Connection connection) throws Exception
+					{
+						if ( connection != null )
+							connection.close();
+					}
+				},
+				transactional
+		);
+	}
+
 	public final static void executeWithThreadLocalContext( ConnectionProvider connectionProvider, Runnable transactional )
 	{
 		if ( threadLocalTxnContext.get() != null )

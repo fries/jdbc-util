@@ -4,3 +4,4 @@ glob:*/bin
 
 glob:*/dist
 glob:*/target
+glob:*/.settings

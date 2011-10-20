@@ -1,7 +1,19 @@
-glob:.metadata
-glob:*/build
-glob:*/bin
+syntax: glob
 
-glob:*/dist
-glob:*/target
-glob:*/.settings
+.metadata
+*/build
+*/bin
+*/dist
+*/target
+*/tmp
+*/.settings
+*/.classpath
+*/.project
+*/.springBeans
+*/src/main/resources/META-INF/MANIFEST.MF
+*/src/test/resources/META-INF/TEST.MF
+*/src/main/webapp/META-INF/MANIFEST.MF
+
+syntax: regexp
+~$
+

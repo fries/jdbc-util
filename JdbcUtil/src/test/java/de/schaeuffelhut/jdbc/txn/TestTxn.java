@@ -49,15 +49,15 @@ public class TestTxn
 		connectionProvider.close( conn );
 	}
 	
-	@Test
-	public void testTxnUtil() throws Exception
-	{
-		TxnUtil.execute( new VoidTransactional() {
-			public Void run(TxnContext context) throws Exception
-			{
-				System.err.println( context.connection.getMetaData().getDatabaseProductName() );
-				return null;
-			}
-		});
-	}
+//	@Test
+//	public void testTxnUtil() throws Exception
+//	{
+//		TxnUtil.execute( new VoidTransactional() {
+//			public Void run(TxnContext context) throws Exception
+//			{
+//				System.err.println( context.connection.getMetaData().getDatabaseProductName() );
+//				return null;
+//			}
+//		});
+//	}
 }

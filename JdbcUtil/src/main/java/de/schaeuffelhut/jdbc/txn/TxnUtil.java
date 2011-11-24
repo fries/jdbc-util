@@ -74,6 +74,7 @@ public class TxnUtil
 		defaultConnectionProvider = connectionProvider;
 	}
 
+	// XXX DON'T USE
     public final static <T> T execute(Transactional<T> transactional)
     {
     	return execute( getDefaultConnectionProvider(), transactional );
@@ -101,6 +102,8 @@ public class TxnUtil
         }
     }
 
+	
+	// XXX DON'T USE
     public final static <T> T execute(
     		ConnectionProvider connectionProvider,
     		Transactional<T> transactional

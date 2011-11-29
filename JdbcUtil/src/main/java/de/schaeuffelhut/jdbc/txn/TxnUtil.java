@@ -75,10 +75,10 @@ public class TxnUtil
 	}
 
 	// XXX DON'T USE
-    public final static <T> T execute(Transactional<T> transactional)
-    {
-    	return execute( getDefaultConnectionProvider(), transactional );
-    }
+//    public final static <T> T execute(Transactional<T> transactional)
+//    {
+//    	return execute( getDefaultConnectionProvider(), transactional );
+//    }
     
 	public final static <T> T execute(DataSource dataSource, Transactional<T> transactional)
     {

@@ -227,6 +227,30 @@ public class TxnUtil
 		executeWithThreadLocalContext( getDefaultConnectionProvider(), transactional );
 	}
 
+	@Deprecated
+	public final static void executeWithThreadLocalContext( final DataSource dataSource, Runnable transactional)
+    {
+    	executeWithThreadLocalContext( 
+    			new ConnectionProvider(){
+    				Connection connection;
+    				@Override
+    				public Connection open() throws Exception
+    				{
+						connection = dataSource.getConnection();
+						return connection;
+    				}
+    				
+    				@Override
+    				public void close(Connection connection) throws Exception
+    				{
+    					connection.close();
+    				}
+    			}, 
+    			transactional
+    	);
+    }
+
+
 	public final static void executeWithThreadLocalContext( ConnectionProvider connectionProvider, Runnable transactional )
 	{
 		if ( threadLocalTxnContext.get() != null )

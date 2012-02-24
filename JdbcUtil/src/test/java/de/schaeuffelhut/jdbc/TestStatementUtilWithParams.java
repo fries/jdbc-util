@@ -25,6 +25,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -33,6 +34,7 @@ import org.junit.Test;
  * @author Friedrich Schäuffelhut
  *
  */
+@Ignore
 public class TestStatementUtilWithParams
 {
 	private static Connection connection;

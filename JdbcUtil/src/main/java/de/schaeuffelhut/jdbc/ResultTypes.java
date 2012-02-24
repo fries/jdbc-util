@@ -26,6 +26,7 @@ import java.util.Date;
 
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
@@ -92,6 +93,7 @@ public final class ResultTypes
 	public final static IfcResultType<Weeks>	Weeks = new WeeksResultType();
 	public final static IfcResultType<Years>	Years = new YearsResultType();
 	public final static IfcResultType<Period>	PeriodIsoEncoded = new PeriodIsoEncodedResultType();
+	public final static IfcResultType<DateTimeZone> DateTimeZone = new DateTimeZoneResultType();
 	
 	
 	public final static <T> IfcResultType<T> ifNull(IfcResultType<T> resultType, T defaultValue)
@@ -705,6 +707,29 @@ final class PeriodIsoEncodedResultType extends ConvertingResultType<Period, Stri
 		return Period.class;
 	}
 }
+final class DateTimeZoneResultType extends ConvertingResultType<DateTimeZone, String>
+{
+	private static final long	serialVersionUID	= -1042811119544078910L;
+
+	public DateTimeZoneResultType()
+	{
+		super( ResultTypes.String );
+	}
+	
+	@Override
+	protected final DateTimeZone convert(String value)
+	{
+		return value == null ? null : DateTimeZone.forID( value );
+	}
+	
+	@Override
+	public final Class<DateTimeZone> getResultType()
+	{
+		return DateTimeZone.class;
+	}
+}
+
+
 
 final class IfNullResultType<T> implements IfcResultType<T>
 {

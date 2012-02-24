@@ -30,6 +30,7 @@ import java.util.Collection;
 
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.joda.time.Duration;
 import org.joda.time.Hours;
@@ -138,6 +139,9 @@ public class StatementParameters
 
 	public final static IfcStatementInParameterType<Duration> DurationAsLong = new DurationAsLongInParameterType();
 	public final static IfcStatementInParameter DurationAsLong(org.joda.time.Duration value) { return bindValue(DurationAsLong, value); }
+
+	public final static IfcStatementInParameterType<DateTimeZone> DateTimeZone = new DateTimeZoneInParameterType();
+	public final static IfcStatementInParameter DateTimeZone(DateTimeZone value) { return bindValue(DateTimeZone, value); }
 
 	// Array
 	
@@ -728,6 +732,16 @@ final class DurationAsLongInParameterType extends AbstractStatementInParameterTy
 			stmt.setNull( pos, Types.BIGINT );
 		else
 			stmt.setLong( pos, value.getMillis() );
+		return 1;
+	}
+}
+final class DateTimeZoneInParameterType extends AbstractStatementInParameterType<DateTimeZone>
+{
+	private static final long	serialVersionUID	= -1401212495563554062L;
+
+	public int configure(PreparedStatement stmt, int pos, DateTimeZone value) throws SQLException
+	{
+		stmt.setString( pos, value == null ? null : value.getID() );
 		return 1;
 	}
 }

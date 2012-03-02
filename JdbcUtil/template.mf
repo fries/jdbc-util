@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: de.schaeuffelhut.jdbc
+Bundle-SymbolicName: ${project.artifactId}
 Bundle-Name: JdbcUtil
 Bundle-Version: 0.3.2.SNAPSHOT
-Import-Package: javax.naming,
- javax.net,
- javax.net.ssl,
+Import-Package: javax.naming;resolution:=optional,
+ javax.net;resolution:=optional,
+ javax.net.ssl;resolution:=optional,
  javax.sql,
  org.apache.log4j,
  org.joda.time,

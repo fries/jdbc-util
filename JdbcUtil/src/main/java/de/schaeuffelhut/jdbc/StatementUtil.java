@@ -307,7 +307,7 @@ public final class StatementUtil
 	 * Expand SQL query and configure PreparedStatement
 	 */
 
-	private final static String modifySql(String sql,  IfcStatementParameter... parameters)
+	public final static String modifySql(String sql,  IfcStatementParameter... parameters)
 	{
 		final String unmodifiedSQL = sql;
 		

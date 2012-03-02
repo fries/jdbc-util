@@ -15,6 +15,7 @@
  */
 package de.schaeuffelhut.jdbc;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -60,18 +61,27 @@ public final class TxnStatementUtil
 		};
 	}
 
-	public final static <T> Transactional<Void> selectInto(final Collection<T> results, final String sql, final IfcResultSetCollectionReader<T> resultReader, final Collection<IfcStatementInParameter> parameters)
+	public final static <T extends Collection<E>,E> Transactional<T> selectInto(final T results, final String sql, final IfcResultSetCollectionReader<E> resultReader, final Collection<IfcStatementInParameter> parameters)
 	{
 		return selectInto(results, sql, resultReader, parameters.toArray( new IfcStatementInParameter[parameters.size()] ) );
 	}
 	
-	public final static <T> Transactional<Void> selectInto(final Collection<T> results, final String sql, final IfcResultSetCollectionReader<T> resultReader, final IfcStatementInParameter... parameters)
+	public final static <T extends Collection<E>,E> Transactional<T> selectInto(final T results, final String sql, final IfcResultSetCollectionReader<E> resultReader, final IfcStatementInParameter... parameters)
 	{
-		return new Transactional<Void>(){
-			public Void run(TxnContext context) throws Exception
+		return new Transactional<T>(){
+			public T run(TxnContext context) throws Exception
 			{
-				StatementUtil.selectInto( results,  context.getConnection(), sql, resultReader, parameters );
-				return null;
+				return StatementUtil.selectInto( results,  context.getConnection(), sql, resultReader, parameters );
+			}
+		};
+	}
+
+	public final static <V,T> Transactional<V> process( final String sql, final IfcResultSetProcessor<V,T> resultSetProcessor, final IfcStatementInParameter... parameters )
+	{
+		return new Transactional<V>(){
+			public V run(TxnContext context) throws Exception
+			{
+				return StatementUtil.process( context.getConnection(), sql, resultSetProcessor, parameters );
 			}
 		};
 	}

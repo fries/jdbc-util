@@ -3,7 +3,8 @@ glob:*/build
 glob:*/dist
 glob:*/target
 glob:*/src/main/resources/META-INF/MANIFEST.MF
-
+glob:JdbcUtil/de.schaeuffelhut.jdbc.iml
+glob:.idea
 
 syntax: regexp
 ^JdbcUtil/src/main/resources/META-INF/MANIFEST\.MF$

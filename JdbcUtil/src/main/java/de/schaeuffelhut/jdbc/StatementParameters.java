@@ -136,6 +136,8 @@ public class StatementParameters
 	public final static IfcStatementInParameterType<DateTimeZone> DateTimeZone = new DateTimeZoneInParameterType();
 	public final static IfcStatementInParameter DateTimeZone(DateTimeZone value) { return bindValue(DateTimeZone, value); }
 
+	public final static IfcStatementInParameter QueryTimeout(int value) { return new QueryTimeoutParameter( value ); }
+
 	// Array
 	
 	public final static <T> IfcStatementInParameterType<T[]> Array(IfcStatementInParameterType<T> type, String placeholder)
@@ -711,5 +713,24 @@ final class DateTimeZoneInParameterType extends AbstractStatementInParameterType
 	{
 		stmt.setString( pos, value == null ? null : value.getID() );
 		return 1;
+	}
+}
+final class QueryTimeoutParameter implements IfcStatementInParameter
+{
+	private static final long serialVersionUID = -6433030461894077531L;
+
+	final int timeout;
+
+	QueryTimeoutParameter(int timeout)
+	{
+		this.timeout = timeout;
+	}
+
+	@Override public String modify(String sql) { return sql; }
+
+	@Override public int configure(PreparedStatement stmt, int index) throws SQLException
+	{
+		stmt.setQueryTimeout( timeout );
+		return 0;
 	}
 }

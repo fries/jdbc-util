@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * @author Friedrich Schäuffelhut
  *
  */
-final class BoundValue<T> implements IfcStatementInParameter
+public final class BoundValue<T> implements IfcStatementInParameter
 {
 	private static final long	serialVersionUID	= 1324455535658426764L;
 
@@ -36,8 +36,8 @@ final class BoundValue<T> implements IfcStatementInParameter
 		this.value = value;
 	}
 	
-	final IfcStatementInParameterType<T> parameter;
-	final T value;
+	public final IfcStatementInParameterType<T> parameter;
+	public final T value;
 	
 	/* (non-Javadoc)
 	 * @see de.schaeuffelhut.jdbc.StatementParameter#modify(java.lang.String)

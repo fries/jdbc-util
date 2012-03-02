@@ -74,6 +74,7 @@ public class TxnUtil
 		defaultConnectionProvider = connectionProvider;
 	}
 
+	// XXX DON'T USE
     public final static <T> T execute(Transactional<T> transactional)
     {
     	return execute( getDefaultConnectionProvider(), transactional );
@@ -101,6 +102,8 @@ public class TxnUtil
         }
     }
 
+	
+	// XXX DON'T USE
     public final static <T> T execute(
     		ConnectionProvider connectionProvider,
     		Transactional<T> transactional
@@ -224,12 +227,13 @@ public class TxnUtil
 		executeWithThreadLocalContext( getDefaultConnectionProvider(), transactional );
 	}
 
+	@Deprecated
 	public final static void executeWithThreadLocalContext( final DataSource dataSource, Runnable transactional )
 	{
 		executeWithThreadLocalContext(
 				new ConnectionProvider() {
 					private Connection	connection = null;
-					
+					@Override
 					public Connection open() throws Exception
 					{
 						if ( connection == null )
@@ -237,6 +241,7 @@ public class TxnUtil
 						return connection;
 					}
 					
+					@Override
 					public void close(Connection connection) throws Exception
 					{
 						if ( connection != null )

@@ -19,6 +19,7 @@ import java.io.File;
 import java.sql.Connection;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -26,6 +27,7 @@ import org.junit.Test;
  * @author Friedrich Schäuffelhut
  *
  */
+@Ignore
 public class TestTxn
 {
 	@BeforeClass
@@ -47,15 +49,15 @@ public class TestTxn
 		connectionProvider.close( conn );
 	}
 	
-	@Test
-	public void testTxnUtil() throws Exception
-	{
-		TxnUtil.execute( new VoidTransactional() {
-			public Void run(TxnContext context) throws Exception
-			{
-				System.err.println( context.connection.getMetaData().getDatabaseProductName() );
-				return null;
-			}
-		});
-	}
+//	@Test
+//	public void testTxnUtil() throws Exception
+//	{
+//		TxnUtil.execute( new VoidTransactional() {
+//			public Void run(TxnContext context) throws Exception
+//			{
+//				System.err.println( context.connection.getMetaData().getDatabaseProductName() );
+//				return null;
+//			}
+//		});
+//	}
 }

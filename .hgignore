@@ -1,18 +1,10 @@
-syntax: glob
-
-.metadata
-*/build
-*/bin
-*/dist
-*/target
-*/tmp
-*/.settings
-*/.classpath
-*/.project
-*/.springBeans
-*/src/main/resources/META-INF/MANIFEST.MF
-*/src/test/resources/META-INF/TEST.MF
-*/src/main/webapp/META-INF/MANIFEST.MF
+glob:*/bin
+glob:*/build
+glob:*/dist
+glob:*/target
+glob:*/src/main/resources/META-INF/MANIFEST.MF
+glob:JdbcUtil/de.schaeuffelhut.jdbc.iml
+glob:.idea
 
 syntax: regexp
-~$
+^JdbcUtil/src/main/resources/META-INF/MANIFEST\.MF$

@@ -5,6 +5,8 @@ glob:*/target
 glob:*/src/main/resources/META-INF/MANIFEST.MF
 glob:JdbcUtil/de.schaeuffelhut.jdbc.iml
 glob:.idea
-
+glob:.project
+glob:.classpath
+glob:.settings
 syntax: regexp
 ^JdbcUtil/src/main/resources/META-INF/MANIFEST\.MF$

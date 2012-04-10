@@ -10,9 +10,11 @@ syntax: glob
 */.classpath
 */.project
 */.springBeans
+*/*.iml
 */src/main/resources/META-INF/MANIFEST.MF
 */src/test/resources/META-INF/TEST.MF
 */src/main/webapp/META-INF/MANIFEST.MF
+.idea 
 
 syntax: regexp
 ~$

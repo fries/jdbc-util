@@ -18,6 +18,7 @@ package de.schaeuffelhut.jdbc;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectStreamClass;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -341,7 +342,20 @@ final class SerializeableResultType<T> implements IfcResultType<T>
 		{
 			byte[] bytes = resultSet.getBytes( index );
 			ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
-			ObjectInputStream ois = new ObjectInputStream( bais );
+			ObjectInputStream ois = new ObjectInputStream( bais ){
+                @Override
+                protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException
+                {
+                    String name = desc.getName();
+                    try {
+                        return Class.forName(name, false, Thread.currentThread().getContextClassLoader() );
+                    } catch (ClassNotFoundException ex) {
+                       // Ignore and delegate to super.resolveClass( desc )
+                       // which will throw the final ClassNotFoundException.
+                    }
+                    return super.resolveClass( desc );
+                }
+            };
 			Object object = ois.readObject();
 			return type.cast( object );
 		}

@@ -67,4 +67,26 @@ public final class BoundValue<T> implements IfcStatementInParameter
 	public String toString() {
 		return "BoundValue [parameter=" + parameter + ", value=" + value + "]";
 	}
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BoundValue that = (BoundValue) o;
+
+        if (parameter != null ? !parameter.equals( that.parameter ) : that.parameter != null) return false;
+        if (value != null ? !value.equals( that.value ) : that.value != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = parameter != null ? parameter.hashCode() : 0;
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        return result;
+    }
 }

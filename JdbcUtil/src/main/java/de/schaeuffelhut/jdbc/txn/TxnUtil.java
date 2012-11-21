@@ -102,6 +102,20 @@ public class TxnUtil
         }
     }
 
+	public final static <T> T executeChecked(DataSource dataSource, Transactional<T> transactional) throws Exception
+    {
+    	Connection connection = null;
+        try
+        {
+			connection = dataSource.getConnection();
+            return executeChecked( connection, transactional );
+        }
+        finally
+        {
+            JdbcUtil.closeQuietly( connection );
+        }
+    }
+
 	
 	// XXX DON'T USE
     public final static <T> T execute(
@@ -165,25 +179,10 @@ public class TxnUtil
 			Connection connection,
 			Transactional<T> transactional
 	) {
-		Boolean autoCommit = null;
-		boolean commited = false;
 		try
 		{
-		    autoCommit = connection.getAutoCommit();
-		    connection.setAutoCommit( false );
-		    
-		    if (logger.isTraceEnabled())
-		        logger.trace("txn invoking: " + transactional);
-		    T result = transactional.run(new TxnContext( connection ) );
-		    
-		    if (logger.isTraceEnabled())
-		        logger.trace("txn commiting: " + transactional);
-		    if ( !connection.getAutoCommit() )
-		    	connection.commit();
-		    
-		    commited = true;
-		    return result;
-		}
+            return executeChecked( connection, transactional );
+        }
         catch (RuntimeException e)
         {
         	throw e;
@@ -192,17 +191,40 @@ public class TxnUtil
 		{
 			throw new RuntimeException( e );
 		}
-		finally
-		{
-		    if ( !commited )
-		        JdbcUtil.rollbackQuietly(
-		        		connection, "txn rollback: " +transactional.toString() );
-		    if ( autoCommit != null)
-		    	JdbcUtil.setAutoCommitQuietly( connection, autoCommit );
-		}
 	}
-	
-	public final static <T> T executeWithoutTxn(
+
+    private static <T> T executeChecked(Connection connection, Transactional<T> transactional) throws Exception
+    {
+        Boolean autoCommit = null;
+        boolean commited = false;
+        try
+        {
+            autoCommit = connection.getAutoCommit();
+            connection.setAutoCommit( false );
+
+            if (logger.isTraceEnabled())
+                logger.trace( "txn invoking: " + transactional );
+            T result = transactional.run( new TxnContext( connection ) );
+
+            if (logger.isTraceEnabled())
+                logger.trace( "txn commiting: " + transactional );
+            if (!connection.getAutoCommit())
+                connection.commit();
+
+            commited = true;
+            return result;
+        }
+        finally
+        {
+            if (!commited)
+                JdbcUtil.rollbackQuietly(
+                        connection, "txn rollback: " + transactional.toString() );
+            if (autoCommit != null)
+                JdbcUtil.setAutoCommitQuietly( connection, autoCommit );
+        }
+    }
+
+    public final static <T> T executeWithoutTxn(
 			Connection connection,
 			Transactional<T> transactional
 	) {

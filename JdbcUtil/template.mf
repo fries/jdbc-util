@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: ${project.artifactId}
+Bundle-SymbolicName: de.schaeuffelhut.jdbc
 Bundle-Name: JdbcUtil
 Bundle-Version: 0.3.2.SNAPSHOT
 Import-Package: javax.naming;resolution:=optional,

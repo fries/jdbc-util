@@ -53,6 +53,9 @@ public class StatementParameters
 	public final static IfcStatementInParameterType<Boolean> Boolean = new BooleanInParameterType();
 	public final static IfcStatementInParameter Boolean(Boolean value) { return bindValue(Boolean, value); }
 
+	public final static IfcStatementInParameterType<Boolean> BooleanAsInteger = new BooleanAsIntegerInParameterType();
+	public final static IfcStatementInParameter BooleanAsInteger(Boolean value) { return bindValue(BooleanAsInteger, value); }
+
 	public final static IfcStatementInParameterType<Byte> Byte = new ByteInParameterType();
 	public final static IfcStatementInParameter Byte(Byte value) { return bindValue(Byte, value); }
 
@@ -256,6 +259,24 @@ final class BooleanInParameterType extends AbstractStatementInParameterType<Bool
 			stmt.setBoolean( pos, value );
 		return 1;
 	}
+}
+
+final class BooleanAsIntegerInParameterType extends ConvertingStatementInParameterType<Integer, Boolean>
+{
+    private static final long serialVersionUID = -618985621824972612L;
+
+    public BooleanAsIntegerInParameterType()
+    {
+        super( StatementParameters.Integer );
+    }
+
+    @Override
+    protected Integer convert(Boolean value)
+    {
+        if ( value == null )
+            return null;
+        return value ? 1 : 0;
+    }
 }
 
 final class ByteInParameterType extends AbstractStatementInParameterType<Byte>

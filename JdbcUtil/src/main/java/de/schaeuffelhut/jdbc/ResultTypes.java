@@ -47,6 +47,7 @@ import org.joda.time.format.ISOPeriodFormat;
 public final class ResultTypes
 {
 	public final static IfcResultType<Boolean> Boolean = new BooleanResultType();
+	public final static IfcResultType<Boolean> BooleanAsInteger = new BooleanAsIntegerResultType();
 	public final static IfcResultType<Byte> Byte = new ByteResultType();
 	public final static IfcResultType<Character> Character = new CharacterResultType();
 	public final static IfcResultType<Short> Short = new ShortResultType();
@@ -118,6 +119,29 @@ final class BooleanResultType implements IfcResultType<Boolean>
 	}
 	
 	public Class<Boolean> getResultType()
+	{
+		return Boolean.class;
+	}
+}
+
+final class BooleanAsIntegerResultType extends ConvertingResultType<Boolean, Integer>
+{
+    private static final long serialVersionUID = -905367527089203528L;
+
+    public BooleanAsIntegerResultType()
+    {
+        super( ResultTypes.Integer );
+    }
+
+    @Override
+    protected Boolean convert(Integer value)
+    {
+        if ( value == null )
+            return null;
+        return value == 0 ? false : true;
+    }
+
+    public Class<Boolean> getResultType()
 	{
 		return Boolean.class;
 	}
@@ -463,7 +487,7 @@ implements IfcResultType<E>
 			if ( e.getKey().equals( key ) )
 				return e;
 		throw new UnexpectedValueException( String.format(
-				"No %s enum for value %d found", type.getSimpleName(), key ) );
+				"No %s enum for value %s found", type.getSimpleName(), key ) );
 	}
 	
 	public Class<E> getResultType()

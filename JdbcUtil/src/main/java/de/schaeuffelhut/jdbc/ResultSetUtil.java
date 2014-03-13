@@ -1,0 +1,494 @@
+/**
+ * Copyright 2009 Friedrich Schäuffelhut
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
+package de.schaeuffelhut.jdbc;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+
+
+public final class ResultSetUtil
+{
+	private ResultSetUtil(){}
+	
+	/*
+	 * read single row, single value
+	 */
+	
+    public final static <T> T readScalar(
+    		ResultSet resultSet,
+    		IfcResultType<T> resultType
+    ) throws SQLException
+    {
+		final T result;
+		if ( resultSet.next() )
+        {
+			result = resultType.getResult( resultSet, 1 );
+        	if ( resultSet.next() )
+        	{
+        		throw new RuntimeException( "ResultSet returned more than one row" );
+        	}
+        }
+        else
+        {
+            result = null;
+        }
+        return result;
+    }
+
+
+	/*
+	 * read single row, multiple values
+	 */
+
+    public final static Object[] readTuple(
+    		ResultSet resultSet,
+    		IfcResultType<?>... resultTypes
+    ) throws SQLException
+    {
+		return readResult(
+				resultSet,
+				new ResultFactories.ArrayResultFactory( resultTypes.length ),
+				ResultAdaptors.createArrayResultAdaptors(
+						resultTypes
+				)
+		);
+    }
+
+    public final static Map<String, Object> readMap(
+    		ResultSet resultSet,
+    		IfcResultType<?>... resultTypes
+    ) throws SQLException
+    {
+		return readResult(
+				resultSet,
+				ResultFactories.HashMapResultFactory,
+				ResultAdaptors.createMapResultAdaptors(
+						resultSet,
+						resultTypes
+				)
+		);
+    }
+
+    public final static <T> T readObject(
+    		ResultSet resultSet,
+    		Class<T> type,
+    		IfcResultType<?>... resultTypes
+    ) throws SQLException
+    {
+		return readResult(
+				resultSet,
+				new ResultFactories.ReflectionResultFactory<T>( type ),
+				ResultAdaptors.createFieldResultAdaptors(
+						resultSet,
+						type,
+						resultTypes
+				)
+		);
+    }
+
+	@SuppressWarnings("unchecked")
+    public final static <T> T readObject(
+    		ResultSet resultSet,
+    		final T result,
+    		IfcResultType<?>... resultTypes
+    ) throws SQLException
+    {
+		return readResult(
+				resultSet,
+				new IfcResultFactory<T>() {
+					public T newInstance() {return result;}
+				},
+				ResultAdaptors.createFieldResultAdaptors(
+						resultSet,
+						(Class<T>)result.getClass(),
+						resultTypes
+				)
+		);
+    }
+
+    public final static <T> T readObjectByConstructor(
+    		ResultSet resultSet,
+    		Class<T> type,
+    		IfcResultType<?>... resultTypes
+    ) throws SQLException
+    {
+		final T result;
+		
+		Object[] values = readTuple(resultSet, resultTypes);
+		if ( values == null )
+		{
+			result = null;
+		}
+		else if ( hasOnlyNullValues( values ) )
+		{
+			return null;
+		}
+		else
+		{
+			Class<?>[] argsTypes = new Class<?>[resultTypes == null ? 0 : resultTypes.length];
+			for( int i=0; i<argsTypes.length; i++ )
+				argsTypes[i] = resultTypes[i].getResultType();
+
+			try {
+				result = findConstructor(type, argsTypes).newInstance( values );
+			} catch (IllegalArgumentException e) {
+				throw new RuntimeException( e );
+			} catch (InstantiationException e) {
+				throw new RuntimeException( e );
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException( e );
+			} catch (InvocationTargetException e) {
+				throw new RuntimeException( e );
+			}
+		}
+        return result;
+    }
+
+	private static boolean hasOnlyNullValues(Object[] values)
+	{
+		for(Object o:values)
+			if ( o != null )
+				return false;
+		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T> Constructor<T> findConstructor(Class<T> type, Class<?>[] argTypes)
+	{
+		Constructor<?>[] constructors = type.getConstructors();
+
+		//TODO: finds first compatible constructor, but should find closest matching constructor
+		loop: for(Constructor<?> constructor : constructors )
+		{
+			Class<?>[] parameterTypes = constructor.getParameterTypes();
+			if ( parameterTypes.length != argTypes.length )
+				continue;
+			for(int i=0; i<argTypes.length; i++)
+			{
+				if ( !parameterTypes[i].isAssignableFrom( argTypes[i] ) )
+				{
+					// TODO: The type is not assignment compatible, however we might be able to coerce from a basic type to a boxed type
+					continue loop;
+				}
+			}
+			return (Constructor<T>)constructor;
+		}
+		
+		String args = "";
+		for(Class<?> argType : argTypes)
+		{
+			if ( args.length() != 0 )
+				args += ", ";
+			args += argType.getName();
+		}
+		throw new NoSuchMethodError( type.getName()+".<init>("+args+")"  );
+	}
+	
+	public final static <T> T readResult(
+			ResultSet resultSet,
+			IfcResultFactory<T> resultHolderFactory,
+			IfcResultAdaptor<T>[] adaptors
+	) throws SQLException
+	{
+		final T result;
+		if ( resultSet.next() )
+        {
+			result = resultHolderFactory.newInstance();
+			ResultAdaptors.adapt( resultSet, result, adaptors );
+        	if ( resultSet.next() )
+        	{
+        		throw new RuntimeException(
+        				"ResultSet returned more than one row" );
+        	}
+        }
+        else
+        {
+            result = null;
+        }
+        return result;
+	}
+
+
+	
+	/*
+	 * read multiple rows, single value
+	 */
+
+	public final static <T> ArrayList<T> readScalars(
+			ResultSet resultSet,
+			IfcResultType<T> resultType
+	) throws SQLException
+    {
+        ArrayList<T> results = new ArrayList<T>();
+		readScalars( results, resultSet, resultType );
+		return results;
+    }
+
+	public final static <T> void readScalars(
+			Collection<T> results,
+			ResultSet resultSet,
+			IfcResultType<T> resultType
+	) throws SQLException
+	{
+		while( resultSet.next() )
+        	results.add( resultType.getResult(resultSet, 1) );
+	}
+
+	
+	/*
+	 * read multiple rows, multiple value
+	 */
+
+    public final static ArrayList<Object[]> readTuples(
+    		ResultSet resultSet,
+    		IfcResultType<?>... resultTypes
+    ) throws SQLException
+    {
+    	return readResults(
+        		resultSet,
+        		new ResultFactories.ArrayResultFactory( resultTypes.length ),
+        		ResultAdaptors.createArrayResultAdaptors( resultTypes )
+        );
+    }
+
+	public final static void readTuples(
+			Collection<Object[]> results,
+			ResultSet resultSet,
+			IfcResultType<?>... resultTypes
+	) throws SQLException
+	{
+		ResultSetUtil.readResults(
+        		results,
+        		resultSet,
+        		new ResultFactories.ArrayResultFactory( resultTypes.length ),
+        		ResultAdaptors.createArrayResultAdaptors( resultTypes )
+        );
+	}
+
+    public final static ArrayList<Map<String, Object>> readMaps(
+    		ResultSet resultSet,
+    		IfcResultType<?>... resultTypes
+    ) throws SQLException
+    {
+		return readResults(
+        		resultSet,
+        		ResultFactories.HashMapResultFactory,
+        		ResultAdaptors.createMapResultAdaptors(
+        				resultSet,
+						resultTypes
+        		)
+        );
+    }
+	
+	public final static void readMaps(
+			Collection<Map<String,Object>> results,
+			ResultSet resultSet,
+			IfcResultType<?>... resultTypes
+	) throws SQLException
+	{
+		ResultSetUtil.readResults(
+        		results,
+        		resultSet,
+        		ResultFactories.HashMapResultFactory,
+        		ResultAdaptors.createMapResultAdaptors(
+        				resultSet,
+						resultTypes
+        		)
+        );
+	}
+
+	public final static <T> ArrayList<T> readObjects(
+			ResultSet resultSet,
+			Class<T> type,
+			IfcResultType<?>... resultTypes
+	) throws SQLException
+    {
+        return readResults(
+        		resultSet,
+        		ResultFactories.ReflectionResultFactory.create( type ),
+        		ResultAdaptors.createFieldResultAdaptors( resultSet, type, resultTypes )
+        );
+    }
+
+	public final static <T> void readObjects(
+			Collection<T> results,
+			ResultSet resultSet,
+			Class<T> type,
+			IfcResultType<?>... resultTypes
+	) throws SQLException
+	{
+        ResultSetUtil.readResults(
+        		results,
+        		resultSet,
+        		ResultFactories.ReflectionResultFactory.create( type ),
+        		ResultAdaptors.createFieldResultAdaptors( resultSet, type, resultTypes )
+        );
+	}
+
+	/*
+	 * most general, read into single result holder
+	 */
+		
+	public final static <T> ArrayList<T> readResults(
+			ResultSet resultSet,
+			IfcResultFactory<T> factory,
+			IfcResultAdaptor<T>... adaptors
+	) throws SQLException
+	{
+		ArrayList<T> results = new ArrayList<T>();
+		ResultSetUtil.readResults(results, resultSet, factory, adaptors);
+		return results;
+	}
+
+	public final static <T> void readResults(
+			Collection<T> results,
+			ResultSet resultSet,
+			IfcResultFactory<T> factory,
+			IfcResultAdaptor<T>... adaptors
+	) throws SQLException
+	{
+	    while( resultSet.next() )
+	    {
+	    	T t = factory.newInstance();
+	    	ResultAdaptors.adapt( resultSet, t, adaptors );
+			results.add( t );
+	    }
+	}
+	
+	
+	/*
+	 * invoking a result set handler for each result 
+	 */
+	
+
+	@SuppressWarnings("unchecked")
+	@Deprecated
+	public final static <T extends Runnable> void forResultsInvoke(
+			final T resultHandler,
+			ResultSet resultSet,
+			IfcResultType<?>... resultTypes
+	) throws SQLException
+	{
+		forResultsInvoke(
+				resultHandler,
+				resultSet,
+				ResultAdaptors.createFieldResultAdaptors(
+						resultSet,
+						(Class<T>)resultHandler.getClass(),
+						resultTypes
+				)
+		);
+	}
+
+	@Deprecated
+	public final static <T extends Runnable> void forResultsInvoke(
+			final T resultHandler,
+			ResultSet resultSet, 
+			IfcResultAdaptor<T>... adaptors
+	) throws SQLException
+	{
+	    while( resultSet.next() )
+	    {
+			ResultAdaptors.adapt( resultSet, resultHandler, adaptors );
+			resultHandler.run();
+	    }
+	}
+	
+	
+	public final static <V,T> V processScalars(
+			IfcRowProcessor<V,T> processor,
+			ResultSet resultSet,
+			IfcResultType<T> resultType
+	) throws Exception
+	{
+		while( resultSet.next() )
+			processor.process( resultType.getResult(resultSet, 1) );
+		return processor.getResult();
+	}
+
+	
+	/*
+	 * process multiple rows, multiple values
+	 */
+
+	public final static <V> V processTuples(
+			IfcRowProcessor<V,Object[]> processor,
+			ResultSet resultSet,
+			IfcResultType<?>... resultTypes
+	) throws Exception
+	{
+		return ResultSetUtil.processResults(
+        		processor,
+        		resultSet,
+        		new ResultFactories.ArrayResultFactory( resultTypes.length ),
+        		ResultAdaptors.createArrayResultAdaptors( resultTypes )
+        );
+	}
+
+	public final static <V> V processMaps(
+			IfcRowProcessor<V,Map<String,Object>> processor,
+			ResultSet resultSet,
+			IfcResultType<?>... resultTypes
+	) throws Exception
+	{
+		return ResultSetUtil.processResults(
+        		processor,
+        		resultSet,
+        		ResultFactories.HashMapResultFactory,
+        		ResultAdaptors.createMapResultAdaptors(
+        				resultSet,
+						resultTypes
+        		)
+        );
+	}
+
+	public final static <V,T> V  processObjects(
+			IfcRowProcessor<V,T> processor,
+			ResultSet resultSet,
+			Class<T> type,
+			IfcResultType<?>... resultTypes
+	) throws Exception
+	{
+		return ResultSetUtil.processResults(
+        		processor,
+        		resultSet,
+        		ResultFactories.ReflectionResultFactory.create( type ),
+        		ResultAdaptors.createFieldResultAdaptors( resultSet, type, resultTypes )
+        );
+	}
+	
+	public final static <V,T> V  processResults(
+			IfcRowProcessor<V,T> processor,
+			ResultSet resultSet,
+			IfcResultFactory<T> factory,
+			IfcResultAdaptor<T>... adaptors
+	) throws Exception
+	{
+	    while( resultSet.next() )
+	    {
+	    	T t = factory.newInstance();
+	    	ResultAdaptors.adapt( resultSet, t, adaptors );
+			processor.process( t );
+	    }
+	    return processor.getResult();
+	}
+
+}

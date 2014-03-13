@@ -15,6 +15,7 @@ syntax: glob
 */src/test/resources/META-INF/TEST.MF
 */src/main/webapp/META-INF/MANIFEST.MF
 .idea 
+.gradle
 
 syntax: regexp
 ~$

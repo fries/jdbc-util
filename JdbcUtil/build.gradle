@@ -36,6 +36,7 @@ jar {
         instruction 'Import-Package', 'javax.naming;resolution:=optional'
         instruction 'Import-Package', 'javax.net;resolution:=optional'
         instruction 'Import-Package', 'javax.net.ssl;resolution:=optional'
+        instruction 'Import-Package', '*'
 
         instruction 'Bundle-Vendor', 'Friedrich Schaeuffelhut'
         instruction 'Bundle-Description', 'JDBC Utilities'

@@ -102,7 +102,7 @@ public final class TxnStatementUtil
 		};
 	}
 
-	public final static Transactional<Integer> execute(final String sql, final IfcStatementInParameter[]...parameters)
+	public final static Transactional<Integer> execute(final String sql, final IfcStatementInParameter[][] parameters)
 	{
 		return new Transactional<Integer>() {
 			public Integer run(TxnContext context) throws Exception

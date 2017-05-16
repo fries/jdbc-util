@@ -244,7 +244,7 @@ public final class StatementUtil
 	 * executing bulk statements
 	 */
 
-	public final static int[] execute(Connection connection, String sql, IfcStatementInParameter[]... parameters) throws SQLException
+	public final static int[] execute(Connection connection, String sql, IfcStatementInParameter[][] parameters) throws SQLException
 	{
 		PreparedStatement stmt = null;
 		try
@@ -271,7 +271,7 @@ public final class StatementUtil
 		}
 	}
 
-	public final static <T> T execute(Connection connection, GeneratedKeys generatedKeys, IfcStatementProperty<T> statementProperty, String sql, IfcStatementInParameter[]...parameters) throws SQLException
+	public final static <T> T execute(Connection connection, GeneratedKeys generatedKeys, IfcStatementProperty<T> statementProperty, String sql, IfcStatementInParameter[][] parameters) throws SQLException
 	{
 		PreparedStatement stmt = null;
 		try
@@ -353,12 +353,12 @@ public final class StatementUtil
 		return stmt;
 	}
 
-	public static PreparedStatement prepareStatement(Connection connection, String sql, IfcStatementInParameter[]... parameters) throws SQLException
+	public static PreparedStatement prepareStatement(Connection connection, String sql, IfcStatementInParameter[][] parameters) throws SQLException
 	{
 		return prepareStatement(connection, sql, null, parameters);
 	}
 	
-	public static PreparedStatement prepareStatement(Connection connection, String sql, GeneratedKeys generatedKeys, IfcStatementInParameter[]... parameters) throws SQLException
+	public static PreparedStatement prepareStatement(Connection connection, String sql, GeneratedKeys generatedKeys, IfcStatementInParameter[][] parameters) throws SQLException
 	{
 		if ( parameters != null && parameters.length > 0 )
 		{

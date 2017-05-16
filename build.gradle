@@ -9,7 +9,7 @@ buildscript {
 
 group = 'de.schaeuffelhut'
 //version = '0.3.2-SNAPSHOT'
-version = '0.3.2'
+version = '0.3.3'
 
 apply plugin: 'java'
 apply plugin: 'osgi'

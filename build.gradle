@@ -2,9 +2,10 @@ buildscript {
     repositories {
         jcenter()
     }
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
-    }
+}
+
+plugins {
+    id "com.jfrog.bintray" version "1.7.3"
 }
 
 group = 'de.schaeuffelhut'
@@ -14,7 +15,6 @@ version = '0.3.3'
 apply plugin: 'java'
 apply plugin: 'osgi'
 apply plugin: 'maven-publish'
-apply plugin: 'bintray'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
@@ -99,6 +99,6 @@ bintray {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.10'
+    gradleVersion = '3.3'
 }
 

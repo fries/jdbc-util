@@ -50,6 +50,9 @@ import org.joda.time.format.ISOPeriodFormat;
  */
 public class StatementParameters
 {
+	public final static IfcStatementInParameterType<Integer> Integer = new IntegerInParameterType();
+	public final static IfcStatementInParameter Integer(Integer value) { return bindValue(Integer, value); }
+
 	public final static IfcStatementInParameterType<Boolean> Boolean = new BooleanInParameterType();
 	public final static IfcStatementInParameter Boolean(Boolean value) { return bindValue(Boolean, value); }
 
@@ -64,9 +67,6 @@ public class StatementParameters
 
 	public final static IfcStatementInParameterType<Short> Short = new ShortInParameterType();
 	public final static IfcStatementInParameter Short(Short value) { return bindValue(Short, value); }
-
-	public final static IfcStatementInParameterType<Integer> Integer = new IntegerInParameterType();
-	public final static IfcStatementInParameter Integer(Integer value) { return bindValue(Integer, value); }
 
 	public final static IfcStatementInParameterType<Long> Long = new LongInParameterType();
 	public final static IfcStatementInParameter Long(Long value) { return bindValue(Long, value); }
@@ -436,6 +436,12 @@ final class SerializableInParameterType extends AbstractStatementInParameterType
 
 	public int configure(PreparedStatement stmt, int pos, Object value) throws SQLException
 	{
+		if ( value == null )
+		{
+			stmt.setBytes( pos, null );
+			return 1;
+		}
+
 		try
 		{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -443,7 +449,7 @@ final class SerializableInParameterType extends AbstractStatementInParameterType
 			oos = new ObjectOutputStream( baos );
 			oos.writeObject( value );
 			oos.close();
-			
+
 			stmt.setBytes( pos, baos.toByteArray() );
 			return 1;
 		}
@@ -451,7 +457,6 @@ final class SerializableInParameterType extends AbstractStatementInParameterType
 		{
 			throw new RuntimeException( e );
 		}
-		
 	}
 }
 

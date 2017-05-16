@@ -47,12 +47,12 @@ import org.joda.time.format.ISOPeriodFormat;
  */
 public final class ResultTypes
 {
+	public final static IfcResultType<Integer> Integer = new IntegerResultType();
 	public final static IfcResultType<Boolean> Boolean = new BooleanResultType();
 	public final static IfcResultType<Boolean> BooleanAsInteger = new BooleanAsIntegerResultType();
 	public final static IfcResultType<Byte> Byte = new ByteResultType();
 	public final static IfcResultType<Character> Character = new CharacterResultType();
 	public final static IfcResultType<Short> Short = new ShortResultType();
-	public final static IfcResultType<Integer> Integer = new IntegerResultType();
 	public final static IfcResultType<Long> Long = new LongResultType();
 	public final static IfcResultType<Float> Float = new FloatResultType();
 	public final static IfcResultType<Double> Double = new DoubleResultType();
@@ -362,9 +362,11 @@ final class SerializeableResultType<T> implements IfcResultType<T>
 	
 	public final T getResult(ResultSet resultSet, int index) throws SQLException
     {
+		byte[] bytes = resultSet.getBytes( index );
+		if (bytes == null)
+			return null;
 		try
 		{
-			byte[] bytes = resultSet.getBytes( index );
 			ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
 			ObjectInputStream ois = new ObjectInputStream( bais ){
                 @Override

@@ -610,5 +610,5 @@ public class StatementParametersTest
         Assert.assertEquals( 0, count );
         Mockito.verify( stmt ).setQueryTimeout( 10 );
     }
-    
+
 }

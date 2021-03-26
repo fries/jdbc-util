@@ -15,12 +15,11 @@
  */
 package de.schaeuffelhut.jdbc;
 
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import de.schaeuffelhut.jdbc.txn.Transactional;
 import de.schaeuffelhut.jdbc.txn.TxnContext;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 /**

@@ -15,13 +15,11 @@
  */
 package de.schaeuffelhut.jdbc;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Savepoint;
-import java.sql.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.log4j.Logger;
+import java.sql.*;
+
 
 /**
  * @author Friedrich Schäuffelhut
@@ -29,7 +27,7 @@ import org.apache.log4j.Logger;
  */
 public final class JdbcUtil
 {
-	private final static Logger logger = Logger.getLogger( JdbcUtil.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( JdbcUtil.class );
 
 	private JdbcUtil()
 	{
@@ -84,7 +82,7 @@ public final class JdbcUtil
 		}
 		catch (SQLException err)
 		{
-			logger.error( "Exception during commit", err );
+			LOGGER.error( "Exception during commit", err );
 		}
 	}
 
@@ -107,8 +105,8 @@ public final class JdbcUtil
 	{
 		try
 		{
-			if ( msg != null && logger.isTraceEnabled() )
-				logger.trace( msg );
+			if ( msg != null && LOGGER.isTraceEnabled() )
+				LOGGER.trace( msg );
 			if ( connection != null && !connection.getAutoCommit() )
 			{
 				if ( savePoint == null )
@@ -119,7 +117,7 @@ public final class JdbcUtil
 		}
 		catch (SQLException err)
 		{
-			logger.error( "Exception during rollback", err );
+			LOGGER.error( "Exception during rollback", err );
 		}
 	}
 
@@ -132,7 +130,7 @@ public final class JdbcUtil
 		}
 		catch (SQLException err)
 		{
-			logger.error( "Exception during rollback", err );
+			LOGGER.error( "Exception during rollback", err );
 		}
 	}
 }

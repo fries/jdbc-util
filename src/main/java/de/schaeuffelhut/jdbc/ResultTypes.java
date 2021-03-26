@@ -15,6 +15,11 @@
  */
 package de.schaeuffelhut.jdbc;
 
+import org.joda.time.*;
+import org.joda.time.base.BaseSingleFieldPeriod;
+import org.joda.time.format.ISODateTimeFormat;
+import org.joda.time.format.ISOPeriodFormat;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -24,21 +29,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
-
-import org.joda.time.DateMidnight;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Days;
-import org.joda.time.Hours;
-import org.joda.time.Minutes;
-import org.joda.time.Months;
-import org.joda.time.Period;
-import org.joda.time.Seconds;
-import org.joda.time.Weeks;
-import org.joda.time.Years;
-import org.joda.time.base.BaseSingleFieldPeriod;
-import org.joda.time.format.ISODateTimeFormat;
-import org.joda.time.format.ISOPeriodFormat;
 
 
 /**

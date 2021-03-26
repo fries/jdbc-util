@@ -15,9 +15,9 @@
  */
 package de.schaeuffelhut.jdbc.txn;
 
-import java.sql.Connection;
-
 import de.schaeuffelhut.jdbc.JdbcUtil;
+
+import java.sql.Connection;
 
 public final class LazyTxnContext
 {

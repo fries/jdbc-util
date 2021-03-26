@@ -18,12 +18,11 @@ package de.schaeuffelhut.jdbc.txn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.util.Properties;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.util.Properties;
 
 
 public class JNDIConnectionProvider implements ConnectionProvider

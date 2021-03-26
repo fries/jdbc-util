@@ -15,13 +15,13 @@
  */
 package de.schaeuffelhut.jdbc.experimental;
 
+import de.schaeuffelhut.jdbc.IfcResultType;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import de.schaeuffelhut.jdbc.IfcResultType;
 
 /**
  * @author Friedrich Schäuffelhut

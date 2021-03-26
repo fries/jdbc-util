@@ -15,12 +15,14 @@
  */
 package de.schaeuffelhut.jdbc.txn;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
 
 /**
  * @author Friedrich Schäuffelhut
@@ -28,7 +30,7 @@ import org.apache.log4j.Logger;
  */
 public final class JdbcUtilProperties
 {
-	private final static Logger logger = Logger.getLogger( JdbcUtilProperties.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( JdbcUtilProperties.class );
 	
 	final static String SYSPROP_JDBCUTIL_PROPERTIES = "jdbcutil.properties";
 	final static String BASE_NAME = "/connection.properties";
@@ -39,12 +41,12 @@ public final class JdbcUtilProperties
 
 	public final static Properties findProperties()
 	{
-		logger.debug( "locating connection properties for jdbc util" );
+		LOGGER.debug( "locating connection properties for jdbc util" );
 		try
 		{
 			final Properties properties = new Properties();
 			
-			logger.debug( String.format(
+			LOGGER.debug( String.format(
 					"checking system property '%s' for property file location",
 					SYSPROP_JDBCUTIL_PROPERTIES
 			));
@@ -54,12 +56,12 @@ public final class JdbcUtilProperties
 			
 			if ( propertyFilename != null )
 			{
-				logger.debug( String.format( 
+				LOGGER.debug( String.format(
 						"system property '%s' refers to '%s'",
 						SYSPROP_JDBCUTIL_PROPERTIES,
 						propertyFilename
 				));
-				logger.debug( String.format( 
+				LOGGER.debug( String.format(
 						"loading property file from '%s' ",
 						propertyFilename
 				));
@@ -68,12 +70,12 @@ public final class JdbcUtilProperties
 			}
 			else
 			{
-				logger.debug( String.format( 
+				LOGGER.debug( String.format(
 						"system property '%s' is not set",
 						SYSPROP_JDBCUTIL_PROPERTIES,
 						propertyFilename
 				));
-				logger.debug( String.format(
+				LOGGER.debug( String.format(
 						"loading property file via class loader from '%s'",
 						BASE_NAME
 				));
@@ -87,7 +89,7 @@ public final class JdbcUtilProperties
 				properties.load( is );
 			}
 
-			logger.debug( "connection properties for jdbc util loaded" );
+			LOGGER.debug( "connection properties for jdbc util loaded" );
 			
 			return properties;
 		}

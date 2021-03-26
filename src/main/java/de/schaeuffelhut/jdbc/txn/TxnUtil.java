@@ -22,15 +22,15 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
 
 import de.schaeuffelhut.jdbc.JdbcUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TxnUtil
 {
-    public final static Logger logger = Logger.getLogger(TxnUtil.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger( TxnUtil.class );
 
-    
     private TxnUtil()
     {
     }
@@ -45,14 +45,14 @@ public class TxnUtil
 		
 		if ( connectionProviderClassName == null )
 		{
-			logger.debug( ConnectionProvider.PROP_CONN_PROVIDER + " undefined, using DefaultConnectionProvider");
+			LOGGER.debug( ConnectionProvider.PROP_CONN_PROVIDER + " undefined, using DefaultConnectionProvider");
 			defaultConnectionProvider = new DefaultConnectionProvider( properties );
 		}
 		else
 		{
-			logger.debug( String.format( "%s=%s", ConnectionProvider.PROP_CONN_PROVIDER, connectionProviderClassName ) );
+			LOGGER.debug( String.format( "%s=%s", ConnectionProvider.PROP_CONN_PROVIDER, connectionProviderClassName ) );
 			try{
-				logger.debug( String.format( "creating new instance via constructor %s(Properties prop)", connectionProviderClassName ) );
+				LOGGER.debug( String.format( "creating new instance via constructor %s(Properties prop)", connectionProviderClassName ) );
 				Class<?> clazz = Class.forName( connectionProviderClassName );
 				Constructor<?> constructor = clazz.getConstructor( Properties.class );
 				defaultConnectionProvider = (ConnectionProvider)constructor.newInstance( properties );
@@ -137,8 +137,8 @@ public class TxnUtil
 
 	final static Connection open(ConnectionProvider connectionProvider)
 	{
-		if ( logger.isTraceEnabled() )
-			logger.trace( "opening connection" );
+		if ( LOGGER.isTraceEnabled() )
+			LOGGER.trace( "opening connection" );
 
 		try
 		{
@@ -158,8 +158,8 @@ public class TxnUtil
 			ConnectionProvider connectionProvider,
 			Connection connection
 	) {
-		if ( logger.isTraceEnabled() )
-			logger.trace( "closing connection" );
+		if ( LOGGER.isTraceEnabled() )
+			LOGGER.trace( "closing connection" );
 
 		try
      	{
@@ -202,12 +202,12 @@ public class TxnUtil
             autoCommit = connection.getAutoCommit();
             connection.setAutoCommit( false );
 
-            if (logger.isTraceEnabled())
-                logger.trace( "txn invoking: " + transactional );
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace( "txn invoking: " + transactional );
             T result = transactional.run( new TxnContext( connection ) );
 
-            if (logger.isTraceEnabled())
-                logger.trace( "txn commiting: " + transactional );
+            if (LOGGER.isTraceEnabled())
+                LOGGER.trace( "txn commiting: " + transactional );
             if (!connection.getAutoCommit())
                 connection.commit();
 
@@ -285,13 +285,13 @@ public class TxnUtil
 		{
 			threadLocalTxnContext.set( lazyTxnContext );
 			
-		    if (logger.isTraceEnabled())
-		        logger.trace( "txn invoking: " + transactional );
+		    if (LOGGER.isTraceEnabled())
+		        LOGGER.trace( "txn invoking: " + transactional );
 
 		    transactional.run();
 
-		    if (logger.isTraceEnabled())
-		        logger.trace("txn commiting: " + transactional);
+		    if (LOGGER.isTraceEnabled())
+		        LOGGER.trace( "txn commiting: " + transactional);
 		    
 		    if ( lazyTxnContext.hasConnection() && !lazyTxnContext.getConnection().getAutoCommit() )
 		    	lazyTxnContext.getConnection().commit();

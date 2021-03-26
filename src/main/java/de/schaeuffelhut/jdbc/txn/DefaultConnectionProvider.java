@@ -15,14 +15,14 @@
  */
 package de.schaeuffelhut.jdbc.txn;
 
-import static org.apache.log4j.Logger.getLogger;
 
 import java.sql.Connection;
 import java.sql.Driver;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Friedrich Schäuffelhut
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  */
 public class DefaultConnectionProvider implements ConnectionProvider
 {
-	final static Logger logger = getLogger(DefaultConnectionProvider.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger( DefaultConnectionProvider.class );
 
 
 	public static final String PROP_CONN_INFO_PREFIX = "jdbcutil.connection.info.";
@@ -71,8 +71,8 @@ public class DefaultConnectionProvider implements ConnectionProvider
 		driverClassName = jdbcUtilProperties.getProperty( PROP_DRIVER );
 		connectionUrl = jdbcUtilProperties.getProperty( PROP_CONN_URL );
 		
-		logger.debug( String.format( "%s{%s}=%s", JdbcUtilProperties.BASE_NAME, PROP_DRIVER,    driverClassName ) );
-		logger.debug( String.format( "%s{%s}=%s", JdbcUtilProperties.BASE_NAME, PROP_CONN_URL , connectionUrl ) );
+		LOGGER.debug( String.format( "%s{%s}=%s", JdbcUtilProperties.BASE_NAME, PROP_DRIVER,    driverClassName ) );
+		LOGGER.debug( String.format( "%s{%s}=%s", JdbcUtilProperties.BASE_NAME, PROP_CONN_URL , connectionUrl ) );
 
         driver = loadDriver();
         connectionInfo = createConnectionInfo();
@@ -81,12 +81,12 @@ public class DefaultConnectionProvider implements ConnectionProvider
 	private void checkProperty(String key)
 	{
 		if ( !jdbcUtilProperties.containsKey( key ) )
-    		logger.warn( "missing property: " + key );
+    		LOGGER.warn( "missing property: " + key );
 	}
 
 	private final Properties createConnectionInfo()
 	{
-		logger.trace( String.format(
+		LOGGER.trace( String.format(
 				"constructing connection info properties " +
 				"from keys starting with '%s'",
 				PROP_CONN_INFO_PREFIX
@@ -100,8 +100,8 @@ public class DefaultConnectionProvider implements ConnectionProvider
 				String subkey = key.substring( PROP_CONN_INFO_PREFIX.length() );
 				String value = (String)property.getValue();
 				connectionInfo.put( subkey, value);
-		        if ( logger.isTraceEnabled() )
-		        	logger.trace( String.format(
+		        if ( LOGGER.isTraceEnabled() )
+		        	LOGGER.trace( String.format(
 		        			"connection.info{%s}=%s", subkey, value ) );
 			}
     	}
@@ -113,7 +113,7 @@ public class DefaultConnectionProvider implements ConnectionProvider
 	{
 		try
 		{
-			logger.debug( "loading jdbc driver: " + driverClassName );
+			LOGGER.debug( "loading jdbc driver: " + driverClassName );
 			return ((Class<Driver>)Class.forName( driverClassName )).newInstance();
 		}
 		catch (Exception err)

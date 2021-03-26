@@ -15,10 +15,11 @@
  */
 package de.schaeuffelhut.jdbc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
-import org.apache.log4j.Logger;
 
 /**
  * @author Friedrich Schäuffelhut
@@ -28,8 +29,8 @@ public final class BoundValue<T> implements IfcStatementInParameter
 {
 	private static final long	serialVersionUID	= 1324455535658426764L;
 
-	public final static Logger logger = Logger.getLogger( StatementParameters.class );
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger( BoundValue.class );
+
 	BoundValue(IfcStatementInParameterType<T> parameter, T value)
 	{
 		this.parameter = parameter;
@@ -52,11 +53,11 @@ public final class BoundValue<T> implements IfcStatementInParameter
 	 */
 	public final int configure(PreparedStatement stmt, int index) throws SQLException
 	{
-		if ( logger.isTraceEnabled() )
+		if ( LOGGER.isTraceEnabled() )
 			if ( value == null )
-				logger.trace( String.format("setting param %d to null", index ) );
+				LOGGER.trace( String.format("setting param %d to null", index ) );
 			else
-				logger.trace( String.format(
+				LOGGER.trace( String.format(
 						"setting param %d (%s) = %s",
 						index, value.getClass().getSimpleName(), value ) );
 			

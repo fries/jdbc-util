@@ -15,6 +15,9 @@
  */
 package de.schaeuffelhut.jdbc.txn;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.util.Properties;
 
@@ -22,12 +25,11 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
 
 public class JNDIConnectionProvider implements ConnectionProvider
 {
-	final static Logger logger = Logger.getLogger( JNDIConnectionProvider.class );
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger( JNDIConnectionProvider.class );
+
 	private static final String PROP_JNDI_PATH = PROP_CONN_PROVIDER_PREFIX + "jndi-path";
 	
 	private DataSource	ds;
@@ -35,12 +37,12 @@ public class JNDIConnectionProvider implements ConnectionProvider
 	public JNDIConnectionProvider(Properties properties) throws NamingException
 	{
 		if ( !properties.containsKey( PROP_JNDI_PATH ) )
-    		logger.warn( "missing property: " + PROP_JNDI_PATH );
+    		LOGGER.warn( "missing property: " + PROP_JNDI_PATH );
 
 
 		String jndiPath = properties.getProperty( PROP_JNDI_PATH );
 		
-		logger.debug( String.format( "%s{%s}=%s", JdbcUtilProperties.BASE_NAME, PROP_JNDI_PATH,  jndiPath) );
+		LOGGER.debug( String.format( "%s{%s}=%s", JdbcUtilProperties.BASE_NAME, PROP_JNDI_PATH,  jndiPath) );
 		
 		InitialContext initialContext = new InitialContext();
 		ds = (DataSource)initialContext.lookup( jndiPath );

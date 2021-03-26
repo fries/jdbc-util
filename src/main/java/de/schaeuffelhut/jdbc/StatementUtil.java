@@ -15,6 +15,9 @@
  */
 package de.schaeuffelhut.jdbc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
 
 
 
@@ -36,8 +38,8 @@ import org.apache.log4j.Logger;
  */
 public final class StatementUtil
 {
-	private final static Logger logger = Logger.getLogger( StatementUtil.class );
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger( StatementUtil.class );
+
 	private StatementUtil(){}
 
 	/*
@@ -67,8 +69,8 @@ public final class StatementUtil
 		PreparedStatement stmt = null;
 		try
 		{
-			if ( logger.isTraceEnabled() )
-				logger.trace( "selectIntoScalar: " + sql );
+			if ( LOGGER.isTraceEnabled() )
+				LOGGER.trace( "selectIntoScalar: " + sql );
 			stmt = prepareStatement( connection, sql, parameters );
 			ResultSet resultSet = stmt.executeQuery();
 			return resultReader.readResult( resultSet );
@@ -121,8 +123,8 @@ public final class StatementUtil
 		PreparedStatement stmt = null;
 		try
 		{
-			if ( logger.isTraceEnabled() )
-				logger.trace( "selectIntoObjects: " + sql );
+			if ( LOGGER.isTraceEnabled() )
+				LOGGER.trace( "selectIntoObjects: " + sql );
 			stmt = prepareStatement( connection, sql, parameters );
 			ResultSet resultSet = stmt.executeQuery();
 			resultReader.readResults( results, resultSet );
@@ -144,8 +146,8 @@ public final class StatementUtil
 		PreparedStatement stmt = null;
 		try
 		{
-			if ( logger.isTraceEnabled() )
-				logger.trace( "selectIntoObjects: " + sql );
+			if ( LOGGER.isTraceEnabled() )
+				LOGGER.trace( "selectIntoObjects: " + sql );
 			stmt = prepareStatement( connection, sql, parameters );
 			ResultSet resultSet = stmt.executeQuery();
 			return resultSetProcessor.readResults( resultSet );
@@ -165,12 +167,12 @@ public final class StatementUtil
 		PreparedStatement stmt = null;
 		try
 		{
-			if ( logger.isTraceEnabled() )
-				logger.trace( "execute: " + sql );
+			if ( LOGGER.isTraceEnabled() )
+				LOGGER.trace( "execute: " + sql );
 			stmt = prepareStatement( connection, sql, parameters );
 			int count = stmt.executeUpdate();
-			if ( logger.isTraceEnabled() )
-				logger.trace( String.format( "updated %d records", count ) );			
+			if ( LOGGER.isTraceEnabled() )
+				LOGGER.trace( String.format( "updated %d records", count ) );
 			return count;
 		}
 		finally
@@ -184,8 +186,8 @@ public final class StatementUtil
 		PreparedStatement stmt = null;
 		try
 		{
-			if ( logger.isTraceEnabled() )
-				logger.trace( "execute: " + sql );
+			if ( LOGGER.isTraceEnabled() )
+				LOGGER.trace( "execute: " + sql );
 			
 			stmt = prepareStatement( connection, sql, generatedKeys, parameters );
 			stmt.execute();
@@ -214,8 +216,8 @@ public final class StatementUtil
 		PreparedStatement stmt = null;
 		try
 		{
-			if ( logger.isTraceEnabled() )
-				logger.trace( "execute: " + sql );
+			if ( LOGGER.isTraceEnabled() )
+				LOGGER.trace( "execute: " + sql );
 			
 			stmt = prepareStatement( connection, sql, generatedKeys, parameters );
 			stmt.execute();
@@ -249,8 +251,8 @@ public final class StatementUtil
 		PreparedStatement stmt = null;
 		try
 		{
-			if ( logger.isTraceEnabled() )
-				logger.trace( "execute: " + sql );
+			if ( LOGGER.isTraceEnabled() )
+				LOGGER.trace( "execute: " + sql );
 			stmt = prepareStatement( connection, sql, parameters );
 			final int[] count;
 			if ( stmt == null ) // happens if parameters == null
@@ -260,8 +262,8 @@ public final class StatementUtil
 			else
 			{
 				count = stmt.executeBatch();
-				if ( logger.isTraceEnabled() )
-					logger.trace( String.format( "updated %s records", Arrays.asList( count ) ) );			
+				if ( LOGGER.isTraceEnabled() )
+					LOGGER.trace( String.format( "updated %s records", Arrays.asList( count ) ) );
 			}
 			return count;
 		}
@@ -276,8 +278,8 @@ public final class StatementUtil
 		PreparedStatement stmt = null;
 		try
 		{
-			if ( logger.isTraceEnabled() )
-				logger.trace( "execute: " + sql );
+			if ( LOGGER.isTraceEnabled() )
+				LOGGER.trace( "execute: " + sql );
 			
 			stmt = prepareStatement( connection, sql, generatedKeys, parameters );
 			stmt.executeBatch();
@@ -316,7 +318,7 @@ public final class StatementUtil
 				sql = param.modify( sql );
 		
 		if ( unmodifiedSQL != sql )
-			logger.trace( "modified sql: " +sql );
+			LOGGER.trace( "modified sql: " + sql );
 		
 		return sql;
 	}
@@ -373,8 +375,8 @@ public final class StatementUtil
 			for(int i = 0; i < parameters.length; i++)
 			{
 				configureStatement( stmt, parameters[i] );
-				if ( logger.isTraceEnabled() )
-					logger.trace( String.format("add batch %d", i ) );
+				if ( LOGGER.isTraceEnabled() )
+					LOGGER.trace( String.format("add batch %d", i ) );
 				stmt.addBatch();
 			}
 			return stmt;

@@ -5,7 +5,7 @@ buildscript {
 }
 
 group = 'de.schaeuffelhut'
-version = '0.3.4-SNAPSHOT'
+version = gradle.ext.versions['jdbcutil']
 
 apply plugin: 'java'
 

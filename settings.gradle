@@ -2,7 +2,7 @@ rootProject.name='de.schaeuffelhut.jdbc'
 
 
 gradle.ext.versions = [
-        jdbcutil   : "0.3.4-SNAPSHOT",
+        jdbcutil   : "0.3.4",
         gradle     : "6.8.2",
         guava      : "21.0",
         jodaTime   : "2.9.9",

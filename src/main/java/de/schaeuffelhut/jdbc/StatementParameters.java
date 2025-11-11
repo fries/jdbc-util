@@ -1,17 +1,7 @@
-/**
- * Copyright 2009 Friedrich Schäuffelhut
+/*
+ * Copyright (c) 2009-2025 the JdbcUtil authors
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * SPDX-License-Identifier: MIT
  */
 package de.schaeuffelhut.jdbc;
 
@@ -25,230 +15,370 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.sql.*;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
  * @author Friedrich Schäuffelhut
- * 
  */
 public class StatementParameters
 {
-	public final static IfcStatementInParameterType<Integer> Integer = new IntegerInParameterType();
-	public final static IfcStatementInParameter Integer(Integer value) { return bindValue(Integer, value); }
+    public final static StatementInParameterType<Boolean> Boolean = new BooleanInParameterType();
 
-	public final static IfcStatementInParameterType<Boolean> Boolean = new BooleanInParameterType();
-	public final static IfcStatementInParameter Boolean(Boolean value) { return bindValue(Boolean, value); }
+    public static StatementInParameter Boolean(Boolean value)
+    {
+        return bindValue( Boolean, value );
+    }
 
-	public final static IfcStatementInParameterType<Boolean> BooleanAsInteger = new BooleanAsIntegerInParameterType();
-	public final static IfcStatementInParameter BooleanAsInteger(Boolean value) { return bindValue(BooleanAsInteger, value); }
+    public final static StatementInParameterType<Boolean> BooleanAsInteger = new BooleanAsIntegerInParameterType();
 
-	public final static IfcStatementInParameterType<Byte> Byte = new ByteInParameterType();
-	public final static IfcStatementInParameter Byte(Byte value) { return bindValue(Byte, value); }
+    public static StatementInParameter BooleanAsInteger(Boolean value)
+    {
+        return bindValue( BooleanAsInteger, value );
+    }
 
-	public final static IfcStatementInParameterType<Character> Character = new CharacterInParameterType();
-	public final static IfcStatementInParameter Character(Character value) { return bindValue(Character, value); }
+    public final static StatementInParameterType<Byte> Byte = new ByteInParameterType();
 
-	public final static IfcStatementInParameterType<Short> Short = new ShortInParameterType();
-	public final static IfcStatementInParameter Short(Short value) { return bindValue(Short, value); }
+    public static StatementInParameter Byte(Byte value)
+    {
+        return bindValue( Byte, value );
+    }
 
-	public final static IfcStatementInParameterType<Long> Long = new LongInParameterType();
-	public final static IfcStatementInParameter Long(Long value) { return bindValue(Long, value); }
+    public final static StatementInParameterType<Character> Character = new CharacterInParameterType();
 
-	public final static IfcStatementInParameterType<Float> Float = new FloatInParameterType();
-	public final static IfcStatementInParameter Float(Float value) { return bindValue(Float, value); }
+    public static StatementInParameter Character(Character value)
+    {
+        return bindValue( Character, value );
+    }
 
-	public final static IfcStatementInParameterType<Double> Double = new DoubleInParameterType();
-	public final static IfcStatementInParameter Double(Double value) { return bindValue(Double, value); }
+    public final static StatementInParameterType<Short> Short = new ShortInParameterType();
 
-	public final static IfcStatementInParameterType<BigDecimal> BigDecimal = new BigDecimalInParameterType();
-	public final static IfcStatementInParameter BigDecimal(java.math.BigDecimal value) { return bindValue(BigDecimal, value); }
+    public static StatementInParameter Short(Short value)
+    {
+        return bindValue( Short, value );
+    }
 
-	public final static IfcStatementInParameterType<String> String = new StringInParameterType();
-	public final static IfcStatementInParameter String(String value) { return bindValue(String, value); }
+    public final static StatementInParameterType<Integer> Integer = new IntegerInParameterType();
 
-	public final static IfcStatementInParameterType<Date> Date = new DateInParameterType();
-	public final static IfcStatementInParameter Date(Date value) { return bindValue(Date, value); }
+    public static StatementInParameter Integer(Integer value)
+    {
+        return bindValue( Integer, value );
+    }
 
-	public final static IfcStatementInParameterType<Timestamp> Timestamp = new TimestampInParameterType();
-	public final static IfcStatementInParameter Timestamp(Timestamp value) { return bindValue(Timestamp, value); }
+    public final static StatementInParameterType<Long> Long = new LongInParameterType();
 
-	public final static IfcStatementInParameterType<Object> Object = new ObjectInParameterType();
-	public final static IfcStatementInParameter Object(Object value) { return bindValue(Object, value); }
+    public static StatementInParameter Long(Long value)
+    {
+        return bindValue( Long, value );
+    }
 
-	public final static IfcStatementInParameterType<Object> Serializeable = new SerializableInParameterType();
-	public final static IfcStatementInParameter Serializeable(Object value) { return bindValue(Serializeable, value); }
+    public final static StatementInParameterType<Float> Float = new FloatInParameterType();
 
-	public final static IfcStatementInParameterType<byte[]> Bytes = new BytesInParameterType();
-	public final static IfcStatementInParameter Bytes(byte[] value) { return bindValue(Bytes, value); }
-	
-	public final static IfcStatementInParameterType<Enum<?>> EnumByName = new EnumByNameParameterType();
-	public final static IfcStatementInParameter EnumByName(Enum<?> value) { return bindValue(EnumByName, value); }
+    public static StatementInParameter Float(Float value)
+    {
+        return bindValue( Float, value );
+    }
 
-	public final static IfcStatementInParameterType<IfcEnumIntKey> EnumByIntKey = new EnumByIntKeyParameterType();
-	public final static <E extends Enum<E> & IfcEnumIntKey> IfcStatementInParameter EnumByIntKey(E value) { return bindValue(EnumByIntKey, value); }
+    public final static StatementInParameterType<Double> Double = new DoubleInParameterType();
 
-	public final static IfcStatementInParameterType<Class<?>> Class = new ClassParameterType();
-	public final static IfcStatementInParameter Class(Class<?> value) { return bindValue(Class, value); }
-	
-	public final static IfcStatementInParameterType<DateTime> DateTime = new DateTimeInParameterType();
-	public final static IfcStatementInParameter DateTime(DateTime value) { return bindValue(DateTime, value); }
+    public static StatementInParameter Double(Double value)
+    {
+        return bindValue( Double, value );
+    }
 
-	public final static IfcStatementInParameterType<DateMidnight> DateMidnight = new DateMidnightInParameterType();
-	public final static IfcStatementInParameter DateMidnight(org.joda.time.DateMidnight value) { return bindValue(DateMidnight, value); }
+    public final static StatementInParameterType<BigDecimal> BigDecimal = new BigDecimalInParameterType();
 
-	public final static IfcStatementInParameterType<DateMidnight> DateMidnightAsIsoString = new DateMidnightAsIsoStringInParameterType();
-	public final static IfcStatementInParameter DateMidnightAsIsoString(org.joda.time.DateMidnight value) { return bindValue(DateMidnightAsIsoString, value); }
+    public static StatementInParameter BigDecimal(java.math.BigDecimal value)
+    {
+        return bindValue( BigDecimal, value );
+    }
 
-	public final static IfcStatementInParameterType<Days> Days = new DaysInParameterType();
-	public final static IfcStatementInParameter Days(Days value) { return bindValue(Days, value); }
-	
-	public final static IfcStatementInParameterType<Hours> Hours = new HoursInParameterType();
-	public final static IfcStatementInParameter Hours(Hours value) { return bindValue(Hours, value); }
-	
-	public final static IfcStatementInParameterType<Minutes> Minutes = new MinutesInParameterType();
-	public final static IfcStatementInParameter Minutes(Minutes value) { return bindValue(Minutes, value); }
-	
-	public final static IfcStatementInParameterType<Months> Months = new MonthsInParameterType();
-	public final static IfcStatementInParameter Months(Months value) { return bindValue(Months, value); }
-	
-	public final static IfcStatementInParameterType<Seconds> Seconds = new SecondsInParameterType();
-	public final static IfcStatementInParameter Seconds(Seconds value) { return bindValue(Seconds, value); }
-	
-	public final static IfcStatementInParameterType<Weeks> Weeks = new WeeksInParameterType();
-	public final static IfcStatementInParameter Weeks(Weeks value) { return bindValue(Weeks, value); }
-	
-	public final static IfcStatementInParameterType<Years> Years = new YearsInParameterType();
-	public final static IfcStatementInParameter Years(Years value) { return bindValue(Years, value); }
-	
-	public final static IfcStatementInParameterType<Period> PeriodIsoEncoded = new PeriodIsoEncodedInParameterType();
-	public final static IfcStatementInParameter PeriodIsoEncoded(Period value) { return bindValue(PeriodIsoEncoded, value); }
+    public final static StatementInParameterType<String> String = new StringInParameterType();
 
-	public final static IfcStatementInParameterType<Duration> DurationAsLong = new DurationAsLongInParameterType();
-	public final static IfcStatementInParameter DurationAsLong(org.joda.time.Duration value) { return bindValue(DurationAsLong, value); }
+    public static StatementInParameter String(String value)
+    {
+        return bindValue( String, value );
+    }
 
-	public final static IfcStatementInParameterType<DateTimeZone> DateTimeZone = new DateTimeZoneInParameterType();
-	public final static IfcStatementInParameter DateTimeZone(DateTimeZone value) { return bindValue(DateTimeZone, value); }
+    public final static StatementInParameterType<Collection<String>> CollectionOfString = new CollectionOfStringInParameterType();
 
-	public final static IfcStatementInParameter QueryTimeout(int value) { return new QueryTimeoutParameter( value ); }
+    public static StatementInParameter StringArray(Collection<java.lang.String> value)
+    {
+        return bindValue( CollectionOfString, value );
+    }
 
-	// Array
-	
-	public final static <T> IfcStatementInParameterType<T[]> Array(IfcStatementInParameterType<T> type, String placeholder)
-	{
-		return new ArrayInParameterType<T>(type, placeholder);
-	}
+    public final static StatementInParameterType<Date> Date = new DateInParameterType();
 
-	public final static <T> IfcStatementInParameter Array(IfcStatementInParameterType<T> type, String placeholder, T... values)
-	{
-		return bindValue( new ArrayInParameterType<T>(type, placeholder), values );
-	}
+    public static StatementInParameter Date(Date value)
+    {
+        return bindValue( Date, value );
+    }
 
-	public final static <T> IfcStatementInParameterType<T[]> Array(IfcStatementInParameterType<T> type, String placeholder, String placeholderReplacement)
-	{
-		return new ArrayInParameterType<T>(type, placeholder, placeholderReplacement);
-	}
+    public final static StatementInParameterType<Timestamp> Timestamp = new TimestampInParameterType();
 
-	public final static <T> IfcStatementInParameter Array(IfcStatementInParameterType<T> type, String placeholder, String placeholderReplacement, T... values)
-	{
-		return bindValue( new ArrayInParameterType<T>(type, placeholder, placeholderReplacement), values );
-	}
+    public static StatementInParameter Timestamp(Timestamp value)
+    {
+        return bindValue( Timestamp, value );
+    }
 
-	public final static <T> IfcStatementInParameterType<? extends java.util.Collection<T>> Collection(IfcStatementInParameterType<T> type, String placeholder)
-	{
-		return new CollectionInParameterType<T>(type, placeholder);
-	}
+    public final static StatementInParameterType<ZonedDateTime> ZonedDateTimeAtUTC = new ZonedDateTimeAtUTCInParameterType();
 
-	// Collection
-	
-	public final static <T> IfcStatementInParameter Collection(IfcStatementInParameterType<T> type, String placeholder, java.util.Collection<T> values)
-	{
-		return bindValue( new CollectionInParameterType<T>(type, placeholder), values );
-	}
+    public static StatementInParameter ZonedDateTimeAtUtc(ZonedDateTime value)
+    {
+        return bindValue( ZonedDateTimeAtUTC, value );
+    }
 
-	public final static <T> IfcStatementInParameterType<? extends java.util.Collection<T>> Collection(IfcStatementInParameterType<T> type, String placeholder, String placeholderReplacement)
-	{
-		return new CollectionInParameterType<T>(type, placeholder, placeholderReplacement);
-	}
+    public final static StatementInParameterType<Object> Object = new ObjectInParameterType();
 
-	public final static <T> IfcStatementInParameter Collection(IfcStatementInParameterType<T> type, String placeholder, String placeholderReplacement, Collection<T> values)
-	{
-		return bindValue( new CollectionInParameterType<T>(type, placeholder, placeholderReplacement), values );
-	}
-	
-	public final static <T> IfcStatementInParameter bindValue(
-			IfcStatementInParameterType<T> type, T value)
-	{
-		return new BoundValue<T>( type, value );
-	}
-	
-	// make a parameter array, allow nulls
+    public static StatementInParameter Object(Object value)
+    {
+        return bindValue( Object, value );
+    }
 
-	private final static IfcStatementInParameter[] emptyInParameters = new IfcStatementInParameter[0];
+    public final static StatementInParameterType<Object> Serializeable = new SerializableInParameterType();
 
-	public final static IfcStatementInParameter[] filterNulls( IfcStatementInParameter... parameters )
-	{
-		if ( parameters == null )
-		{
-			return emptyInParameters;
-		}
-		else
-		{
-			ArrayList<IfcStatementInParameter> params = new ArrayList<IfcStatementInParameter>( parameters.length );
-			for( IfcStatementInParameter p : parameters )
-				if ( p != null )
-					params.add( p );
-			return params.toArray( new IfcStatementInParameter[params.size()] );
-		}
-	}
+    public static StatementInParameter Serializeable(Object value)
+    {
+        return bindValue( Serializeable, value );
+    }
 
-	public final static IfcStatementInParameter[] inParams( IfcStatementInParameter... parameters )
-	{
-		if ( parameters == null )
-			return emptyInParameters;
-		else
-			return parameters;
-	}
+    public final static StatementInParameterType<byte[]> Bytes = new BytesInParameterType();
 
-	public final static IfcStatementInParameter[] inParams( Collection<IfcStatementInParameter> parameters )
-	{
-		if ( parameters == null )
-			return emptyInParameters;
-		else if ( parameters.isEmpty() )
-			return emptyInParameters;
-		else
-			return parameters.toArray( new IfcStatementInParameter[parameters.size()] );
-	}
+    public static StatementInParameter Bytes(byte[] value)
+    {
+        return bindValue( Bytes, value );
+    }
+
+    public final static StatementInParameterType<Enum<?>> EnumByName = new EnumByNameParameterType();
+
+    public static StatementInParameter EnumByName(Enum<?> value)
+    {
+        return bindValue( EnumByName, value );
+    }
+
+    public final static StatementInParameterType<EnumIntKey> EnumByIntKey = new EnumByIntKeyParameterType();
+
+    public static <E extends Enum<E> & EnumIntKey> StatementInParameter EnumByIntKey(E value)
+    {
+        return bindValue( EnumByIntKey, value );
+    }
+
+    public final static StatementInParameterType<Class<?>> Class = new ClassParameterType();
+
+    public static StatementInParameter Class(Class<?> value)
+    {
+        return bindValue( Class, value );
+    }
+
+    public final static StatementInParameterType<DateTime> DateTime = new DateTimeInParameterType();
+
+    public static StatementInParameter DateTime(DateTime value)
+    {
+        return bindValue( DateTime, value );
+    }
+
+    public final static StatementInParameterType<DateMidnight> DateMidnight = new DateMidnightInParameterType();
+
+    public static StatementInParameter DateMidnight(org.joda.time.DateMidnight value)
+    {
+        return bindValue( DateMidnight, value );
+    }
+
+    public final static StatementInParameterType<DateMidnight> DateMidnightAsIsoString = new DateMidnightAsIsoStringInParameterType();
+
+    public static StatementInParameter DateMidnightAsIsoString(org.joda.time.DateMidnight value)
+    {
+        return bindValue( DateMidnightAsIsoString, value );
+    }
+
+    public final static StatementInParameterType<Days> Days = new DaysInParameterType();
+
+    public static StatementInParameter Days(Days value)
+    {
+        return bindValue( Days, value );
+    }
+
+    public final static StatementInParameterType<Hours> Hours = new HoursInParameterType();
+
+    public static StatementInParameter Hours(Hours value)
+    {
+        return bindValue( Hours, value );
+    }
+
+    public final static StatementInParameterType<Minutes> Minutes = new MinutesInParameterType();
+
+    public static StatementInParameter Minutes(Minutes value)
+    {
+        return bindValue( Minutes, value );
+    }
+
+    public final static StatementInParameterType<Months> Months = new MonthsInParameterType();
+
+    public static StatementInParameter Months(Months value)
+    {
+        return bindValue( Months, value );
+    }
+
+    public final static StatementInParameterType<Seconds> Seconds = new SecondsInParameterType();
+
+    public static StatementInParameter Seconds(Seconds value)
+    {
+        return bindValue( Seconds, value );
+    }
+
+    public final static StatementInParameterType<Weeks> Weeks = new WeeksInParameterType();
+
+    public static StatementInParameter Weeks(Weeks value)
+    {
+        return bindValue( Weeks, value );
+    }
+
+    public final static StatementInParameterType<Years> Years = new YearsInParameterType();
+
+    public static StatementInParameter Years(Years value)
+    {
+        return bindValue( Years, value );
+    }
+
+    public final static StatementInParameterType<Period> PeriodIsoEncoded = new PeriodIsoEncodedInParameterType();
+
+    public static StatementInParameter PeriodIsoEncoded(Period value)
+    {
+        return bindValue( PeriodIsoEncoded, value );
+    }
+
+    public final static StatementInParameterType<Duration> DurationAsLong = new DurationAsLongInParameterType();
+
+    public static StatementInParameter DurationAsLong(org.joda.time.Duration value)
+    {
+        return bindValue( DurationAsLong, value );
+    }
+
+    public final static StatementInParameterType<DateTimeZone> DateTimeZone = new DateTimeZoneInParameterType();
+
+    public static StatementInParameter DateTimeZone(DateTimeZone value)
+    {
+        return bindValue( DateTimeZone, value );
+    }
+
+    public static StatementInParameter QueryTimeout(int value)
+    {
+        return new QueryTimeoutParameter( value );
+    }
+
+    // Array
+
+    public static <T> StatementInParameterType<T[]> Array(StatementInParameterType<T> type, String placeholder)
+    {
+        return new ArrayInParameterType<>( type, placeholder );
+    }
+
+    public static <T> StatementInParameter Array(StatementInParameterType<T> type, String placeholder, T... values)
+    {
+        return bindValue( new ArrayInParameterType<>( type, placeholder ), values );
+    }
+
+    public static <T> StatementInParameterType<T[]> Array(StatementInParameterType<T> type, String placeholder, String placeholderReplacement)
+    {
+        return new ArrayInParameterType<>( type, placeholder, placeholderReplacement );
+    }
+
+    public static <T> StatementInParameter Array(StatementInParameterType<T> type, String placeholder, String placeholderReplacement, T... values)
+    {
+        return bindValue( new ArrayInParameterType<>( type, placeholder, placeholderReplacement ), values );
+    }
+
+    public static <T> StatementInParameterType<? extends Collection<T>> Collection(StatementInParameterType<T> type, String placeholder)
+    {
+        return new CollectionInParameterType<>( type, placeholder );
+    }
+
+    // Collection
+
+    public static <T> StatementInParameter Collection(StatementInParameterType<T> type, String placeholder, java.util.Collection<T> values)
+    {
+        return bindValue( new CollectionInParameterType<>( type, placeholder ), values );
+    }
+
+    public static <T> StatementInParameterType<? extends Collection<T>> Collection(StatementInParameterType<T> type, String placeholder, String placeholderReplacement)
+    {
+        return new CollectionInParameterType<>( type, placeholder, placeholderReplacement );
+    }
+
+    public static <T> StatementInParameter Collection(StatementInParameterType<T> type, String placeholder, String placeholderReplacement, Collection<T> values)
+    {
+        return bindValue( new CollectionInParameterType<>( type, placeholder, placeholderReplacement ), values );
+    }
+
+    public static <T> StatementInParameter bindValue(StatementInParameterType<T> type, T value)
+    {
+        return new BoundValue<>( type, value );
+    }
+
+    // make a parameter array, allow nulls
+
+    private static final StatementInParameter[] emptyInParameters = new StatementInParameter[0];
+
+    public static StatementInParameter[] filterNulls(StatementInParameter... parameters)
+    {
+        if (parameters == null)
+        {
+            return emptyInParameters;
+        }
+        else
+        {
+            ArrayList<StatementInParameter> params = new ArrayList<>( parameters.length );
+            for (StatementInParameter p : parameters)
+                if (p != null)
+                    params.add( p );
+            return params.toArray( StatementInParameter[]::new );
+        }
+    }
+
+    public static StatementInParameter[] inParams(StatementInParameter... parameters)
+    {
+        if (parameters == null)
+            return emptyInParameters;
+        else
+            return parameters;
+    }
+
+    public static StatementInParameter[] inParams(Collection<StatementInParameter> parameters)
+    {
+        if (parameters == null)
+            return emptyInParameters;
+        else if (parameters.isEmpty())
+            return emptyInParameters;
+        else
+            return parameters.toArray( StatementInParameter[]::new );
+    }
 }
 
-abstract class AbstractStatementInParameterType<T> implements IfcStatementInParameterType<T>
+abstract class AbstractStatementInParameterType<T> implements StatementInParameterType<T>
 {
-	private static final long	serialVersionUID	= 1080506691768998033L;
-
-	public String modify(String sql, T value)
-	{
-		return sql;
-	}
+    @Override
+    public String modify(String sql, T value)
+    {
+        return sql;
+    }
 }
 
 final class BooleanInParameterType extends AbstractStatementInParameterType<Boolean>
 {
-	private static final long	serialVersionUID	= -7524179426076727748L;
-
-	public int configure(PreparedStatement stmt, int pos, Boolean value) throws SQLException
-	{
-		if ( value == null )
-			stmt.setNull( pos, Types.BOOLEAN );
-		else
-			stmt.setBoolean( pos, value );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Boolean value) throws SQLException
+    {
+        if (value == null)
+            stmt.setNull( pos, Types.BOOLEAN );
+        else
+            stmt.setBoolean( pos, value );
+        return 1;
+    }
 }
 
 final class BooleanAsIntegerInParameterType extends ConvertingStatementInParameterType<Integer, Boolean>
 {
-    private static final long serialVersionUID = -618985621824972612L;
-
     public BooleanAsIntegerInParameterType()
     {
         super( StatementParameters.Integer );
@@ -257,7 +387,7 @@ final class BooleanAsIntegerInParameterType extends ConvertingStatementInParamet
     @Override
     protected Integer convert(Boolean value)
     {
-        if ( value == null )
+        if (value == null)
             return null;
         return value ? 1 : 0;
     }
@@ -265,514 +395,473 @@ final class BooleanAsIntegerInParameterType extends ConvertingStatementInParamet
 
 final class ByteInParameterType extends AbstractStatementInParameterType<Byte>
 {
-	private static final long	serialVersionUID	= 3276543340234344389L;
-
-	public int configure(PreparedStatement stmt, int pos, Byte value) throws SQLException
-	{
-		if ( value == null )
-			stmt.setNull( pos, Types.TINYINT );
-		else
-			stmt.setByte( pos, value );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Byte value) throws SQLException
+    {
+        if (value == null)
+            stmt.setNull( pos, Types.TINYINT );
+        else
+            stmt.setByte( pos, value );
+        return 1;
+    }
 }
 
 final class CharacterInParameterType extends AbstractStatementInParameterType<Character>
 {
-	private static final long	serialVersionUID	= 8058124716481598135L;
-
-	public int configure(PreparedStatement stmt, int pos, Character value) throws SQLException
-	{
-		stmt.setString( pos, value == null ? null : Character.toString( value ) );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Character value) throws SQLException
+    {
+        stmt.setString( pos, value == null ? null : Character.toString( value ) );
+        return 1;
+    }
 }
 
 final class ShortInParameterType extends AbstractStatementInParameterType<Short>
 {
-	private static final long	serialVersionUID	= -3327050158970549254L;
-
-	public int configure(PreparedStatement stmt, int pos, Short value) throws SQLException
-	{
-		if ( value == null )
-			stmt.setNull( pos, Types.SMALLINT );
-		else
-			stmt.setShort( pos, value );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Short value) throws SQLException
+    {
+        if (value == null)
+            stmt.setNull( pos, Types.SMALLINT );
+        else
+            stmt.setShort( pos, value );
+        return 1;
+    }
 }
 
 final class IntegerInParameterType extends AbstractStatementInParameterType<Integer>
 {
-	private static final long	serialVersionUID	= -5447866886419456863L;
-
-	public int configure(PreparedStatement stmt, int pos, Integer value) throws SQLException
-	{
-		if ( value == null )
-			stmt.setNull( pos, Types.INTEGER );
-		else
-			stmt.setInt( pos, value );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Integer value) throws SQLException
+    {
+        if (value == null)
+            stmt.setNull( pos, Types.INTEGER );
+        else
+            stmt.setInt( pos, value );
+        return 1;
+    }
 }
 
 final class LongInParameterType extends AbstractStatementInParameterType<Long>
 {
-	private static final long	serialVersionUID	= 7351810604170815221L;
-
-	public int configure(PreparedStatement stmt, int pos, Long value) throws SQLException
-	{
-		if ( value == null )
-			stmt.setNull( pos, Types.BIGINT );
-		else
-			stmt.setLong( pos, value );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Long value) throws SQLException
+    {
+        if (value == null)
+            stmt.setNull( pos, Types.BIGINT );
+        else
+            stmt.setLong( pos, value );
+        return 1;
+    }
 }
-
 
 final class FloatInParameterType extends AbstractStatementInParameterType<Float>
 {
-	private static final long	serialVersionUID	= -2825273022431221813L;
-
-	public int configure(PreparedStatement stmt, int pos, Float value) throws SQLException
-	{
-		if ( value == null )
-			stmt.setNull( pos, Types.FLOAT );
-		else
-			stmt.setFloat( pos, value );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Float value) throws SQLException
+    {
+        if (value == null)
+            stmt.setNull( pos, Types.FLOAT );
+        else
+            stmt.setFloat( pos, value );
+        return 1;
+    }
 }
 
 final class DoubleInParameterType extends AbstractStatementInParameterType<Double>
 {
-	private static final long	serialVersionUID	= 8197048169205460869L;
-
-	public int configure(PreparedStatement stmt, int pos, Double value) throws SQLException
-	{
-		if ( value == null )
-			stmt.setNull( pos, Types.DOUBLE );
-		else
-			stmt.setDouble( pos, value );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Double value) throws SQLException
+    {
+        if (value == null)
+            stmt.setNull( pos, Types.DOUBLE );
+        else
+            stmt.setDouble( pos, value );
+        return 1;
+    }
 }
 
 final class BigDecimalInParameterType extends AbstractStatementInParameterType<BigDecimal>
 {
-	private static final long	serialVersionUID	= -5647542748071958473L;
-
-	public int configure(PreparedStatement stmt, int pos, BigDecimal value) throws SQLException
-	{
-		stmt.setBigDecimal( pos, value );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, BigDecimal value) throws SQLException
+    {
+        stmt.setBigDecimal( pos, value );
+        return 1;
+    }
 }
 
 final class StringInParameterType extends AbstractStatementInParameterType<String>
 {
-	private static final long	serialVersionUID	= 2569705798808925320L;
-
-	public int configure(PreparedStatement stmt, int pos, String value) throws SQLException
-	{
-		stmt.setString( pos, value );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, String value) throws SQLException
+    {
+        stmt.setString( pos, value );
+        return 1;
+    }
 }
+
+final class CollectionOfStringInParameterType extends AbstractStatementInParameterType<Collection<String>>
+{
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Collection<String> value) throws SQLException
+    {
+        if ( value == null )
+            stmt.setNull( pos, Types.VARCHAR );
+        else
+            stmt.setArray( pos, stmt.getConnection().createArrayOf( "VARCHAR", value.stream().toArray(String[]::new) ) );
+        return 1;
+    }
+}
+
 
 final class DateInParameterType extends AbstractStatementInParameterType<Date>
 {
-	private static final long	serialVersionUID	= 885428146245470564L;
-
-	public int configure(PreparedStatement stmt, int pos, Date value) throws SQLException
-	{
-		stmt.setDate( pos, value );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Date value) throws SQLException
+    {
+        stmt.setDate( pos, value );
+        return 1;
+    }
 }
 
 final class TimestampInParameterType extends AbstractStatementInParameterType<Timestamp>
 {
-	private static final long	serialVersionUID	= 8660221331024108074L;
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Timestamp value) throws SQLException
+    {
+        stmt.setTimestamp( pos, value );
+        return 1;
+    }
+}
 
-	public int configure(PreparedStatement stmt, int pos, Timestamp value) throws SQLException
-	{
-		stmt.setTimestamp( pos, value );
-		return 1;
-	}
+final class ZonedDateTimeAtUTCInParameterType extends AbstractStatementInParameterType<ZonedDateTime>
+{
+    @Override
+    public int configure(PreparedStatement stmt, int pos, ZonedDateTime value) throws SQLException
+    {
+        if ( value == null )
+            stmt.setNull( pos, Types.TIMESTAMP );
+        else
+            stmt.setTimestamp( pos, Timestamp.from( value.toInstant() ) );
+        return 1;
+    }
 }
 
 final class ObjectInParameterType extends AbstractStatementInParameterType<Object>
 {
-	private static final long	serialVersionUID	= 8360037598038980033L;
-
-	public int configure(PreparedStatement stmt, int pos, Object value) throws SQLException
-	{
-		stmt.setObject( pos, value );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Object value) throws SQLException
+    {
+        stmt.setObject( pos, value );
+        return 1;
+    }
 }
 
 final class SerializableInParameterType extends AbstractStatementInParameterType<Object>
 {
-	private static final long	serialVersionUID	= 8360037598038980033L;
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Object value) throws SQLException
+    {
+        try
+        {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos;
+            oos = new ObjectOutputStream( baos );
+            oos.writeObject( value );
+            oos.close();
 
-	public int configure(PreparedStatement stmt, int pos, Object value) throws SQLException
-	{
-		if ( value == null )
-		{
-			stmt.setBytes( pos, null );
-			return 1;
-		}
+            stmt.setBytes( pos, baos.toByteArray() );
+            return 1;
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException( e );
+        }
 
-		try
-		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ObjectOutputStream oos;
-			oos = new ObjectOutputStream( baos );
-			oos.writeObject( value );
-			oos.close();
-
-			stmt.setBytes( pos, baos.toByteArray() );
-			return 1;
-		}
-		catch (IOException e)
-		{
-			throw new RuntimeException( e );
-		}
-	}
+    }
 }
 
 final class BytesInParameterType extends AbstractStatementInParameterType<byte[]>
 {
-	private static final long serialVersionUID = -6579733936577772939L;
-
-	public int configure(PreparedStatement stmt, int pos, byte[] value) throws SQLException
-	{
-		stmt.setBytes( pos, value );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, byte[] value) throws SQLException
+    {
+        stmt.setBytes( pos, value );
+        return 1;
+    }
 }
 
-final class EnumByNameParameterType
-extends AbstractStatementInParameterType<Enum<?>>
+final class EnumByNameParameterType extends AbstractStatementInParameterType<Enum<?>>
 {
-	private static final long	serialVersionUID	= 1035562251364382806L;
-
-	public int configure(PreparedStatement stmt, int pos, Enum<?> value) throws SQLException
-	{
-		if ( value == null )
-			stmt.setString( pos, null );
-		else
-			stmt.setString( pos, value.name() );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Enum<?> value) throws SQLException
+    {
+        if (value == null)
+            stmt.setString( pos, null );
+        else
+            stmt.setString( pos, value.name() );
+        return 1;
+    }
 }
 
-final class EnumByIntKeyParameterType
-extends AbstractStatementInParameterType<IfcEnumIntKey>
+final class EnumByIntKeyParameterType extends AbstractStatementInParameterType<EnumIntKey>
 {
-	private static final long	serialVersionUID	= -854994345818350952L;
-
-	public int configure(PreparedStatement stmt, int pos, IfcEnumIntKey value) throws SQLException
-	{
-		if ( value == null )
-			stmt.setNull( pos, Types.INTEGER );
-		else
-			stmt.setInt( pos, value.getKey() );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, EnumIntKey value) throws SQLException
+    {
+        if (value == null)
+            stmt.setNull( pos, Types.INTEGER );
+        else
+            stmt.setInt( pos, value.getKey() );
+        return 1;
+    }
 }
 
-final class ClassParameterType
-extends AbstractStatementInParameterType<Class<?>>
+final class ClassParameterType extends AbstractStatementInParameterType<Class<?>>
 {
-	private static final long	serialVersionUID	= 4089853169817835313L;
-
-	public int configure(PreparedStatement stmt, int pos, Class<?> value) throws SQLException
-	{
-		stmt.setString( pos, value == null ? null : value.getName() );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Class<?> value) throws SQLException
+    {
+        stmt.setString( pos, value == null ? null : value.getName() );
+        return 1;
+    }
 }
 
-final class DateTimeParameterType
-extends AbstractStatementInParameterType<DateTime>
+final class DateTimeParameterType extends AbstractStatementInParameterType<DateTime>
 {
-	private static final long	serialVersionUID	= 8992085626536517879L;
-
-	public int configure(PreparedStatement stmt, int pos, DateTime value) throws SQLException
-	{
-		stmt.setTimestamp( pos, value == null ? null : new Timestamp( value.getMillis() ) );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, DateTime value) throws SQLException
+    {
+        stmt.setTimestamp( pos, value == null ? null : new Timestamp( value.getMillis() ) );
+        return 1;
+    }
 }
 
-final class ArrayInParameterType<T> implements IfcStatementInParameterType<T[]>
+record ArrayInParameterType<T>(StatementInParameterType<T> type, String placeholder, String placeholderReplacement) implements StatementInParameterType<T[]>
 {
-	private static final long	serialVersionUID	= -4288132322340047766L;
-	final IfcStatementInParameterType<T> type;
-	final String placeholder;
-	final String placeholderReplacement;
+    ArrayInParameterType(StatementInParameterType<T> type, String placeholder)
+    {
+        this( type, placeholder, "?" );
+    }
 
-	ArrayInParameterType(IfcStatementInParameterType<T> type, String placeholder)
-	{
-		this( type, placeholder, "?" );
-	}
-	
-	ArrayInParameterType(IfcStatementInParameterType<T> type, String placeholder, String placeholderReplacement)
-	{
-		this.placeholder = placeholder;
-		this.type = type;
-		this.placeholderReplacement = placeholderReplacement;
-	}
-	
-	/* (non-Javadoc)
-	 * @see de.schaeuffelhut.jdbc.StatementInParameterType#modify(java.lang.String)
-	 */
-	public final String modify(String sql, T[] values)
-	{
-		StringBuilder sb = new StringBuilder();
-		if ( values != null )
-		{
-			for(int i = 0; i < values.length; i++)
-			{
-				if ( i > 0 )
-					sb.append( ',' );
-				sb.append( type.modify( placeholderReplacement, values[i] ) );
-			}
-		}
-		return sql.replace( placeholder, sb );	
-	}
-	
-	public final int configure(PreparedStatement stmt, int pos, T[] values) throws SQLException
-	{
-		int posAdvance = 0;
-		if ( values != null )
-			for(int i = 0; i < values.length; i++)
-				posAdvance += type.configure( stmt, pos + posAdvance, values[i] );
-		return posAdvance;
-	};
+    @Override
+    public String modify(String sql, T[] values)
+    {
+        StringBuilder sb = new StringBuilder();
+        if (values != null)
+        {
+            for (int i = 0; i < values.length; i++)
+            {
+                if (i > 0)
+                    sb.append( ',' );
+                sb.append( type.modify( placeholderReplacement, values[i] ) );
+            }
+        }
+        return sql.replace( placeholder, sb );
+    }
+
+    @Override
+    public int configure(PreparedStatement stmt, int pos, T[] values) throws SQLException
+    {
+        int posAdvance = 0;
+        if (values != null)
+            for (int i = 0; i < values.length; i++)
+                posAdvance += type.configure( stmt, pos + posAdvance, values[i] );
+        return posAdvance;
+    }
 }
 
-final class CollectionInParameterType<T> implements IfcStatementInParameterType<Collection<T>>
+record CollectionInParameterType<T>(StatementInParameterType<T> type, String placeholder, String placeholderReplacement) implements StatementInParameterType<Collection<T>>
 {
-	private static final long	serialVersionUID	= -4288132322340047766L;
-	final IfcStatementInParameterType<T> type;
-	final String placeholder;
-	final String placeholderReplacement;
+    CollectionInParameterType(StatementInParameterType<T> type, String placeholder)
+    {
+        this( type, placeholder, "?" );
+    }
 
-	CollectionInParameterType(IfcStatementInParameterType<T> type, String placeholder)
-	{
-		this( type, placeholder, "?" );
-	}
-	
-	CollectionInParameterType(IfcStatementInParameterType<T> type, String placeholder, String placeholderReplacement)
-	{
-		this.placeholder = placeholder;
-		this.type = type;
-		this.placeholderReplacement = placeholderReplacement;
-	}
-	
-	/* (non-Javadoc)
-	 * @see de.schaeuffelhut.jdbc.StatementInParameterType#modify(java.lang.String)
-	 */
-	public final String modify(String sql, Collection<T> values)
-	{
-		StringBuilder sb = new StringBuilder();
-		if ( values != null )
-		{
-			int i=0;
-			for(T value : values)
-			{
-				if ( i > 0 )
-					sb.append( ',' );
-				sb.append( type.modify( placeholderReplacement, value ) );
-				i++;
-			}
-		}
-		return sql.replace( placeholder, sb );	
-	}
-	
-	public final int configure(PreparedStatement stmt, int pos, Collection<T> values) throws SQLException
-	{
-		int posAdvance = 0;
-		if ( values != null )
-			for(T value : values)
-				posAdvance += type.configure( stmt, pos + posAdvance, value );
-		return posAdvance;
-	};
+    @Override
+    public String modify(String sql, Collection<T> values)
+    {
+        StringBuilder sb = new StringBuilder();
+        if (values != null)
+        {
+            int i = 0;
+            for (T value : values)
+            {
+                if (i > 0)
+                    sb.append( ',' );
+                sb.append( type.modify( placeholderReplacement, value ) );
+                i++;
+            }
+        }
+        return sql.replace( placeholder, sb );
+    }
+
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Collection<T> values) throws SQLException
+    {
+        int posAdvance = 0;
+        if (values != null)
+            for (T value : values)
+                posAdvance += type.configure( stmt, pos + posAdvance, value );
+        return posAdvance;
+    }
 }
 
 
 final class DateTimeInParameterType extends AbstractStatementInParameterType<DateTime>
 {
-	private static final long	serialVersionUID	= 362585378891547200L;
-
-	public int configure(PreparedStatement stmt, int pos, DateTime value) throws SQLException
-	{
-		stmt.setTimestamp( pos, value == null ? null : new Timestamp( value.getMillis() ) );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, DateTime value) throws SQLException
+    {
+        stmt.setTimestamp( pos, value == null ? null : new Timestamp( value.getMillis() ) );
+        return 1;
+    }
 }
 
 final class DateMidnightInParameterType extends AbstractStatementInParameterType<DateMidnight>
 {
-	private static final long	serialVersionUID	= 362585378891547200L;
-
-	public int configure(PreparedStatement stmt, int pos, DateMidnight value) throws SQLException
-	{
-		stmt.setTimestamp( pos, value == null ? null : new Timestamp( value.getMillis() ) );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, DateMidnight value) throws SQLException
+    {
+        stmt.setTimestamp( pos, value == null ? null : new Timestamp( value.getMillis() ) );
+        return 1;
+    }
 }
 
 final class DateMidnightAsIsoStringInParameterType extends AbstractStatementInParameterType<DateMidnight>
 {
-	private static final long	serialVersionUID	= 362585378891547200L;
-
-	public int configure(PreparedStatement stmt, int pos, DateMidnight value) throws SQLException
-	{
-		stmt.setString( pos, value == null ? null : ISODateTimeFormat.date().print( value ) );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, DateMidnight value) throws SQLException
+    {
+        stmt.setString( pos, value == null ? null : ISODateTimeFormat.date().print( value ) );
+        return 1;
+    }
 }
 
 abstract class AbstractBaseSingleFieldPeriodInParameterType<T extends BaseSingleFieldPeriod> extends AbstractStatementInParameterType<T>
 {
-	private static final long	serialVersionUID	= 1978434854099312620L;
+    @Override
+    public final int configure(PreparedStatement stmt, int pos, T value) throws SQLException
+    {
+        if (value == null)
+            stmt.setNull( pos, Types.INTEGER );
+        else
+            stmt.setInt( pos, getAmount( value ) );
+        return 1;
+    }
 
-	public final int configure(PreparedStatement stmt, int pos, T value) throws SQLException
-	{
-		if ( value == null )
-			stmt.setNull( pos, Types.INTEGER );
-		else
-			stmt.setInt( pos, getAmount( value ) );
-		return 1;
-	}
-
-	protected abstract int getAmount(T baseSingleFieldPeriod);
+    protected abstract int getAmount(T baseSingleFieldPeriod);
 }
+
 final class DaysInParameterType extends AbstractBaseSingleFieldPeriodInParameterType<Days>
 {
-	private static final long	serialVersionUID	= 6586725230659394219L;
-
-	@Override
-	protected int getAmount(Days baseSingleFieldPeriod)
-	{
-		return baseSingleFieldPeriod.getDays();
-	}
+    @Override
+    protected int getAmount(Days baseSingleFieldPeriod)
+    {
+        return baseSingleFieldPeriod.getDays();
+    }
 }
+
 final class HoursInParameterType extends AbstractBaseSingleFieldPeriodInParameterType<Hours>
 {
-	private static final long	serialVersionUID	= 2623522654226899799L;
-
-	protected int getAmount(Hours baseSingleFieldPeriod)
-	{
-		return baseSingleFieldPeriod.getHours();
-	};
+    @Override
+    protected int getAmount(Hours baseSingleFieldPeriod)
+    {
+        return baseSingleFieldPeriod.getHours();
+    }
 }
 
 final class MinutesInParameterType extends AbstractBaseSingleFieldPeriodInParameterType<Minutes>
 {
-	private static final long	serialVersionUID	= 942401460273082257L;
-
-	@Override
-	protected int getAmount(Minutes baseSingleFieldPeriod)
-	{
-		return baseSingleFieldPeriod.getMinutes();
-	}
+    @Override
+    protected int getAmount(Minutes baseSingleFieldPeriod)
+    {
+        return baseSingleFieldPeriod.getMinutes();
+    }
 }
+
 final class MonthsInParameterType extends AbstractBaseSingleFieldPeriodInParameterType<Months>
 {
-	private static final long	serialVersionUID	= 3461131092273692150L;
-
-	@Override
-	protected int getAmount(Months baseSingleFieldPeriod)
-	{
-		return baseSingleFieldPeriod.getMonths();
-	}
+    @Override
+    protected int getAmount(Months baseSingleFieldPeriod)
+    {
+        return baseSingleFieldPeriod.getMonths();
+    }
 }
+
 final class SecondsInParameterType extends AbstractBaseSingleFieldPeriodInParameterType<Seconds>
 {
-	private static final long	serialVersionUID	= 8922273960196447482L;
-
-	@Override
-	protected int getAmount(Seconds baseSingleFieldPeriod)
-	{
-		return baseSingleFieldPeriod.getSeconds();
-	}
+    @Override
+    protected int getAmount(Seconds baseSingleFieldPeriod)
+    {
+        return baseSingleFieldPeriod.getSeconds();
+    }
 }
+
 final class WeeksInParameterType extends AbstractBaseSingleFieldPeriodInParameterType<Weeks>
 {
-	private static final long	serialVersionUID	= -7008193162056461183L;
-
-	@Override
-	protected int getAmount(Weeks baseSingleFieldPeriod)
-	{
-		return baseSingleFieldPeriod.getWeeks();
-	}
+    @Override
+    protected int getAmount(Weeks baseSingleFieldPeriod)
+    {
+        return baseSingleFieldPeriod.getWeeks();
+    }
 }
+
 final class YearsInParameterType extends AbstractBaseSingleFieldPeriodInParameterType<Years>
 {
-	private static final long	serialVersionUID	= 5488175347491622019L;
-
-	@Override
-	protected int getAmount(Years baseSingleFieldPeriod)
-	{
-		return baseSingleFieldPeriod.getYears();
-	}
+    @Override
+    protected int getAmount(Years baseSingleFieldPeriod)
+    {
+        return baseSingleFieldPeriod.getYears();
+    }
 }
+
 final class PeriodIsoEncodedInParameterType extends AbstractStatementInParameterType<Period>
 {
-	private static final long serialVersionUID = 4651346503732024719L;
-
-	public int configure(PreparedStatement stmt, int pos, Period value) throws SQLException
-	{
-		stmt.setString( pos, value == null ? null : ISOPeriodFormat.standard().print( value ) );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Period value) throws SQLException
+    {
+        stmt.setString( pos, value == null ? null : ISOPeriodFormat.standard().print( value ) );
+        return 1;
+    }
 }
+
 final class DurationAsLongInParameterType extends AbstractStatementInParameterType<Duration>
 {
-	private static final long serialVersionUID = 4651346503732024719L;
-
-	public int configure(PreparedStatement stmt, int pos, Duration value) throws SQLException
-	{
-		if ( value == null )
-			stmt.setNull( pos, Types.BIGINT );
-		else
-			stmt.setLong( pos, value.getMillis() );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, Duration value) throws SQLException
+    {
+        if (value == null)
+            stmt.setNull( pos, Types.BIGINT );
+        else
+            stmt.setLong( pos, value.getMillis() );
+        return 1;
+    }
 }
+
 final class DateTimeZoneInParameterType extends AbstractStatementInParameterType<DateTimeZone>
 {
-	private static final long	serialVersionUID	= -1401212495563554062L;
-
-	public int configure(PreparedStatement stmt, int pos, DateTimeZone value) throws SQLException
-	{
-		stmt.setString( pos, value == null ? null : value.getID() );
-		return 1;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int pos, DateTimeZone value) throws SQLException
+    {
+        stmt.setString( pos, value == null ? null : value.getID() );
+        return 1;
+    }
 }
-final class QueryTimeoutParameter implements IfcStatementInParameter
+
+record QueryTimeoutParameter(int timeout) implements StatementInParameter
 {
-	private static final long serialVersionUID = -6433030461894077531L;
+    @Override
+    public String modify(String sql)
+    {
+        return sql;
+    }
 
-	final int timeout;
-
-	QueryTimeoutParameter(int timeout)
-	{
-		this.timeout = timeout;
-	}
-
-	@Override public String modify(String sql) { return sql; }
-
-	@Override public int configure(PreparedStatement stmt, int index) throws SQLException
-	{
-		stmt.setQueryTimeout( timeout );
-		return 0;
-	}
+    @Override
+    public int configure(PreparedStatement stmt, int index) throws SQLException
+    {
+        stmt.setQueryTimeout( timeout );
+        return 0;
+    }
 }

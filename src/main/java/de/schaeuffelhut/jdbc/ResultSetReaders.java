@@ -1,152 +1,158 @@
-/**
- * Copyright 2009 Friedrich Schäuffelhut
+/*
+ * Copyright (c) 2009-2025 the JdbcUtil authors
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * SPDX-License-Identifier: MIT
  */
+
 package de.schaeuffelhut.jdbc;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.sql.ResultSet;
-import java.util.Collection;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public final class ResultSetReaders
+/**
+ * @author Friedrich Schäuffelhut
+ * @since 2021-12-08
+ */
+public abstract class ResultSetReaders
 {
-	private ResultSetReaders()
-	{
-	}
+    private ResultSetReaders()
+    {
+    }
 
-	/*
-	 * select into scalar
-	 */
+    @NotNull
+    public static <T> ResultSetReader<T, Optional<T>> readOptional()
+    {
+        return new ReadOptionalResult<>();
+    }
 
-	public final static <T> IfcResultSetScalarReader<T> readScalar(
-			final IfcResultType<T> resultType
-	){
-		return new IfcResultSetScalarReader<T>(){
-			private static final long	serialVersionUID	= 8911654214633193260L;
+    @NotNull
+    public static <T> ResultSetReader<T, T> readOne()
+    {
+        return new ReadOneResult<>();
+    }
 
-			public T readResult(ResultSet resultSet) throws Exception
-			{
-				return ResultSetUtil.readScalar( resultSet, resultType );
-			}
-		};
-	}
+    @NotNull
+    public static <T> ResultSetReader<T, List<T>> readMany()
+    {
+        return new ReadManyResultsIntoCollector<>( Collectors.toList() );
+    }
 
-	public final static IfcResultSetScalarReader<Object[]> readTuple(
-			final IfcResultType<?>... resultTypes
-	){
-		return new IfcResultSetScalarReader<Object[]>(){
-			private static final long	serialVersionUID	= -2886595304052908844L;
+    @NotNull
+    public static <T, C extends Consumer<T>> ResultSetReader<T, C> readMany(C consumer)
+    {
+        return new ReadManyResultsIntoConsumer<>( consumer );
+    }
 
-			public Object[] readResult(ResultSet resultSet) throws Exception
-			{
-				return ResultSetUtil.readTuple( resultSet, resultTypes );
-			}
-		};
-	}
+    @NotNull
+    public static <T, A, R> ResultSetReader<T, R> readMany(Collector<T, A, R> collector)
+    {
+        return new ReadManyResultsIntoCollector<>( collector );
+    }
 
-	public final static IfcResultSetScalarReader<Map<String,Object>> readMap(
-			final IfcResultType<?>... resultTypes
-	){
-		return new IfcResultSetScalarReader<Map<String,Object>>(){
-			private static final long	serialVersionUID	= 8545376014979236299L;
+    public static <T> Collector<T, Stream.Builder<T>, Stream<T>> toStream()
+    {
+        return Collector.of(
+                Stream::builder,          // Supplier: Creates a new Stream.Builder
+                Stream.Builder::add,       // Accumulator: Adds elements to the builder
+                (left, right) -> {         // Combiner: Merges two builders (for parallel streams)
+                    right.build().forEach( left::add );
+                    return left;
+                },
+                Stream.Builder::build      // Finisher: Builds the final Stream from the builder
+        );
+    }
+}
 
-			public Map<String,Object> readResult(ResultSet resultSet) throws Exception
-			{
-				return ResultSetUtil.readMap( resultSet, resultTypes );
-			}
-		};
-	}
+class ReadOptionalResult<T> implements ResultSetReader<T, Optional<T>>
+{
+    @Override
+    public Optional<T> readResult(ResultSet resultSet, ResultSetMapper<T> resultMapper) throws SQLException
+    {
+        if (resultSet.next())
+        {
+            final T result = resultMapper.map( resultSet );
+            if (resultSet.next())
+            {
+                throw new IllegalStateException( "ResultSet returned more than one row" );
+            }
+            return Optional.of( result );
+        }
+        else
+        {
+            return Optional.empty();
+        }
+    }
+}
 
-	public final static <T> IfcResultSetScalarReader<T> readObject(
-			final Class<T> type, final IfcResultType<?>... resultTypes
-	){
-		return new IfcResultSetScalarReader<T>(){
-			private static final long	serialVersionUID	= -8859588960602175157L;
+class ReadOneResult<T> implements ResultSetReader<T, T>
+{
+    @Override
+    public T readResult(ResultSet resultSet, ResultSetMapper<T> resultMapper) throws SQLException
+    {
+        if (resultSet.next())
+        {
+            final T result = resultMapper.map( resultSet );
+            if (resultSet.next())
+            {
+                throw new IllegalStateException( "ResultSet returned more than one row" );
+            }
+            return result;
+        }
+        else
+        {
+            throw new IllegalStateException( "ResultSet did not return a row" );
+        }
+    }
+}
 
-			public T readResult(ResultSet resultSet) throws Exception
-			{
-				return ResultSetUtil.readObject( resultSet, type, resultTypes );
-			}
-		};
-	}
+class ReadManyResultsIntoCollector<T, A, R> implements ResultSetReader<T, R>
+{
+    private final Collector<T, A, R> collector;
 
-	public final static <T> IfcResultSetScalarReader<T> readObjectByConstructor(
-			final Class<T> type, final IfcResultType<?>... resultTypes
-	){
-		return new IfcResultSetScalarReader<T>(){
-			private static final long	serialVersionUID	= -8859588960602175157L;
+    ReadManyResultsIntoCollector(Collector<T, A, R> collector)
+    {
+        this.collector = collector;
+    }
 
-			public T readResult(ResultSet resultSet) throws Exception
-			{
-				return ResultSetUtil.readObjectByConstructor( resultSet, type, resultTypes );
-			}
-		};
-	}
+    static <T> ReadManyResultsIntoCollector<T, ?, List<T>> toList()
+    {
+        return new ReadManyResultsIntoCollector<>( Collectors.toList() );
+    }
 
-	/*
-	 * select into collection
-	 */
-	
-	public final static <T> IfcResultSetCollectionReader<T> readScalars(
-			final IfcResultType<T> resultType
-	){
-		return new IfcResultSetCollectionReader<T>(){
-			private static final long	serialVersionUID	= 5008801957885037291L;
+    @Override
+    public R readResult(ResultSet resultSet, ResultSetMapper<T> resultMapper) throws SQLException
+    {
+        A container = collector.supplier().get();
+        BiConsumer<A, T> accumulator = collector.accumulator();
+        while (resultSet.next())
+            accumulator.accept( container, resultMapper.map( resultSet ) );
+        return collector.finisher().apply( container );
+    }
+}
 
-			public void readResults(Collection<T> results, ResultSet resultSet) throws Exception
-			{
-				ResultSetUtil.readScalars( results, resultSet, resultType );
-			}
-		};
-	}
+class ReadManyResultsIntoConsumer<T, C extends Consumer<T>> implements ResultSetReader<T, C>
+{
+    private final C consumer;
 
-	public final static IfcResultSetCollectionReader<Object[]> readTuples(
-			final IfcResultType<?>... resultTypes
-	){
-		return new IfcResultSetCollectionReader<Object[]>(){
-			private static final long	serialVersionUID	= -1018835897002057163L;
+    ReadManyResultsIntoConsumer(C consumer)
+    {
+        this.consumer = consumer;
+    }
 
-			public void readResults(Collection<Object[]> results, ResultSet resultSet) throws Exception
-			{
-				ResultSetUtil.readTuples( results, resultSet, resultTypes );
-			}
-		};
-	}
-
-	public final static IfcResultSetCollectionReader<Map<String, Object>> readMaps(
-			final IfcResultType<?>... resultTypes
-	){
-		return new IfcResultSetCollectionReader<Map<String,Object>>(){
-			private static final long	serialVersionUID	= -4552881760536118694L;
-
-			public void readResults(Collection<Map<String, Object>> results, ResultSet resultSet) throws Exception
-			{
-				ResultSetUtil.readMaps( results, resultSet, resultTypes );
-			}
-		};
-	}
-	
-	public final static <T> IfcResultSetCollectionReader<T> readObjects(
-			final Class<T> type, final IfcResultType<?>... resultTypes
-	){
-		return new IfcResultSetCollectionReader<T>(){
-			private static final long	serialVersionUID	= -6157564706582485580L;
-
-			public void readResults(Collection<T> results, ResultSet resultSet) throws Exception
-			{
-				ResultSetUtil.readObjects( results, resultSet, type, resultTypes );
-			}
-		};
-	}
+    @Override
+    public C readResult(ResultSet resultSet, ResultSetMapper<T> resultMapper) throws SQLException
+    {
+        while (resultSet.next())
+            consumer.accept( resultMapper.map( resultSet ) );
+        return consumer;
+    }
 }

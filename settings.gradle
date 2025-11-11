@@ -1,9 +1,25 @@
-rootProject.name='de.schaeuffelhut.jdbc'
+/*
+ * Copyright (c) 2009-2025 the JdbcUtil authors
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
+pluginManagement {
+    plugins {
+        id 'com.gorylenko.gradle-git-properties' version '2.5.3'
+        id 'org.owasp.dependencycheck' version '12.1.1'
 
-gradle.ext.versions = [
-        jdbcutil   : "0.3.4",
-        gradle     : "6.8.2",
-        guava      : "21.0",
-        jodaTime   : "2.9.9",
-]
+        // https://micronaut-projects.github.io/micronaut-gradle-plugin/latest/
+        id 'io.micronaut.aot' version '4.6.0'
+        id 'io.micronaut.application' version '4.6.0'
+        id 'io.micronaut.graalvm' version '4.6.0'
+        id 'io.micronaut.library' version '4.6.0'
+        id 'io.micronaut.openapi' version "4.6.0"
+        id 'io.micronaut.platform.catalog' version "4.6.0"
+    }
+}
+
+plugins {
+    id 'io.micronaut.platform.catalog'
+}
+

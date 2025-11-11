@@ -1,17 +1,7 @@
-/**
- * Copyright 2009 Friedrich Schäuffelhut
+/*
+ * Copyright (c) 2009-2025 the JdbcUtil authors
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * SPDX-License-Identifier: MIT
  */
 package de.schaeuffelhut.jdbc;
 
@@ -19,31 +9,29 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * A JdbcUtil {@link IfcResultType} which delegates the data retrieval to an
- * other {@link IfcResultType} and then converts to the actual type.
- * 
+ * A JdbcUtil {@link ResultType} which delegates the data retrieval to an
+ * other {@link ResultType} and then converts to the actual type.
+ *
  * @author Friedrich Schäuffelhut
- * 
+ *
  * @param <Tout>
  * @param <Tin>
  */
-public abstract class ConvertingResultType<Tout,Tin> implements IfcResultType<Tout>
+public abstract class ConvertingResultType<Tout, Tin> implements ResultType<Tout>
 {
-	private static final long	serialVersionUID	= -4995146891207196356L;
+    final ResultType<Tin> delegate;
 
-	final IfcResultType<Tin> delegate;
-	
-	public ConvertingResultType(IfcResultType<Tin> delegate)
-	{
-		this.delegate = delegate;
-	}
+    public ConvertingResultType(ResultType<Tin> delegate)
+    {
+        this.delegate = delegate;
+    }
 
-	public Tout getResult(ResultSet resultSet, int index) throws SQLException
-	{
-		return convert( delegate.getResult( resultSet, index ) );
-	}
-	
-	protected abstract Tout convert(Tin value);
-	
-	public abstract Class<Tout> getResultType();
+    public Tout getResult(ResultSet resultSet, int index) throws SQLException
+    {
+        return convert( delegate.getResult( resultSet, index ) );
+    }
+
+    protected abstract Tout convert(Tin value);
+
+    public abstract Class<Tout> getResultType();
 }

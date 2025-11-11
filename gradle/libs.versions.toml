@@ -1,0 +1,19 @@
+[versions]
+assertj-core = "3.26.3"
+h2 = "2.2.224"
+jetbrains-annotations = "26.0.1"
+joda-time = "2.14.0"
+junit = "5.12.2"
+junit-platform = "1.12.2"
+micronaut = "4.9.4" # used by settings.gradle
+slf4j = "2.0.9"
+
+[libraries]
+assertj-core = { group = "org.assertj", name = "assertj-core", version.ref = "assertj-core" }
+h2 = { group = "com.h2database", name = "h2", version.ref = "h2" }
+jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
+joda-time = { group = "joda-time", name = "joda-time", version.ref = "joda-time" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "junit-platform" }
+junit-vintage-engine = { group = "org.junit.vintage", name = "junit-vintage-engine", version.ref = "junit" }
+slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }

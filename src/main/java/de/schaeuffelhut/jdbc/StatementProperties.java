@@ -1,88 +1,71 @@
+/*
+ * Copyright (c) 2009-2025 the JdbcUtil authors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 package de.schaeuffelhut.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
-public class StatementProperties
+public abstract class StatementProperties
 {
-	public final static IfcStatementProperty<?>[] list(IfcStatementProperty<?>... ifcStatementProperties )
-	{
-		return ifcStatementProperties;
-	}
-	
-	public final static <T> IfcStatementProperty<T> GENERATED_KEY(IfcResultType<T> resultType)
-	{
-		return new GeneratedKeyStatementProperty<T>( resultType );
-	}
+    private StatementProperties()
+    {
+    }
 
-	public final static <T> IfcStatementProperty<ArrayList<T>> GENERATED_KEYS(IfcResultType<T> resultType)
-	{
-		return new GeneratedKeysStatementProperty<T>( resultType );
-	}
+    public static StatementProperty<?>[] list(StatementProperty<?>... ifcStatementProperties)
+    {
+        return ifcStatementProperties;
+    }
+
+    public static <T> StatementProperty<T> GENERATED_KEY(ResultType<T> resultType)
+    {
+        return new GeneratedKeyStatementProperty<>( resultType );
+    }
+
+    public static <T> StatementProperty<List<T>> GENERATED_KEYS(ResultType<T> resultType)
+    {
+        return new GeneratedKeysStatementProperty<>( resultType );
+    }
 }
 
-final class GeneratedKeyStatementProperty<T> implements IfcStatementProperty<T>
+record GeneratedKeyStatementProperty<T>(ResultType<T> resultType) implements StatementProperty<T>
 {
-	private static final long serialVersionUID = -2615185114014138675L;
+    public T get(PreparedStatement stmt) throws SQLException
+    {
+        try (ResultSet generatedKeys = stmt.getGeneratedKeys())
+        {
+            return ResultSetReaders
+                    .<T>readOptional()
+                    .readResult( generatedKeys, ResultSetMappers.scalar( resultType ) )
+                    .orElse( null );
+        }
+    }
 
-	private final IfcResultType<T> resultType;
-
-	GeneratedKeyStatementProperty(IfcResultType<T> resultType)
-	{
-		this.resultType = resultType;
-	}
-
-	public final T get(PreparedStatement stmt) throws SQLException {
-
-		ResultSet generatedKeys = stmt.getGeneratedKeys();
-		try
-		{
-			return ResultSetReaders.readScalar(resultType).readResult( generatedKeys );
-		} catch (SQLException e) {
-			throw e;
-		} catch (RuntimeException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	public final String modify(String sql) {
-		return sql;
-	}
+    public String modify(String sql)
+    {
+        return sql;
+    }
 }
 
-final class GeneratedKeysStatementProperty<T> implements IfcStatementProperty<ArrayList<T>>
+record GeneratedKeysStatementProperty<T>(ResultType<T> resultType) implements StatementProperty<List<T>>
 {
-	private static final long serialVersionUID = -2615185114014138675L;
+    public List<T> get(PreparedStatement stmt) throws SQLException
+    {
+        try (ResultSet generatedKeys = stmt.getGeneratedKeys())
+        {
+            return ResultSetReaders
+                    .<T>readMany()
+                    .readResult( generatedKeys, ResultSetMappers.scalar( resultType ) );
+        }
+    }
 
-	private final IfcResultType<T> resultType;
-
-	GeneratedKeysStatementProperty(IfcResultType<T> resultType)
-	{
-		this.resultType = resultType;
-	}
-
-	public final ArrayList<T> get(PreparedStatement stmt) throws SQLException 
-	{
-		ResultSet generatedKeys = stmt.getGeneratedKeys();
-		try
-		{
-			ArrayList<T> results = new ArrayList<T>();
-			ResultSetReaders.readScalars(resultType).readResults( results, generatedKeys );
-			return results;
-		} catch (SQLException e) {
-			throw e;
-		} catch (RuntimeException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	public final String modify(String sql) {
-		return sql;
-	}
+    public String modify(String sql)
+    {
+        return sql;
+    }
 }

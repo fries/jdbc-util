@@ -1,6 +1,0 @@
-
-There are two dependencies right now:
-
-* Logging is done via log4j: http://logging.apache.org/log4j/
-* joda-time: http://joda-time.sourceforge.net/
-

@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2009-2025 the JdbcUtil authors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 package de.schaeuffelhut.jdbc;
 
 import java.sql.CallableStatement;
@@ -6,27 +12,51 @@ import java.sql.Types;
 
 public class StatementOutParameters
 {
-	private StatementOutParameters() {}
-	
-	public final static IfcStatementOutParameter<Integer> Integer = new IntegerOutParameter();
-	
+    private StatementOutParameters()
+    {
+    }
+
+    public final static StatementOutParameter<Integer> Integer = new IntegerOutParameter();
+    public final static StatementOutParameter<Long> Long = new LongOutParameter();
+
 }
 
-final class IntegerOutParameter implements IfcStatementOutParameter<Integer>
+final class IntegerOutParameter implements StatementOutParameter<Integer>
 {
-	private static final long serialVersionUID = 1349896276470400623L;
-	
-	public int configure(CallableStatement stmt, int index) throws SQLException {
-		stmt.registerOutParameter(index, Types.INTEGER );
-		return 1;
-	}
-	
-	public Integer readValue(CallableStatement stmt, int index) throws SQLException {
-		int value = stmt.getInt( index );
-		return stmt.wasNull() ? null : value;
-	}
-	
-	public String modify(String sql) {
-		return sql;
-	}
+    public int configure(CallableStatement stmt, int index) throws SQLException
+    {
+        stmt.registerOutParameter( index, Types.INTEGER );
+        return 1;
+    }
+
+    public Integer readValue(CallableStatement stmt, int index) throws SQLException
+    {
+        int value = stmt.getInt( index );
+        return stmt.wasNull() ? null : value;
+    }
+
+    public String modify(String sql)
+    {
+        return sql;
+    }
+}
+
+final class LongOutParameter implements StatementOutParameter<Long>
+{
+    public int configure(CallableStatement stmt, int index) throws SQLException
+    {
+        stmt.registerOutParameter( index, Types.BIGINT );
+        return 1;
+    }
+
+    public Long readValue(CallableStatement stmt, int index) throws SQLException
+    {
+        long value = stmt.getLong( index );
+        return stmt.wasNull() ? null : value;
+    }
+
+    public String modify(String sql)
+    {
+        return sql;
+    }
 }

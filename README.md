@@ -12,7 +12,7 @@ SQL and map results directly to Java objects using modern type-safe method refer
 
 ## Features
 
-- **Java 17+
+- **Java 17+**
 - **Auto-close** `Statement`, `ResultSet`
 - **Simple query/execute API with lambda mapping**
 - **Type-safe mapping** via method references, reflection, or tuples

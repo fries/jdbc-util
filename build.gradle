@@ -12,7 +12,7 @@ plugins {
     id 'org.owasp.dependencycheck'
 }
 
-version = '0.5.0'
+version = '1.0.0'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -21,6 +21,11 @@ java {
     withSourcesJar()
 }
 
+javadoc {
+    // lots of repetitive auto generated object() methods without javadoc
+    exclude '**/ResultSetMappers.java'
+    exclude '**/Legacy**.java'
+}
 repositories {
     mavenCentral()
 }

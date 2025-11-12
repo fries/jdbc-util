@@ -86,6 +86,20 @@ publishing {
                 password = project.findProperty("sonatypePassword") as String
             }
         }
+
+        maven {
+            name = "codeSbg"
+            url = uri("https://code.schaeuffelhut-berger.de/api/packages/oss/maven")
+
+            credentials(HttpHeaderCredentials) {
+                name = "Authorization"
+                value = "token " + project.findProperty("codeSbgPassword") as String
+            }
+
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+        }
     }
 }
 

@@ -15,7 +15,7 @@ import java.util.Iterator;
 
 import static de.schaeuffelhut.jdbc.Utils.asIterable;
 
-public class PreparedStatementUtil
+class PreparedStatementUtil
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( PreparedStatementUtil.class );
 

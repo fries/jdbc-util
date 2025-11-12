@@ -21,6 +21,72 @@ import java.util.function.Supplier;
 import static de.schaeuffelhut.jdbc.ResultSetMappers.SetFieldViaReflection.createFieldSetters;
 
 /**
+ * Factory class for creating {@link ResultSetMapper} instances.
+ *
+ * <p>Provides type-safe, functional mappers for common result set patterns.
+ * Choose the appropriate factory method based on the number of columns in your query:</p>
+ *
+ * <table border="1" style="border-collapse: collapse; width: 100%;">
+ *   <caption style="font-weight: bold; text-align: left; padding-bottom: 0.5em;">
+ *     Factory Methods by Column Count
+ *   </caption>
+ *   <tr>
+ *     <th>Columns</th>
+ *     <th>Factory Method</th>
+ *     <th>Use Case</th>
+ *   </tr>
+ *   <tr>
+ *     <td><strong>1</strong></td>
+ *     <td>{@link #scalar(ResultType) scalar}</td>
+ *     <td>Single scalar value (e.g. {@code SELECT COUNT(*)})</td>
+ *   </tr>
+ *   <tr>
+ *     <td><strong>2+</strong></td>
+ *     <td>{@link #object(F1,ResultType) object(...)} family</td>
+ *     <td><strong>Preferred:</strong> Type-safe object construction via lambdas</td>
+ *   </tr>
+ *   <tr>
+ *     <td></td>
+ *     <td>{@link #tuple(ResultType...) tuple}</td>
+ *     <td>{@code Object[]} tuple</td>
+ *   </tr>
+ *   <tr>
+ *     <td></td>
+ *     <td>{@link #map(ResultType...) map}</td>
+ *     <td>{@code Map<String,Object>} with column labels</td>
+ *   </tr>
+ *   <tr>
+ *     <td></td>
+ *     <td>{@link #objectViaReflection(Class,ResultType...) objectViaReflection(...)}</td>
+ *     <td><strong>Legacy:</strong> Auto-map to POJO fields via reflection</td>
+ *   </tr>
+ * </table>
+ *
+ * <h2>Primary Usage – Functional Mapping (2+ Columns)</h2>
+ * <pre>{@code
+ * ResultSetMapper<User> mapper = ResultSetMappers.object(
+ *     (id, name, email) -> new User(id, name, email),
+ *     ResultType.LONG,
+ *     ResultType.STRING,
+ *     ResultType.STRING
+ * );
+ * }</pre>
+ *
+ * <h2>Single-Column Usage</h2>
+ * <pre>{@code
+ * ResultSetMapper<Long> count = ResultSetMappers.scalar(ResultType.LONG);
+ * }</pre>
+ *
+ * <h2>Legacy Reflection (2+ Columns)</h2>
+ * <pre>{@code
+ * ResultSetMapper<User> legacy = ResultSetMappers.objectViaReflection(
+ *     User.class,
+ *     ResultType.LONG, ResultType.STRING, ResultType.STRING
+ * );
+ * }</pre>
+ *
+ * @see ResultSetMapper
+ * @see ResultType
  * @author Friedrich Schäuffelhut
  * @since 2018-06-01
  */
@@ -31,7 +97,7 @@ public abstract class ResultSetMappers
     }
 
     /**
-     * Creates an {@link ResultSetMapper} that maps a {@link ResultSet} row to a single scalar value
+     * Creates a {@link ResultSetMapper} that maps a {@link ResultSet} row to a single scalar value
      * of the specified type.
      * <p>
      * This method retrieves the value of the first column in the {@link ResultSet} row, using the
@@ -311,7 +377,7 @@ public abstract class ResultSetMappers
         }
     }
 
-    public static class CreateInstanceViaNoArgConstructor<T> implements Supplier<T>
+    static class CreateInstanceViaNoArgConstructor<T> implements Supplier<T>
     {
         private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];
         private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
@@ -343,7 +409,7 @@ public abstract class ResultSetMappers
         }
     }
 
-    public static final class SetFieldViaReflection<T>
+    static final class SetFieldViaReflection<T>
     {
         private final Field field;
         private final ResultType<?> resultType;

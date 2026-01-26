@@ -18,7 +18,7 @@ import java.sql.SQLException;
  * {@link #convert(Object)}.</p>
  *
  * <p><strong>Use case:</strong> You have a {@code ResultType<Integer>} but your
- * domain model uses {@code Long}.  Wrap it to convert {@code Integer} → {@code Long}.</p>
+ * domain model uses {@code Long}.  Wrap it to convert {@code Integer} to {@code Long}.</p>
  *
  * <p><strong>Design:</strong></p>
  * <ul>

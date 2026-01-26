@@ -3,13 +3,13 @@
  *
  * SPDX-License-Identifier: MIT
  */
-
 plugins {
     id 'java-library'
     id 'maven-publish'
     id 'signing'
     id 'com.gorylenko.gradle-git-properties'
     id 'org.owasp.dependencycheck'
+    id 'com.vanniktech.maven.publish' version '0.36.0'
 }
 
 version = '1.0.0'
@@ -17,8 +17,6 @@ version = '1.0.0'
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
-    withJavadocJar()
-    withSourcesJar()
 }
 
 javadoc {
@@ -50,70 +48,59 @@ test {
     useJUnitPlatform()
 }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
+mavenPublishing {
+    publishToMavenCentral()  // this enables Central Portal ZIP bundle upload
 
-            groupId = 'de.schaeuffelhut.jdbc-util'
-            artifactId = 'jdbc-util'
+    // Optional: auto-publish after validation (start without it for safety)
+    // configureMavenCentral { autoPublish = true }
 
-            pom {
-                name = 'jdbc-util'
-                description = 'Core JDBC utility library – connection helpers, statement wrappers, result mappers.'
-                url = 'https://github.com/fries/jdbc-util'
-                licenses {
-                    license {
-                        name = 'MIT License'
-                        url = 'https://opensource.org/licenses/MIT'
-                    }
-                }
-                developers {
-                    developer {
-                        name = 'Friedrich Schaeuffelhut'
-                        email = 'fries@desert.lnp.org'
-                    }
-                }
-                scm {
-                    connection = 'scm:git:git@github.com:fries/jdbc-util.git'
-                    developerConnection = 'scm:git:ssh://github.com/fries/jdbc-util.git'
-                    url = 'https://github.com/fries/jdbc-util'
-                }
-            }
-        }
-    }
-    repositories {
-        maven {
-            name = 'central'
-            url = 'https://central.sonatype.com/api/publishing/deployments/maven2/'
-            credentials {
-                username = project.findProperty("sonatypeUsername") as String
-                password = project.findProperty("sonatypePassword") as String
+    coordinates('de.schaeuffelhut.jdbc','jdbc-util', project.version);
+
+    pom {
+        name = 'jdbc-util'
+        description = 'Core JDBC utility library – connection helpers, statement wrappers, result mappers.'
+        url = 'https://github.com/fries/jdbc-util'
+
+        licenses {
+            license {
+                name = 'MIT License'
+                url = 'https://opensource.org/licenses/MIT'
             }
         }
 
-        maven {
-            name = "codeSbg"
-            url = uri("https://code.schaeuffelhut-berger.de/api/packages/oss/maven")
-
-            credentials(HttpHeaderCredentials) {
-                name = "Authorization"
-                value = "token " + project.findProperty("codeSbgPassword") as String
+        developers {
+            developer {
+                name = 'Friedrich Schaeuffelhut'
+                email = 'fries@desert.lnp.org'
             }
+        }
 
-            authentication {
-                header(HttpHeaderAuthentication)
-            }
+        scm {
+            connection = 'scm:git:git@github.com:fries/jdbc-util.git'
+            developerConnection = 'scm:git:ssh://git@github.com/fries/jdbc-util.git'
+            url = 'https://github.com/fries/jdbc-util'
         }
     }
 }
+
+tasks.matching { it.name.contains('generateMetadataFile') }.configureEach { dependsOn 'plainJavadocJar' }
 
 signing {
     useGpgCmd()
-    // Set signing.gnupg.keyName= in gradle.properties
-    sign publishing.publications.maven
+    sign publishing.publications.withType(org.gradle.api.publish.maven.MavenPublication)
 }
-
-// https://docs.gradle.org/current/userguide/gradle_wrapper.html
-// To update the gradle wrapper use:
-// ./gradlew wrapper  --distribution-type=all --gradle-version latest
+//publishing {
+//    repositories {
+//        maven {
+//            name = "codeSbg"
+//            url = uri("https://code.schaeuffelhut-berger.de/api/packages/oss/maven")
+//            credentials(HttpHeaderCredentials) {
+//                name = "Authorization"
+//                value = "token " + project.findProperty("codeSbgPassword") as String
+//            }
+//            authentication {
+//                header(HttpHeaderAuthentication)
+//            }
+//        }
+//    }
+//}

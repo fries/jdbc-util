@@ -55,7 +55,7 @@ publishing {
         maven(MavenPublication) {
             from components.java
 
-            groupId = 'de.schaeuffelhut.jdbc-util'
+            groupId = 'de.schaeuffelhut.jdbc'
             artifactId = 'jdbc-util'
 
             pom {

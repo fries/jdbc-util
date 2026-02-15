@@ -7,7 +7,7 @@ This skill teaches how to use the `de.schaeuffelhut.jdbc:jdbc-util` library, a l
 Ensure the following dependency is present in the `build.gradle` file.
 
 ```gradle
-implementation 'de.schaeuffelhut.jdbc:jdbc-util:1.0.0'
+implementation 'de.schaeuffelhut.jdbc:jdbc-util:1.1.0'
 ```
 
 ## 2. Core Concepts
@@ -28,30 +28,39 @@ A typical query combines these components like so:
 // statementUtil.selectInto(SQL_QUERY, ResultSetReader, ResultSetMapper, StatementParameters...);
 ```
 
-## 3. Imports
+## 3. General Imports
 
-For cleaner and more concise code, it is highly recommended to use static imports for the common factory methods and enums:
+For cleaner and more concise code, it is highly recommended to use static imports for the common factory methods and enums. While each example below includes its specific required imports, a common setup for a class using this library would be:
 
 ```java
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID; // Needed for UUID examples
+
 import static de.schaeuffelhut.jdbc.GeneratedKeys.*;
 import static de.schaeuffelhut.jdbc.ResultSetMappers.*;
 import static de.schaeuffelhut.jdbc.ResultSetReaders.*;
 import static de.schaeuffelhut.jdbc.ResultTypes.*;
 import static de.schaeuffelhut.jdbc.StatementParameters.*;
 import static de.schaeuffelhut.jdbc.StatementProperties.*;
+import static de.schaeuffelhut.jdbc.StatementOutParameters.*; // For OUT parameters
+import static de.schaeuffelhut.jdbc.ExtraStatementParameters.*; // For additional parameter types like UUID
 ```
 
-## 4. Usage Patterns
+## 5. Usage Patterns
 
 ### Pattern 1: Querying for Data (`selectInto`)
 
 #### A) Mapping to a Scalar (Single Value)
 
-Use `ResultSetMappers.scalar()` with a `ResultType`.
-
 ```java
-StatementUtil statementUtil = new H2StatementUtil(); // Or your own implementation
-// Setup DB tables and data
+import static de.schaeuffelhut.jdbc.ResultSetReaders.readOne;
+import static de.schaeuffelhut.jdbc.ResultSetMappers.scalar;
+import static de.schaeuffelhut.jdbc.ResultTypes.String;
+import static de.schaeuffelhut.jdbc.StatementParameters.Integer;
+
+// ...
 
 String name = statementUtil.selectInto(
     """
@@ -65,13 +74,15 @@ String name = statementUtil.selectInto(
 
 #### B) Mapping to a Record or Class (Object)
 
-Use `ResultSetMappers.object()`. The order of `ResultTypes` must match the order of columns in the `SELECT` statement and the order of parameters in the constructor.
-
 ```java
-record Employee(int id, String name) {}
+import static de.schaeuffelhut.jdbc.ResultSetReaders.readOne;
+import static de.schaeuffelhut.jdbc.ResultSetMappers.object;
+import static de.schaeuffelhut.jdbc.ResultTypes.Integer;
+import static de.schaeuffelhut.jdbc.ResultTypes.String;
 
-StatementUtil statementUtil = new H2StatementUtil();
-// Setup DB tables and data
+// ...
+
+record Employee(int id, String name) {}
 
 Employee emp = statementUtil.selectInto(
     """
@@ -84,12 +95,16 @@ Employee emp = statementUtil.selectInto(
 
 #### C) Mapping a List of Objects
 
-Change `ResultSetReaders.readOne()` to `ResultSetReaders.readMany()`.
-
 ```java
+import java.util.List;
+import static de.schaeuffelhut.jdbc.ResultSetReaders.readMany;
+import static de.schaeuffelhut.jdbc.ResultSetMappers.object;
+import static de.schaeuffelhut.jdbc.ResultTypes.Integer;
+import static de.schaeuffelhut.jdbc.ResultTypes.String;
+
+// ...
+
 record Employee(int id, String name) {};
-StatementUtil statementUtil = new H2StatementUtil();
-// Setup DB tables and data
 
 List<Employee> employees = statementUtil.selectInto(
     """
@@ -102,12 +117,17 @@ List<Employee> employees = statementUtil.selectInto(
 
 #### D) Mapping to an Optional Object (Zero or One Result)
 
-Use `ResultSetReaders.readOptional()` when you expect at most one row. It returns an `Optional<T>`, which will be empty if no row is found, or contain the object if exactly one row is found. If more than one row is returned, it will throw an `IllegalStateException`. This differs from `readOne()`, which throws an exception if zero or more than one row is returned.
-
 ```java
+import java.util.Optional;
+import static de.schaeuffelhut.jdbc.ResultSetReaders.readOptional;
+import static de.schaeuffelhut.jdbc.ResultSetMappers.object;
+import static de.schaeuffelhut.jdbc.ResultTypes.Integer;
+import static de.schaeuffelhut.jdbc.ResultTypes.String;
+import static de.schaeuffelhut.jdbc.StatementParameters.Integer;
+
+// ...
+
 record Employee(int id, String name) {};
-StatementUtil statementUtil = new H2StatementUtil();
-// Setup DB tables and data
 
 // Case 1: No result
 Optional<Employee> optionalEmployeeEmpty = statementUtil.selectInto(
@@ -116,9 +136,8 @@ Optional<Employee> optionalEmployeeEmpty = statementUtil.selectInto(
     """,
     readOptional(),
     object(Employee::new, Integer, String),
-    Integer(0) // Assuming no employee with id 0
+    Integer(0)
 );
-// optionalEmployeeEmpty is now empty
 
 // Case 2: One result
 Optional<Employee> optionalEmployeePresent = statementUtil.selectInto(
@@ -127,17 +146,23 @@ Optional<Employee> optionalEmployeePresent = statementUtil.selectInto(
     """,
     readOptional(),
     object(Employee::new, Integer, String),
-    Integer(1) // Assuming one employee with id 1
+    Integer(1)
 );
-// optionalEmployeePresent contains the Employee object
 ```
 
 #### E) Complex Multiline Queries
 
-For more complex queries involving multiple clauses and better readability, use Java Text Blocks for the SQL statement. This example demonstrates `WITH`, `SELECT`, `FROM`, `JOIN`, `WHERE`, `GROUP BY`, and `ORDER BY`.
-
 ```java
-// For a comprehensive example, assume 'employees' and 'departments' tables exist.
+import java.util.List;
+import static de.schaeuffelhut.jdbc.ResultSetReaders.readMany;
+import static de.schaeuffelhut.jdbc.ResultSetMappers.object;
+import static de.schaeuffelhut.jdbc.ResultTypes.String;
+import static de.schaeuffelhut.jdbc.ResultTypes.Long;
+import static de.schaeuffelhut.jdbc.ResultTypes.Double;
+import static de.schaeuffelhut.jdbc.StatementParameters.Double;
+
+// ...
+
 record EmployeeSummary(String departmentName, long employeeCount, double avgSalary) {}
 
 List<EmployeeSummary> summaries = statementUtil.selectInto(
@@ -164,7 +189,7 @@ List<EmployeeSummary> summaries = statementUtil.selectInto(
         Long,
         Double
     ),
-    Double(50000.0) // Example: employees earning more than 50000
+    Double(50000.0)
 );
 ```
 
@@ -172,9 +197,12 @@ List<EmployeeSummary> summaries = statementUtil.selectInto(
 
 #### A) Single Insert/Update/Delete
 
-Use `statementUtil.execute()` with `StatementParameters`.
-
 ```java
+import static de.schaeuffelhut.jdbc.StatementParameters.Integer;
+import static de.schaeuffelhut.jdbc.StatementParameters.String;
+
+// ...
+
 statementUtil.execute(
     """
     INSERT INTO employees (id, name) VALUES (?, ?)
@@ -186,9 +214,14 @@ statementUtil.execute(
 
 #### B) Batch Operations
 
-Use `statementUtil.executeBatch()` by providing a `List` of `StatementInParameter[]` arrays.
-
 ```java
+import java.util.List;
+import de.schaeuffelhut.jdbc.StatementInParameter;
+import static de.schaeuffelhut.jdbc.StatementParameters.Integer;
+import static de.schaeuffelhut.jdbc.StatementParameters.String;
+
+// ...
+
 record Employee(int id, String name){};
 List<Employee> employees = List.of(new Employee(4, "David"), new Employee(5, "Eve"));
 
@@ -205,13 +238,18 @@ statementUtil.executeBatch(
 );
 ```
 
-## 4. Advanced Usage
+## 6. Advanced Usage
 
 ### A) Retrieving a Single Auto-Generated Key
 
-After an `INSERT`, you can retrieve the database-generated primary key using `GeneratedKeys.REPORT` and `StatementProperties.GENERATED_KEY` along with the desired `ResultType`.
-
 ```java
+import static de.schaeuffelhut.jdbc.GeneratedKeys.REPORT;
+import static de.schaeuffelhut.jdbc.StatementProperties.GENERATED_KEY;
+import static de.schaeuffelhut.jdbc.ResultTypes.Integer;
+import static de.schaeuffelhut.jdbc.StatementParameters.String;
+
+// ...
+
 Integer generatedId = statementUtil.execute(
     REPORT,
     GENERATED_KEY(Integer),
@@ -224,15 +262,22 @@ Integer generatedId = statementUtil.execute(
 
 ### B) Retrieving Multiple Keys from a Batch Insert
 
-Similarly, you can retrieve a `List` of all generated keys from a batch `INSERT` operation by using `executeBatch` with `StatementProperties.GENERATED_KEYS`.
-
 ```java
-var names = java.util.List.of("Peter", "Paul", "Mary");
+import java.util.List;
+import de.schaeuffelhut.jdbc.StatementInParameter;
+import static de.schaeuffelhut.jdbc.GeneratedKeys.REPORT;
+import static de.schaeuffelhut.jdbc.StatementProperties.GENERATED_KEYS;
+import static de.schaeuffelhut.jdbc.ResultTypes.Integer;
+import static de.schaeuffelhut.jdbc.StatementParameters;
+
+// ...
+
+var names = List.of("Peter", "Paul", "Mary");
 var params = names.stream()
     .map(name -> new StatementInParameter[]{ StatementParameters.String(name) })
     .toList();
 
-java.util.List<Integer> generatedIds = statementUtil.executeBatch(
+List<Integer> generatedIds = statementUtil.executeBatch(
     REPORT,
     GENERATED_KEYS(Integer),
     """
@@ -240,15 +285,18 @@ java.util.List<Integer> generatedIds = statementUtil.executeBatch(
     """,
     params
 );
-
-// generatedIds will contain [1, 2, 3]
 ```
 
-### B) Mapping Results to a Tuple (`Object[]`)
-
-For ad-hoc queries where a dedicated class or record is not needed, you can map results directly to an `Object[]`.
+### C) Mapping Results to a Tuple (`Object[]`)
 
 ```java
+import static de.schaeuffelhut.jdbc.ResultSetReaders.readOne;
+import static de.schaeuffelhut.jdbc.ResultSetMappers.tuple;
+import static de.schaeuffelhut.jdbc.ResultTypes.Integer;
+import static de.schaeuffelhut.jdbc.ResultTypes.String;
+
+// ...
+
 Object[] tuple = statementUtil.selectInto(
     """
     SELECT id, name FROM employees WHERE id = 1
@@ -256,72 +304,89 @@ Object[] tuple = statementUtil.selectInto(
     readOne(),
     tuple(Integer, String)
 );
-
-Integer id = (Integer) tuple[0];
-String name = (String) tuple[1];
 ```
 
-### C) Mapping Results to a `Map`
-
-You can map a result row to a `Map<String, Object>`, where keys are the column labels from the SQL query. The `ResultTypes` must be provided in the same order as the columns in the `SELECT` statement.
+### D) Mapping Results to a `Map`
 
 ```java
+import java.util.Map;
+import static de.schaeuffelhut.jdbc.ResultSetReaders.readOne;
+import static de.schaeuffelhut.jdbc.ResultSetMappers.map;
+import static de.schaeuffelhut.jdbc.ResultTypes.Integer;
+import static de.schaeuffelhut.jdbc.ResultTypes.String;
+
+// ...
+
 Map<String, Object> map = statementUtil.selectInto(
     """
     SELECT id, name FROM employees WHERE id = 1
     """,
     readOne(),
     map(
-        Integer,   // for id column
-        String     // for name column
+        Integer,
+        String
     )
 );
-
-Integer id = (Integer) map.get("id");
-String name = (String) map.get("name");
 ```
 
-## 5. Composition: Mapping Multiple Columns to a Complex Object
+### E) Executing Stored Procedures (executeCall)
 
-There are two primary ways to handle nested objects (e.g., mapping `street` and `city` columns to an `Address` object within a `Person` object).
+```java
+import de.schaeuffelhut.jdbc.StatementOutParameter;
+import de.schaeuffelhut.jdbc.StatementOutParameters;
+import static de.schaeuffelhut.jdbc.StatementParameters.Integer;
+import static de.schaeuffelhut.jdbc.StatementParameters.String;
+
+// ...
+
+// 1. Define or use a predefined StatementOutParameter
+// (This example uses the predefined one from StatementOutParameters)
+
+// 2. Execute the stored procedure call
+Object[] results = statementUtil.executeCall(
+    "{? = CALL MY_STORED_PROC(?, ?)}",
+    StatementOutParameters.String,
+    Integer(123),
+    String("input string")
+);
+
+// 3. Retrieve the value from the results array
+String outputValue = (String) results[0];
+```
+
+## 7. Composition: Mapping Multiple Columns to a Complex Object
 
 ### Method 1: Implement a Custom `ResultType` (Most Flexible)
 
-Create a class that implements `ResultType<T>` to handle the multi-column logic.
-
 ```java
-// 1. Define the nested and parent objects
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import de.schaeuffelhut.jdbc.ResultType;
+import de.schaeuffelhut.jdbc.ColumnIndex;
+import static de.schaeuffelhut.jdbc.ResultSetReaders.readOne;
+import static de.schaeuffelhut.jdbc.ResultSetMappers.object;
+import static de.schaeuffelhut.jdbc.ResultTypes.String;
+
+// ...
+
 class Address {
     final String street;
     final String city;
-    Address(String street, String city) {
-        this.street = street;
-        this.city = city;
-    }
+    Address(String street, String city) { this.street = street; this.city = city; }
 }
 record Person(Address address, String name) {}
 
-// 2. Create a custom ResultType for the nested object
 class AddressResultType implements ResultType<Address> {
     @Override
     public Address getResult(ResultSet resultSet, ColumnIndex index) throws SQLException {
-        // The order of .next() calls corresponds to column order in the SELECT
         String street = resultSet.getString(index.next());
         String city = resultSet.getString(index.next());
-        // Handle case where all columns for the object are null
         if (street == null && city == null) return null;
         return new Address(street, city);
     }
-
     @Override
-    public Class<Address> getResultType() {
-        return Address.class;
-    }
+    public Class<Address> getResultType() { return Address.class; }
 }
-
-// 3. Use the custom ResultType in your mapper
-StatementUtil statementUtil = new H2StatementUtil();
-// Setup DB table with columns (e.g., street, city, name)
 
 Person person = statementUtil.selectInto(
     """
@@ -334,16 +399,16 @@ Person person = statementUtil.selectInto(
 
 ### Method 2: Use `ResultTypes.mapper()` (Inline and Concise)
 
-If the nested object also has a corresponding `ResultSetMapper`, you can wrap it using `ResultTypes.mapper()`. This is useful for composing mappers.
-
 ```java
-// 1. Define the nested and parent records
+import static de.schaeuffelhut.jdbc.ResultSetReaders.readOne;
+import static de.schaeuffelhut.jdbc.ResultSetMappers.object;
+import static de.schaeuffelhut.jdbc.ResultTypes.mapper;
+import static de.schaeuffelhut.jdbc.ResultTypes.String;
+
+// ...
+
 record Address(String street, String city) {}
 record Person(Address address, String name) {}
-
-// 2. Use ResultTypes.mapper() to wrap an object mapper for Address
-StatementUtil statementUtil = new H2StatementUtil();
-// Setup DB table with columns (e.g., street, city, name)
 
 Person person = statementUtil.selectInto(
     """
@@ -352,12 +417,10 @@ Person person = statementUtil.selectInto(
     readOne(),
     object(
         Person::new,
-        // This ResultType consumes two String columns to build an Address
         mapper(
             Address.class,
             object(Address::new, String, String)
         ),
-        // This ResultType consumes the next String column for the name
         String
     )
 );

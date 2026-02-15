@@ -86,7 +86,7 @@ import de.schaeuffelhut.jdbc.ResultSetMappers.F1;
  *     <td style="border: 1px solid #ccc; padding: 0.5em;">
  *       {@link #executeCall(String,StatementParameter...) executeCall}
  *     </td>
- *     <td>Execute stored procedures (experimental)</td>
+ *     <td>Execute stored procedures</td>
  *   </tr>
  * </table>
  *
@@ -296,8 +296,6 @@ public interface StatementUtil {
 
     /**
      * Executes a stored procedure call.
-     *
-     * <p><strong>Note:</strong> This method is experimental and not fully tested.</p>
      *
      * @param sql         the CALL statement
      * @param parameters  input and output parameters

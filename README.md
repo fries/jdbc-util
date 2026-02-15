@@ -158,7 +158,7 @@ statementUtil.executeBatch(
 ## For AI Agents
 
 For a detailed guide on how to use this library effectively with AI agents, including advanced usage patterns and best
-practices, please refer to the [doc/SKILLS.md](doc/SKILLS.md) file.
+practices, please refer to the [doc/SKILLS.md](doc/SKILL.md) file.
 
 ## License
 

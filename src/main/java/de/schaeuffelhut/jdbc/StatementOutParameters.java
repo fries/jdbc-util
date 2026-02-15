@@ -28,6 +28,14 @@ public class StatementOutParameters
      * A {@link StatementOutParameter} for registering and reading {@link Long} OUT parameters.
      */
     public final static StatementOutParameter<Long> Long = new LongOutParameter();
+    /**
+     * A {@link StatementOutParameter} for registering and reading {@link String} OUT parameters.
+     */
+    public final static StatementOutParameter<String> String = new StringOutParameter();
+    /**
+     * A {@link StatementOutParameter} for registering and reading {@link java.util.UUID} OUT parameters from a string.
+     */
+    public final static StatementOutParameter<java.util.UUID> UUID = new UUIDOutParameter();
 
 }
 
@@ -63,6 +71,45 @@ final class LongOutParameter implements StatementOutParameter<Long>
     {
         long value = stmt.getLong( index );
         return stmt.wasNull() ? null : value;
+    }
+
+    public String modify(String sql)
+    {
+        return sql;
+    }
+}
+
+final class StringOutParameter implements StatementOutParameter<String>
+{
+    public int configure(CallableStatement stmt, int index) throws SQLException
+    {
+        stmt.registerOutParameter( index, Types.VARCHAR );
+        return 1;
+    }
+
+    public String readValue(CallableStatement stmt, int index) throws SQLException
+    {
+        return stmt.getString( index );
+    }
+
+    public String modify(String sql)
+    {
+        return sql;
+    }
+}
+
+final class UUIDOutParameter implements StatementOutParameter<java.util.UUID>
+{
+    public int configure(CallableStatement stmt, int index) throws SQLException
+    {
+        stmt.registerOutParameter( index, Types.VARCHAR );
+        return 1;
+    }
+
+    public java.util.UUID readValue(CallableStatement stmt, int index) throws SQLException
+    {
+        String value = stmt.getString( index );
+        return value == null ? null : java.util.UUID.fromString(value);
     }
 
     public String modify(String sql)

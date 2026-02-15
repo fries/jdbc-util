@@ -47,17 +47,17 @@ import java.sql.SQLException;
 public interface ResultType<T>
 {
     /**
-     * Extracts a value from the {@link ResultSet} at the given column index.
+     * Extracts a value from the {@link ResultSet} using a {@link ColumnIndex}.
      *
-     * <p>Called by {@link ResultSetMappers} for each row.  Use
-     * {@link ResultSet#getObject(int)}, {@link ResultSet#getString(int)}, etc.</p>
+     * <p>Called by {@link ResultSetMappers} for each row.</p>
      *
      * @param resultSet the result set
-     * @param index     the 1-based column index
+     * @param index     the column index pointer
      * @return the value, or {@code null} if the database value is {@code NULL}
      * @throws SQLException if a database access error occurs
+     * @since 2025-02-15
      */
-    T getResult(ResultSet resultSet, int index) throws SQLException;
+    T getResult(ResultSet resultSet, ColumnIndex index) throws SQLException;
 
     /**
      * Returns the Java class of the result type.
@@ -125,7 +125,7 @@ public interface ResultType<T>
         return new ResultType<>()
         {
             @Override
-            public T getResult(ResultSet resultSet, int index) throws SQLException
+            public T getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
             {
                 final T result = ResultType.this.getResult( resultSet, index );
                 return result == null ? nullReplacementValue : result;

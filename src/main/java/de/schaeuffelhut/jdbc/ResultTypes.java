@@ -118,9 +118,10 @@ public final class ResultTypes
 
 final class BooleanResultType implements ResultType<Boolean>
 {
-    public final Boolean getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public final Boolean getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        boolean value = resultSet.getBoolean( index );
+        boolean value = resultSet.getBoolean( index.next() );
         return resultSet.wasNull() ? null : value;
     }
 
@@ -153,9 +154,10 @@ final class BooleanAsIntegerResultType extends ConvertingResultType<Boolean, Int
 
 final class ByteResultType implements ResultType<Byte>
 {
-    public Byte getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public Byte getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        byte value = resultSet.getByte( index );
+        byte value = resultSet.getByte( index.next() );
         return resultSet.wasNull() ? null : value;
     }
 
@@ -167,9 +169,10 @@ final class ByteResultType implements ResultType<Byte>
 
 final class CharacterResultType implements ResultType<Character>
 {
-    public Character getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public Character getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        String value = resultSet.getString( index );
+        String value = resultSet.getString( index.next() );
         if (value == null)
             return null;
         else if (value.length() == 0)
@@ -188,9 +191,10 @@ final class CharacterResultType implements ResultType<Character>
 
 final class ShortResultType implements ResultType<Short>
 {
-    public Short getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public Short getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        short value = resultSet.getShort( index );
+        short value = resultSet.getShort( index.next() );
         return resultSet.wasNull() ? null : value;
     }
 
@@ -202,9 +206,10 @@ final class ShortResultType implements ResultType<Short>
 
 final class IntegerResultType implements ResultType<Integer>
 {
-    public Integer getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public Integer getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        int value = resultSet.getInt( index );
+        int value = resultSet.getInt( index.next() );
         return resultSet.wasNull() ? null : value;
     }
 
@@ -216,9 +221,10 @@ final class IntegerResultType implements ResultType<Integer>
 
 final class LongResultType implements ResultType<Long>
 {
-    public Long getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public Long getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        long value = resultSet.getLong( index );
+        long value = resultSet.getLong( index.next() );
         return resultSet.wasNull() ? null : value;
     }
 
@@ -230,9 +236,10 @@ final class LongResultType implements ResultType<Long>
 
 final class FloatResultType implements ResultType<Float>
 {
-    public Float getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public Float getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        float value = resultSet.getFloat( index );
+        float value = resultSet.getFloat( index.next() );
         return resultSet.wasNull() ? null : value;
     }
 
@@ -244,9 +251,10 @@ final class FloatResultType implements ResultType<Float>
 
 final class DoubleResultType implements ResultType<Double>
 {
-    public Double getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public Double getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        double value = resultSet.getDouble( index );
+        double value = resultSet.getDouble( index.next() );
         return resultSet.wasNull() ? null : value;
     }
 
@@ -258,9 +266,10 @@ final class DoubleResultType implements ResultType<Double>
 
 final class BigDecimalResultType implements ResultType<BigDecimal>
 {
-    public BigDecimal getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public BigDecimal getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        return resultSet.getBigDecimal( index );
+        return resultSet.getBigDecimal( index.next() );
     }
 
     public Class<BigDecimal> getResultType()
@@ -271,9 +280,10 @@ final class BigDecimalResultType implements ResultType<BigDecimal>
 
 final class StringResultType implements ResultType<String>
 {
-    public String getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public String getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        return resultSet.getString( index );
+        return resultSet.getString( index.next() );
     }
 
     public Class<String> getResultType()
@@ -284,9 +294,10 @@ final class StringResultType implements ResultType<String>
 
 final class DateResultType implements ResultType<Date>
 {
-    public Date getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public Date getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        return resultSet.getDate( index );
+        return resultSet.getDate( index.next() );
     }
 
     public Class<Date> getResultType()
@@ -297,9 +308,10 @@ final class DateResultType implements ResultType<Date>
 
 final class TimestampResultType implements ResultType<Timestamp>
 {
-    public Timestamp getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public Timestamp getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        return resultSet.getTimestamp( index );
+        return resultSet.getTimestamp( index.next() );
     }
 
     public Class<Timestamp> getResultType()
@@ -312,10 +324,11 @@ final class ZonedDateTimeResultType implements ResultType<ZonedDateTime>
 {
     private static final ZoneId UTC = ZoneId.of( "UTC" );
 
-    public ZonedDateTime getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public ZonedDateTime getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        Timestamp timestamp = resultSet.getTimestamp( index );
-        if ( timestamp == null )
+        Timestamp timestamp = resultSet.getTimestamp( index.next() );
+        if (timestamp == null)
             return null;
         return timestamp.toInstant().atZone( UTC );
     }
@@ -335,9 +348,10 @@ final class ObjectResultType<T> implements ResultType<T>
         this.type = type;
     }
 
-    public T getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public T getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        return type.cast( resultSet.getObject( index ) );
+        return type.cast( resultSet.getObject( index.next() ) );
     }
 
     public Class<T> getResultType()
@@ -355,11 +369,12 @@ final class SerializeableResultType<T> implements ResultType<T>
         this.type = type;
     }
 
-    public T getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public T getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
         try
         {
-            byte[] bytes = resultSet.getBytes( index );
+            byte[] bytes = resultSet.getBytes( index.next() );
             ByteArrayInputStream bais = new ByteArrayInputStream( bytes );
             ObjectInputStream ois = new ObjectInputStream( bais )
             {
@@ -400,9 +415,10 @@ final class SerializeableResultType<T> implements ResultType<T>
 
 final class BytesResultType implements ResultType<byte[]>
 {
-    public byte[] getResult(ResultSet resultSet, int i) throws SQLException
+    @Override
+    public byte[] getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        return resultSet.getBytes( i );
+        return resultSet.getBytes( index.next() );
     }
 
     public Class<byte[]> getResultType()
@@ -420,9 +436,10 @@ final class EnumByNameResultType<E extends Enum<E>> implements ResultType<E>
         this.type = type;
     }
 
-    public E getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public E getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        String string = resultSet.getString( index );
+        String string = resultSet.getString( index.next() );
         if (string == null)
             return null;
         else
@@ -445,9 +462,10 @@ final class EnumByIntKeyResultType<E extends Enum<E> & EnumIntKey>
         this.type = type;
     }
 
-    public E getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public E getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        int key = resultSet.getInt( index );
+        int key = resultSet.getInt( index.next() );
         if (resultSet.wasNull())
             return null;
         else
@@ -481,7 +499,8 @@ final class EnumByKeyResultType<K, E extends Enum<E> & EnumKey<K>>
         this.resultType = resultType;
     }
 
-    public E getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public E getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
         K key = resultType.getResult( resultSet, index );
         return key == null ? null : getEnum( key );
@@ -516,9 +535,10 @@ final class ClassResultType implements ResultType<Class<?>>
         this.classLoader = classLoader;
     }
 
-    public Class<?> getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public Class<?> getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        String className = resultSet.getString( index );
+        String className = resultSet.getString( index.next() );
         Class<?> clazz;
         if (className == null)
             clazz = null;
@@ -545,9 +565,10 @@ final class ClassResultType implements ResultType<Class<?>>
 
 final class DateTimeResultType implements ResultType<DateTime>
 {
-    public DateTime getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public DateTime getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        Timestamp timestamp = resultSet.getTimestamp( index );
+        Timestamp timestamp = resultSet.getTimestamp( index.next() );
         return timestamp == null ? null : new DateTime( timestamp );
     }
 
@@ -559,9 +580,10 @@ final class DateTimeResultType implements ResultType<DateTime>
 
 final class DateMidnightResultType implements ResultType<DateMidnight>
 {
-    public DateMidnight getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public DateMidnight getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        Timestamp timestamp = resultSet.getTimestamp( index );
+        Timestamp timestamp = resultSet.getTimestamp( index.next() );
         return timestamp == null ? null : new DateMidnight( timestamp );
     }
 
@@ -573,9 +595,10 @@ final class DateMidnightResultType implements ResultType<DateMidnight>
 
 final class DateMidnightAsIsoStringResultType implements ResultType<DateMidnight>
 {
-    public DateMidnight getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public DateMidnight getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        String timestamp = resultSet.getString( index );
+        String timestamp = resultSet.getString( index.next() );
         return timestamp == null ? null : ISODateTimeFormat.date().parseDateTime( timestamp ).toDateMidnight();
     }
 
@@ -587,9 +610,10 @@ final class DateMidnightAsIsoStringResultType implements ResultType<DateMidnight
 
 abstract class AbstractBaseSingleFieldPeriodResultType<T extends BaseSingleFieldPeriod> implements ResultType<T>
 {
-    public final T getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public final T getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
-        final int amount = resultSet.getInt( index );
+        final int amount = resultSet.getInt( index.next() );
         final T baseSingleFieldPeriod;
         if (resultSet.wasNull())
             baseSingleFieldPeriod = null;
@@ -772,7 +796,8 @@ final class IfNullResultType<T> implements ResultType<T>
         this.defaultValue = defaultValue;
     }
 
-    public T getResult(ResultSet resultSet, int index) throws SQLException
+    @Override
+    public T getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
         T result = resultType.getResult( resultSet, index );
         return result == null ? defaultValue : result;

@@ -22,7 +22,7 @@ class ResultSetMappersGenerateMapViaFunctionTest
 
         IntStream.rangeClosed( 1, 96 ).forEach( i -> {
             code.append( generateFunctionalInterface( i ) );
-            code.append( generateMapViaFunctionalMethod( i ).replaceAll( "\n", "" ).replaceAll( "\s+", " " ) );
+            code.append( generateMapViaFunctionalMethod( i ) );
             code.append( "\n" );
         } );
 
@@ -56,25 +56,21 @@ class ResultSetMappersGenerateMapViaFunctionTest
         // Generate functional interface parameter like "F2<R, T1, T2>"
         String functionalInterface = "F%d<R, %s>".formatted( argCount, typeParams );
 
-        // Generate method parameters like "IfcResultType<T1> t1, IfcResultType<T2> t2, ..."
+        // Generate method parameters like "ResultType<T1> t1, ResultType<T2> t2, ..."
         String methodParams = IntStream.rangeClosed( 1, argCount )
-                .mapToObj( i -> "IfcResultType<T%d> t%d".formatted( i, i ) )
+                .mapToObj( i -> "ResultType<T%d> t%d".formatted( i, i ) )
                 .collect( Collectors.joining( ", " ) );
 
-        // Generate result mapping like "t1.getResult(resultSet, index++), t2.getResult(resultSet, index++), ..."
+        // Generate result mapping like "t1.getResult(resultSet, idx), t2.getResult(resultSet, idx), ..."
         String resultMapping = IntStream.rangeClosed( 1, argCount )
-                .mapToObj( i -> "             t%d.getResult(resultSet, %d)".formatted( i, i ) )
-                .collect( Collectors.joining( ",\n" ) );
+                .mapToObj( i -> "t%d.getResult(resultSet, idx)".formatted( i ) )
+                .collect( Collectors.joining( ", " ) );
 
         //String nameSuffix = argCount < 30 ? "" : Integer.toString( argCount / 10 * 10 );
         String nameSuffix = "";
 
         return """
-               public static <R, %s> IfcResultSetMapper<R> object%s(%s f%d, %s\n) {
-                    return resultSet -> f%d.map(
-               %s
-                    );
-               }
+               public static <R, %s> ResultSetMapper<R> object%s(%s f%d, %s) { return resultSet -> { ColumnIndex idx = ColumnIndex.create( 1 ); return f%d.map( %s ); };}
                """.formatted( typeParams, nameSuffix, functionalInterface, argCount, methodParams, argCount, resultMapping );
     }
 }

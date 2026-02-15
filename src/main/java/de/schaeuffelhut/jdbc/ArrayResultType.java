@@ -21,15 +21,15 @@ class ArrayResultType<T> implements ResultType<T[]>
     }
 
     @Override
-    public T[] getResult(ResultSet resultSet, int index) throws SQLException
+    public T[] getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
         ArrayList<T> result = new ArrayList<>();
-        Array array = resultSet.getArray( index );
+        Array array = resultSet.getArray( index.next() );
         try (ResultSet arrayResultSet = array.getResultSet())
         {
             while (arrayResultSet.next())
             {
-                T t = resultType.getResult( arrayResultSet, 2 );
+                T t = resultType.getResult( arrayResultSet, ColumnIndex.create( 2 ) );
                 result.add( t );
             }
         }

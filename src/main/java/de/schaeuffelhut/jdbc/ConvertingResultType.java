@@ -71,11 +71,8 @@ public abstract class ConvertingResultType<Tout, Tin> implements ResultType<Tout
         this.delegate = delegate;
     }
 
-    /**
-     * Extracts the value using the delegate and converts it.
-     */
     @Override
-    public Tout getResult(ResultSet resultSet, int index) throws SQLException
+    public Tout getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
         return convert( delegate.getResult( resultSet, index ) );
     }

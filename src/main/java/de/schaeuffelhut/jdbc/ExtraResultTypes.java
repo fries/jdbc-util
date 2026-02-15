@@ -69,9 +69,10 @@ public class ExtraResultTypes
         {
         }
 
-        public final DateTime getResult(ResultSet resultSet, int index) throws SQLException
+        @Override
+        public final DateTime getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
         {
-            Timestamp timestamp = resultSet.getTimestamp( index, Calendar.getInstance( DateTimeZone.UTC.toTimeZone() ) );
+            Timestamp timestamp = resultSet.getTimestamp( index.next(), Calendar.getInstance( DateTimeZone.UTC.toTimeZone() ) );
             return timestamp == null ? null : new DateTime( timestamp.getTime() );
         }
 

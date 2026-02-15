@@ -22,15 +22,15 @@ class ListResultType<T> implements ResultType<List<T>>
     }
 
     @Override
-    public List<T> getResult(ResultSet resultSet, int index) throws SQLException
+    public List<T> getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
     {
         ArrayList<T> result = new ArrayList<>();
-        Array array = resultSet.getArray( index );
+        Array array = resultSet.getArray( index.next() );
         try (ResultSet arrayResultSet = array.getResultSet())
         {
             while (arrayResultSet.next())
             {
-                T t = resultType.getResult( arrayResultSet, 2 );
+                T t = resultType.getResult( arrayResultSet, ColumnIndex.create( 2 ) );
                 result.add( t );
             }
         }

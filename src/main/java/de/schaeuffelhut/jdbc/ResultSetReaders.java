@@ -19,6 +19,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
+ * Factory class for creating {@link ResultSetReader} instances.
+ * These readers define how rows from a {@link ResultSet} are accumulated or processed.
+ *
  * @author Friedrich Schäuffelhut
  * @since 2021-12-08
  */
@@ -28,36 +31,82 @@ public abstract class ResultSetReaders
     {
     }
 
+    /**
+     * Returns a {@link ResultSetReader} that reads at most one row and returns it as an {@link Optional}.
+     * If no rows are found, an empty {@code Optional} is returned. If more than one row is found,
+     * an {@link IllegalStateException} is thrown.
+     *
+     * @param <T> the type of the mapped row object.
+     * @return a {@code ResultSetReader} for an optional single row.
+     */
     @NotNull
     public static <T> ResultSetReader<T, Optional<T>> readOptional()
     {
         return new ReadOptionalResult<>();
     }
 
+    /**
+     * Returns a {@link ResultSetReader} that reads exactly one row.
+     * If zero or more than one row is found, an {@link IllegalStateException} is thrown.
+     *
+     * @param <T> the type of the mapped row object.
+     * @return a {@code ResultSetReader} for a single row.
+     */
     @NotNull
     public static <T> ResultSetReader<T, T> readOne()
     {
         return new ReadOneResult<>();
     }
 
+    /**
+     * Returns a {@link ResultSetReader} that reads all rows and collects them into a {@link List}.
+     *
+     * @param <T> the type of the mapped row object.
+     * @return a {@code ResultSetReader} for a list of rows.
+     */
     @NotNull
     public static <T> ResultSetReader<T, List<T>> readMany()
     {
         return new ReadManyResultsIntoCollector<>( Collectors.toList() );
     }
 
+    /**
+     * Returns a {@link ResultSetReader} that reads all rows and passes each mapped row to the supplied {@link Consumer}.
+     *
+     * @param consumer the {@code Consumer} to accept each mapped row.
+     * @param <T>      the type of the mapped row object.
+     * @param <C>      the type of the consumer.
+     * @return a {@code ResultSetReader} that processes rows with a consumer.
+     */
     @NotNull
     public static <T, C extends Consumer<T>> ResultSetReader<T, C> readMany(C consumer)
     {
         return new ReadManyResultsIntoConsumer<>( consumer );
     }
 
+    /**
+     * Returns a {@link ResultSetReader} that reads all rows and collects them using the supplied {@link Collector}.
+     * This is useful for collecting results into various collection types (e.e., {@code Set}, {@code Map}) or custom aggregations.
+     *
+     * @param collector the {@code Collector} to accumulate and transform the mapped rows.
+     * @param <T>       the type of the mapped row object.
+     * @param <A>       the intermediate accumulation type of the collector.
+     * @param <R>       the final result type of the collector.
+     * @return a {@code ResultSetReader} that collects rows with a collector.
+     */
     @NotNull
     public static <T, A, R> ResultSetReader<T, R> readMany(Collector<T, A, R> collector)
     {
         return new ReadManyResultsIntoCollector<>( collector );
     }
 
+    /**
+     * Returns a {@link Collector} that accumulates elements into a {@link Stream}.
+     * This is useful when you want to lazily process results or leverage Stream API capabilities.
+     *
+     * @param <T> the type of the elements in the stream.
+     * @return a {@code Collector} that builds a {@code Stream}.
+     */
     public static <T> Collector<T, Stream.Builder<T>, Stream<T>> toStream()
     {
         return Collector.of(

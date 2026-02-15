@@ -10,13 +10,23 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 
+/**
+ * Factory class for creating common {@link StatementOutParameter} instances
+ * for use with {@link StatementUtil#executeCall(String, StatementParameter...)}.
+ */
 public class StatementOutParameters
 {
     private StatementOutParameters()
     {
     }
 
+    /**
+     * A {@link StatementOutParameter} for registering and reading {@link Integer} OUT parameters.
+     */
     public final static StatementOutParameter<Integer> Integer = new IntegerOutParameter();
+    /**
+     * A {@link StatementOutParameter} for registering and reading {@link Long} OUT parameters.
+     */
     public final static StatementOutParameter<Long> Long = new LongOutParameter();
 
 }

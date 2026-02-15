@@ -20,75 +20,166 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * @author Friedrich Schäuffelhut
+ * A collection of built-in {@link StatementInParameterType} implementations and factory methods for creating {@link StatementInParameter} instances.
+ * This class provides convenient ways to bind various Java types to SQL prepared statement parameters.
  */
 public class StatementParameters
 {
+    /**
+     * A {@code StatementInParameterType} for binding {@link Boolean} values. Maps to {@code BOOLEAN} SQL type.
+     */
     public final static StatementInParameterType<Boolean> Boolean = new BooleanInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a {@link Boolean} value.
+     *
+     * @param value the {@code Boolean} value to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter Boolean(Boolean value)
     {
         return bindValue( Boolean, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} for binding {@link Boolean} values as integers (0 for false, 1 for true).
+     */
     public final static StatementInParameterType<Boolean> BooleanAsInteger = new BooleanAsIntegerInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a {@link Boolean} value as an integer.
+     *
+     * @param value the {@code Boolean} value to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter BooleanAsInteger(Boolean value)
     {
         return bindValue( BooleanAsInteger, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} for binding {@link Byte} values. Maps to {@code TINYINT} SQL type.
+     */
     public final static StatementInParameterType<Byte> Byte = new ByteInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a {@link Byte} value.
+     *
+     * @param value the {@code Byte} value to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter Byte(Byte value)
     {
         return bindValue( Byte, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} for binding {@link Character} values as strings.
+     */
     public final static StatementInParameterType<Character> Character = new CharacterInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a {@link Character} value as a string.
+     *
+     * @param value the {@code Character} value to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter Character(Character value)
     {
         return bindValue( Character, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} for binding {@link Short} values. Maps to {@code SMALLINT} SQL type.
+     */
     public final static StatementInParameterType<Short> Short = new ShortInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a {@link Short} value.
+     *
+     * @param value the {@code Short} value to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter Short(Short value)
     {
         return bindValue( Short, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} for binding {@link Integer} values. Maps to {@code INT} SQL type.
+     */
     public final static StatementInParameterType<Integer> Integer = new IntegerInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds an {@link Integer} value.
+     *
+     * @param value the {@code Integer} value to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter Integer(Integer value)
     {
         return bindValue( Integer, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} for binding {@link Long} values. Maps to {@code BIGINT} SQL type.
+     */
     public final static StatementInParameterType<Long> Long = new LongInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a {@link Long} value.
+     *
+     * @param value the {@code Long} value to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter Long(Long value)
     {
         return bindValue( Long, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} for binding {@link Float} values. Maps to {@code REAL} SQL type.
+     */
     public final static StatementInParameterType<Float> Float = new FloatInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a {@link Float} value.
+     *
+     * @param value the {@code Float} value to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter Float(Float value)
     {
         return bindValue( Float, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} for binding {@link Double} values. Maps to {@code DOUBLE} SQL type.
+     */
     public final static StatementInParameterType<Double> Double = new DoubleInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a {@link Double} value.
+     *
+     * @param value the {@code Double} value to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter Double(Double value)
     {
         return bindValue( Double, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} for binding {@link BigDecimal} values. Maps to {@code DECIMAL} or {@code NUMERIC} SQL type.
+     */
     public final static StatementInParameterType<BigDecimal> BigDecimal = new BigDecimalInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a {@link BigDecimal} value.
+     *
+     * @param value the {@code BigDecimal} value to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter BigDecimal(java.math.BigDecimal value)
     {
         return bindValue( BigDecimal, value );
@@ -96,55 +187,124 @@ public class StatementParameters
 
     public final static StatementInParameterType<String> String = new StringInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a {@link String} value.
+     *
+     * @param value the {@code String} value to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter String(String value)
     {
         return bindValue( String, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} for binding a {@link Collection} of {@link String}s as a SQL array.
+     */
     public final static StatementInParameterType<Collection<String>> CollectionOfString = new CollectionOfStringInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a {@link Collection} of {@link String}s as a SQL array.
+     *
+     * @param value the {@code Collection} of {@code String} values to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter StringArray(Collection<java.lang.String> value)
     {
         return bindValue( CollectionOfString, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} for binding {@link Date} values. Maps to {@code DATE} SQL type.
+     */
     public final static StatementInParameterType<Date> Date = new DateInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a {@link Date} value.
+     *
+     * @param value the {@code Date} value to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter Date(Date value)
     {
         return bindValue( Date, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} for binding {@link Timestamp} values. Maps to {@code TIMESTAMP} SQL type.
+     */
     public final static StatementInParameterType<Timestamp> Timestamp = new TimestampInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a {@link Timestamp} value.
+     *
+     * @param value the {@code Timestamp} value to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter Timestamp(Timestamp value)
     {
         return bindValue( Timestamp, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} for binding UTC {@link ZonedDateTime} values as SQL timestamps.
+     */
     public final static StatementInParameterType<ZonedDateTime> ZonedDateTimeAtUTC = new ZonedDateTimeAtUTCInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a UTC {@link ZonedDateTime} value as a SQL timestamp.
+     *
+     * @param value the {@code ZonedDateTime} value to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter ZonedDateTimeAtUtc(ZonedDateTime value)
     {
         return bindValue( ZonedDateTimeAtUTC, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} for binding generic {@link Object} values.
+     */
     public final static StatementInParameterType<Object> Object = new ObjectInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a generic {@link Object} value.
+     *
+     * @param value the {@code Object} value to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter Object(Object value)
     {
         return bindValue( Object, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} for binding {@link java.io.Serializable} objects to byte arrays (BLOBs).
+     */
     public final static StatementInParameterType<Object> Serializeable = new SerializableInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a {@link java.io.Serializable} object to a byte array (BLOB).
+     *
+     * @param value the {@code Serializable} object to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter Serializeable(Object value)
     {
         return bindValue( Serializeable, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} for binding raw byte arrays (BLOBs).
+     */
     public final static StatementInParameterType<byte[]> Bytes = new BytesInParameterType();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a raw byte array.
+     *
+     * @param value the byte array to bind.
+     * @return a {@code StatementInParameter}.
+     */
     public static StatementInParameter Bytes(byte[] value)
     {
         return bindValue( Bytes, value );

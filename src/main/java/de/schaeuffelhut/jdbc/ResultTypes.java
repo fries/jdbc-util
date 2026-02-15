@@ -37,82 +37,240 @@ import java.util.List;
  */
 public final class ResultTypes
 {
+    /**
+     * A {@code ResultType} for reading {@link Boolean} values. Handles {@code BOOLEAN} SQL types.
+     */
     public final static ResultType<Boolean> Boolean = new BooleanResultType();
+    /**
+     * A {@code ResultType} for reading {@link Boolean} values stored as integers (0 for false, 1 for true).
+     */
     public final static ResultType<Boolean> BooleanAsInteger = new BooleanAsIntegerResultType();
+    /**
+     * A {@code ResultType} for reading {@link Byte} values. Handles {@code TINYINT} SQL types.
+     */
     public final static ResultType<Byte> Byte = new ByteResultType();
+    /**
+     * A {@code ResultType} for reading {@link Character} values. Expects a single-character string from the database.
+     */
     public final static ResultType<Character> Character = new CharacterResultType();
+    /**
+     * A {@code ResultType} for reading {@link Short} values. Handles {@code SMALLINT} SQL types.
+     */
     public final static ResultType<Short> Short = new ShortResultType();
+    /**
+     * A {@code ResultType} for reading {@link Integer} values. Handles {@code INT} SQL types.
+     */
     public final static ResultType<Integer> Integer = new IntegerResultType();
+    /**
+     * A {@code ResultType} for reading {@link Long} values. Handles {@code BIGINT} SQL types.
+     */
     public final static ResultType<Long> Long = new LongResultType();
+    /**
+     * A {@code ResultType} for reading {@link Float} values. Handles {@code REAL} SQL types.
+     */
     public final static ResultType<Float> Float = new FloatResultType();
+    /**
+     * A {@code ResultType} for reading {@link Double} values. Handles {@code DOUBLE} SQL types.
+     */
     public final static ResultType<Double> Double = new DoubleResultType();
+    /**
+     * A {@code ResultType} for reading {@link BigDecimal} values. Handles {@code DECIMAL}, {@code NUMERIC} SQL types.
+     */
     public final static ResultType<BigDecimal> BigDecimal = new BigDecimalResultType();
+    /**
+     * A {@code ResultType} for reading {@link String} values. Handles {@code VARCHAR}, {@code TEXT} SQL types.
+     */
     public final static ResultType<String> String = new StringResultType();
+    /**
+     * A {@code ResultType} for reading {@link Date} values. Handles {@code DATE} SQL types.
+     */
     public final static ResultType<Date> Date = new DateResultType();
+    /**
+     * A {@code ResultType} for reading {@link Timestamp} values. Handles {@code TIMESTAMP} SQL types.
+     */
     public final static ResultType<Timestamp> Timestamp = new TimestampResultType();
+    /**
+     * A {@code ResultType} for reading UTC {@link ZonedDateTime} values.
+     */
     public final static ResultType<ZonedDateTime> ZonedDateTimeAtUtc = new ZonedDateTimeResultType();
+    /**
+     * A {@code ResultType} for reading generic {@link Object} values.
+     */
     public final static ResultType<Object> Object = new ObjectResultType<Object>( Object.class );
 
+    /**
+     * Creates a {@code ResultType} for reading generic {@link Object} values of a specific type.
+     *
+     * @param type the expected class type of the object.
+     * @param <T>  the type of the object.
+     * @return a {@code ResultType} for the specified object type.
+     */
     public static <T> ResultType<T> Object(Class<T> type)
     {
         return new ObjectResultType<T>( type );
     }
 
+    /**
+     * A {@code ResultType} for reading {@link java.io.Serializable} objects from byte arrays (BLOBs).
+     */
     public static final ResultType<Object> Serializeable = new SerializeableResultType<Object>( Object.class );
 
+    /**
+     * Creates a {@code ResultType} for reading {@link java.io.Serializable} objects of a specific type from byte arrays (BLOBs).
+     *
+     * @param type the expected class type of the serializable object.
+     * @param <T>  the type of the serializable object.
+     * @return a {@code ResultType} for the specified serializable object type.
+     */
     public static <T> ResultType<T> Serializeable(Class<T> type)
     {
         return new SerializeableResultType<T>( type );
     }
 
+    /**
+     * A {@code ResultType} for reading raw byte arrays (BLOBs).
+     */
     public final static ResultType<byte[]> Bytes = new BytesResultType();
 
+    /**
+     * Creates a {@code ResultType} for reading {@link Enum} values by their name (string representation).
+     *
+     * @param type the {@code Enum} class.
+     * @param <E>  the {@code Enum} type.
+     * @return a {@code ResultType} for the specified enum type.
+     */
     public static <E extends Enum<E>> ResultType<E> enumByName(Class<E> type)
     {
         return new EnumByNameResultType<E>( type );
     }
 
+    /**
+     * Creates a {@code ResultType} for reading {@link Enum} values that implement {@link EnumIntKey} by their integer key.
+     *
+     * @param type the {@code Enum} class implementing {@code EnumIntKey}.
+     * @param <E>  the {@code Enum} type.
+     * @return a {@code ResultType} for the specified enum type.
+     */
     public static <E extends Enum<E> & EnumIntKey> ResultType<E> enumByIntKey(Class<E> type)
     {
         return new EnumByIntKeyResultType<E>( type );
     }
 
+    /**
+     * Creates a {@code ResultType} for reading {@link Enum} values that implement {@link EnumKey} by a generic key type.
+     *
+     * @param type       the {@code Enum} class implementing {@code EnumKey}.
+     * @param resultType the {@code ResultType} for reading the key itself from the {@code ResultSet}.
+     * @param <K>        the type of the key.
+     * @param <E>        the {@code Enum} type.
+     * @return a {@code ResultType} for the specified enum type.
+     */
     public static <K, E extends Enum<E> & EnumKey<K>> ResultType<E> enumByKey(Class<E> type, ResultType<K> resultType)
     {
         return new EnumByKeyResultType<K, E>( type, resultType );
     }
 
+    /**
+     * A {@code ResultType} for reading {@link Class} objects by their fully qualified name.
+     */
     public final static ResultType<Class<?>> Class = new ClassResultType();
 
+    /**
+     * Creates a {@code ResultType} for reading {@link Class} objects using a specific {@link ClassLoader}.
+     *
+     * @param classLoader the {@code ClassLoader} to use for loading classes.
+     * @return a {@code ResultType} for {@code Class} objects.
+     */
     public static ResultType<Class<?>> Class(ClassLoader classLoader)
     {
         return new ClassResultType( classLoader );
     }
 
+    /**
+     * A {@code ResultType} for reading Joda {@link DateTime} values from timestamps.
+     */
     public final static ResultType<DateTime> DateTime = new DateTimeResultType();
+    /**
+     * A {@code ResultType} for reading Joda {@link DateMidnight} values from timestamps.
+     */
     public final static ResultType<DateMidnight> DateMidnight = new DateMidnightResultType();
+    /**
+     * A {@code ResultType} for reading Joda {@link DateMidnight} values from ISO 8601 formatted strings.
+     */
     public final static ResultType<DateMidnight> DateMidnightAsIsoString = new DateMidnightAsIsoStringResultType();
+    /**
+     * A {@code ResultType} for reading Joda {@link Days} values from integers.
+     */
     public final static ResultType<Days> Days = new DaysResultType();
+    /**
+     * A {@code ResultType} for reading Joda {@link Hours} values from integers.
+     */
     public final static ResultType<Hours> Hours = new HoursResultType();
+    /**
+     * A {@code ResultType} for reading Joda {@link Minutes} values from integers.
+     */
     public final static ResultType<Minutes> Minutes = new MinutesResultType();
+    /**
+     * A {@code ResultType} for reading Joda {@link Months} values from integers.
+     */
     public final static ResultType<Months> Months = new MonthsResultType();
+    /**
+     * A {@code ResultType} for reading Joda {@link Seconds} values from integers.
+     */
     public final static ResultType<Seconds> Seconds = new SecondsResultType();
+    /**
+     * A {@code ResultType} for reading Joda {@link Weeks} values from integers.
+     */
     public final static ResultType<Weeks> Weeks = new WeeksResultType();
+    /**
+     * A {@code ResultType} for reading Joda {@link Years} values from integers.
+     */
     public final static ResultType<Years> Years = new YearsResultType();
+    /**
+     * A {@code ResultType} for reading Joda {@link Period} values from ISO 8601 formatted strings.
+     */
     public final static ResultType<Period> PeriodIsoEncoded = new PeriodIsoEncodedResultType();
+    /**
+     * A {@code ResultType} for reading Joda {@link DateTimeZone} values from string IDs.
+     */
     public final static ResultType<DateTimeZone> DateTimeZone = new DateTimeZoneResultType();
+    /**
+     * A {@code ResultType} for reading Joda {@link Duration} values from long milliseconds.
+     */
     public final static ResultType<Duration> Duration = new DurationResultType();
 
+    /**
+     * Creates a {@code ResultType} for reading arrays of a specified type.
+     *
+     * @param resultType the {@code ResultType} for the elements within the array.
+     * @param <T>        the type of the array elements.
+     * @return a {@code ResultType} for arrays of the specified type.
+     */
     public static <T> ResultType<T[]> arrayOf(ResultType<T> resultType)
     {
         return new ArrayResultType<T>( resultType );
     }
 
+    /**
+     * Creates a {@code ResultType} for reading {@link List}s of a specified type.
+     *
+     * @param resultType the {@code ResultType} for the elements within the list.
+     * @param <T>        the type of the list elements.
+     * @return a {@code ResultType} for lists of the specified type.
+     */
     public static <T> ResultType<List<T>> listOf(ResultType<T> resultType)
     {
         return new ListResultType<T>( resultType );
     }
 
+    /**
+     * Creates a {@code ResultType} that provides a default value if the underlying {@code ResultType} returns {@code null}.
+     *
+     * @param resultType   the original {@code ResultType}.
+     * @param defaultValue the value to return if {@code resultType} produces {@code null}.
+     * @param <T>          the type of the result.
+     * @return a null-safe {@code ResultType} with a default value.
+     */
     public static <T> ResultType<T> ifNull(ResultType<T> resultType, T defaultValue)
     {
         return new IfNullResultType<T>( resultType, defaultValue );
@@ -155,6 +313,13 @@ public final class ResultTypes
         };
     }
 
+    /**
+     * A helper method to create an array of {@link ResultType} instances.
+     * This can be useful when you need to pass a var-args list of {@code ResultType}s explicitly.
+     *
+     * @param resultTypes the {@code ResultType} instances.
+     * @return an array of {@code ResultType} instances.
+     */
     public static ResultType<?>[] resultTypes(ResultType<?>... resultTypes)
     {
         return resultTypes;
@@ -853,4 +1018,5 @@ final class IfNullResultType<T> implements ResultType<T>
         return resultType.getResultType();
     }
 }
+
 

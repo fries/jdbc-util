@@ -17,12 +17,40 @@ import java.util.Calendar;
 import java.util.UUID;
 import java.util.function.Function;
 
+/**
+ * A collection of less common or extended {@link ResultType} implementations.
+ */
 public class ExtraResultTypes
 {
+    /**
+     * A {@code ResultType} that reads a string from the database and converts it to a {@link UUID}.
+     */
     public static final UUIDStringConvertingResultType UUID = new UUIDStringConvertingResultType();
+
+    /**
+     * A {@code ResultType} that reads a UTC timestamp from the database and converts it to a Joda {@link DateTime}
+     * object, respecting the default JVM time zone.
+     */
     public final static ResultType<DateTime> UtcTimestampAsJodaDateTimeWithDefaultTimeZone = new UtcTimestampAsJodaDateTimeWithDefaultTimeZone();
+
+    /**
+     * A {@code ResultType} that reads a string from the database and converts it to a {@link URI}.
+     */
     public final static ResultType<java.net.URI> URI = new URIResultType();
 
+    /**
+     * Creates a new {@link ConvertingResultType} that is aware of {@code null} values.
+     * <p>
+     * If the input value from the underlying {@code ResultType} is {@code null}, this converter
+     * will immediately return {@code null} without invoking the converter function.
+     *
+     * @param outClass   the target class type after conversion.
+     * @param resultType the underlying {@code ResultType} that reads the initial value from the {@code ResultSet}.
+     * @param converter  the function to apply to non-null values.
+     * @param <Tout>     the target type.
+     * @param <Tin>      the source type from the database.
+     * @return a new null-aware {@code ConvertingResultType}.
+     */
     public static <Tout, Tin> ConvertingResultType<Tout, Tin> nullAwareConverter(Class<Tout> outClass, ResultType<Tin> resultType, Function<Tin, Tout> converter)
     {
         return new ConvertingResultType<>( resultType )

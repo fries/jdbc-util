@@ -18,13 +18,24 @@ import java.util.UUID;
 import static de.schaeuffelhut.jdbc.StatementParameters.bindValue;
 
 /**
+ * A collection of less common or extended {@link StatementInParameterType} implementations.
+ *
  * @author Friedrich Schäuffelhut
  * @since 2017-11-12
  */
 public class ExtraStatementParameters
 {
+    /**
+     * A {@code StatementInParameterType} that binds a Joda {@link DateTime} as a UTC timestamp.
+     */
     public static StatementInParameterType<DateTime> JodaDateTimeAsUtcTimestamp = new JodaDateTimeAsUtcTimestamp();
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a Joda {@link DateTime} as a UTC timestamp.
+     *
+     * @param value the {@code DateTime} value to bind, or {@code null}.
+     * @return a new {@code StatementInParameter}.
+     */
     public static StatementInParameter JodaDateTimeAsUtcTimestamp(DateTime value)
     {
         return bindValue( JodaDateTimeAsUtcTimestamp, value );
@@ -55,11 +66,20 @@ public class ExtraStatementParameters
         }
     }
 
+    /**
+     * Creates a {@link StatementInParameter} that binds a {@link UUID} as a string.
+     *
+     * @param value the {@code UUID} value to bind, or {@code null}.
+     * @return a new {@code StatementInParameter}.
+     */
     public static StatementInParameter UUID(UUID value)
     {
         return StatementParameters.bindValue( UUID, value );
     }
 
+    /**
+     * A {@code StatementInParameterType} that binds a {@link UUID} as a string.
+     */
     public static final StatementInParameterType<UUID> UUID = new UUIDInParameterType();
 
     final static class UUIDInParameterType implements StatementInParameterType<UUID>

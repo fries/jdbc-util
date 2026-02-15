@@ -21,5 +21,13 @@ import java.sql.SQLException;
  */
 public interface ResultSetProcessor<T>
 {
+    /**
+     * Processes the given {@link ResultSet} and produces a result of type {@code T}.
+     * Implementations should iterate over the {@code ResultSet} and apply custom logic.
+     *
+     * @param resultSet the {@code ResultSet} to process.
+     * @return the result of processing the {@code ResultSet}.
+     * @throws SQLException if a database access error occurs.
+     */
     T process(ResultSet resultSet) throws SQLException;
 }

@@ -155,28 +155,10 @@ statementUtil.executeBatch(
 | `ResultTypes` | `String`, `Integer`, `Long`, `Boolean`, `Object(UUID.class)`, `Enum(MyEnum.class)` |
 | `StatementParameters` | `Object()`, `String()`, `Integer()`, `EnumByName()` |
 
-## Real-World Example
+## For AI Agents
 
-```java
-record Realm(UUID uuid, String name) {}
-
-List<Realm> realms = stmt.selectInto(
-    """
-    SELECT r.uuid, r.name
-    FROM realm r
-    JOIN realm_member rm ON r.uuid = rm.realm
-    WHERE rm.user_account = ?
-    """,
-    ResultSetReaders.readMany(),
-    ResultSetMappers.object(
-        Realm::new,
-        ResultTypes.Object(UUID.class),
-        ResultTypes.String
-    ),
-    StatementParameters.Object(currentUserId)
-);
-```
-
+For a detailed guide on how to use this library effectively with AI agents, including advanced usage patterns and best
+practices, please refer to the [doc/SKILLS.md](doc/SKILLS.md) file.
 
 ## License
 

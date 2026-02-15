@@ -37,6 +37,13 @@ public interface ColumnIndex {
      * @return the current index
      */
     int peek();
+
+    /**
+     * Creates a copy of this column index.
+     *
+     * @return a copy of this column index
+     */
+    ColumnIndex copy();
 }
 
 
@@ -58,5 +65,10 @@ class SimpleColumnIndex implements ColumnIndex {
     @Override
     public int peek() {
         return index;
+    }
+
+    @Override
+    public ColumnIndex copy() {
+        return new SimpleColumnIndex( index );
     }
 }

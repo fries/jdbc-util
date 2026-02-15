@@ -51,13 +51,27 @@ public interface ResultType<T>
      *
      * <p>Called by {@link ResultSetMappers} for each row.</p>
      *
-     * @param resultSet the result set
-     * @param index     the column index pointer
+     * @param resultSet   the result set
+     * @param columnIndex the column index pointer
      * @return the value, or {@code null} if the database value is {@code NULL}
      * @throws SQLException if a database access error occurs
      * @since 2025-02-15
      */
-    T getResult(ResultSet resultSet, ColumnIndex index) throws SQLException;
+    T getResult(ResultSet resultSet, ColumnIndex columnIndex) throws SQLException;
+
+    /**
+     * Initializes the result type before the first row is processed.
+     *
+     * <p>The default implementation does nothing.</p>
+     *
+     * @param resultSet   the result set
+     * @param columnIndex the column index pointer
+     * @throws SQLException if a database access error occurs
+     */
+    default void initialize(ResultSet resultSet, ColumnIndex columnIndex) throws SQLException
+    {
+        // no-op
+    }
 
     /**
      * Returns the Java class of the result type.
@@ -125,9 +139,9 @@ public interface ResultType<T>
         return new ResultType<>()
         {
             @Override
-            public T getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
+            public T getResult(ResultSet resultSet, ColumnIndex columnIndex) throws SQLException
             {
-                final T result = ResultType.this.getResult( resultSet, index );
+                final T result = ResultType.this.getResult( resultSet, columnIndex );
                 return result == null ? nullReplacementValue : result;
             }
 

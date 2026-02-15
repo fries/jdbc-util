@@ -234,8 +234,9 @@ public abstract class AbstractStatementUtil implements StatementUtil
         return execute(
                 sql,
                 resultSet -> {
-                    resultSetMapper.initialize( resultSet );
-                    return resultSetReader.readResult( resultSet, resultSetMapper );
+                    ColumnIndex idx = ColumnIndex.create( 1 );
+                    resultSetMapper.initialize( resultSet, idx );
+                    return resultSetReader.readResult( resultSet, idx, resultSetMapper );
                 },
                 parameters,
                 "selectInto"

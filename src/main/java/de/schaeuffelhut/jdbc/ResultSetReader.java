@@ -30,10 +30,25 @@ public interface ResultSetReader<T, R>
      * a {@link SQLException} if any SQL-related errors occur during reading or mapping.
      * </p>
      *
-     * @param resultSet    The {@link ResultSet} containing data to read and map.
-     * @param resultMapper The {@link ResultSetMapper} used to map each row of the {@link ResultSet} to an object of type {@code T}.
-     * @return The processed result of type {@code R} after reading and mapping the {@link ResultSet}.
-     * @throws SQLException if an SQL error occurs while reading or mapping the {@link ResultSet}.
+     * @param resultSet    the {@link ResultSet} containing data to read and map
+     * @param resultMapper the {@link ResultSetMapper} used to map each row
+     * @return the processed result of type {@code R}
+     * @throws SQLException if an SQL error occurs while reading or mapping
      */
     R readResult(ResultSet resultSet, ResultSetMapper<T> resultMapper) throws SQLException;
+
+    /**
+     * Reads and processes data from the given {@link ResultSet} using the specified {@link ResultSetMapper}
+     * and {@link ColumnIndex}.
+     *
+     * @param resultSet    the {@link ResultSet} containing data to read and map
+     * @param columnIndex  the {@link ColumnIndex} pointer
+     * @param resultMapper the {@link ResultSetMapper} used to map each row
+     * @return the processed result of type {@code R}
+     * @throws SQLException if an SQL error occurs while reading or mapping
+     */
+    default R readResult(ResultSet resultSet, ColumnIndex columnIndex, ResultSetMapper<T> resultMapper) throws SQLException
+    {
+        return readResult( resultSet, resultMapper );
+    }
 }

@@ -9,6 +9,9 @@ package de.schaeuffelhut.jdbc;
 import org.junit.jupiter.api.Test;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import static de.schaeuffelhut.jdbc.ResultSetMappers.object;
+import static de.schaeuffelhut.jdbc.ResultSetReaders.readOne;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MultiColumnResultTypeTest {
@@ -59,8 +62,8 @@ class MultiColumnResultTypeTest {
 
             Person person = statementUtil.selectInto(
                     "SELECT street, city, name FROM person_addresses WHERE id = 1",
-                    ResultSetReaders.readOne(),
-                    ResultSetMappers.object(Person::new, new AddressResultType(), ResultTypes.String)
+                    readOne(),
+                    object(Person::new, new AddressResultType(), ResultTypes.String)
             );
 
             assertThat(person.address.street).isEqualTo("Main St");
@@ -95,8 +98,8 @@ class MultiColumnResultTypeTest {
 
             Person person = statementUtil.selectInto(
                     "SELECT street, city, name FROM person_addresses_null WHERE id = 1",
-                    ResultSetReaders.readOne(),
-                    ResultSetMappers.object(Person::new, addressTypeWithDefault, ResultTypes.String)
+                    readOne(),
+                    object(Person::new, addressTypeWithDefault, ResultTypes.String)
             );
 
             assertThat(person.address).isSameAs(defaultAddress);
@@ -124,10 +127,51 @@ class MultiColumnResultTypeTest {
         StatementUtil statementUtil = new H2StatementUtil();
         String result = statementUtil.selectInto(
                 "SELECT 'test' FROM (VALUES(1))",
-                ResultSetReaders.readOne(),
+                readOne(),
                 ResultSetMappers.scalar(stringType)
         );
 
         assertThat(result).isEqualTo("test");
+    }
+
+    @Test
+    void mapperResultType() {
+        StatementUtil statementUtil = new H2StatementUtil();
+        statementUtil.execute(
+                """
+                CREATE TABLE person_complex (
+                    id INT PRIMARY KEY,
+                    street VARCHAR(255),
+                    city VARCHAR(255),
+                    name VARCHAR(255)
+                );
+                INSERT INTO person_complex (id, street, city, name) VALUES
+                    (1, 'Main St', 'Springfield', 'Homer');
+                """
+        );
+
+        try {
+            record Address(String street, String city) {}
+            record Person(Address address, String name) {}
+
+            Person person = statementUtil.selectInto(
+                    "SELECT street, city, name FROM person_complex WHERE id = 1",
+                    readOne(),
+                    object(
+                            Person::new,
+                            ResultTypes.mapper(
+                                    Address.class,
+                                    object(Address::new, ResultTypes.String, ResultTypes.String)
+                            ),
+                            ResultTypes.String
+                    )
+            );
+
+            assertThat(person.address.street).isEqualTo("Main St");
+            assertThat(person.address.city).isEqualTo("Springfield");
+            assertThat(person.name).isEqualTo("Homer");
+        } finally {
+            statementUtil.execute("DROP TABLE person_complex");
+        }
     }
 }

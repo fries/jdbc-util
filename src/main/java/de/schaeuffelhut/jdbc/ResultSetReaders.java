@@ -77,9 +77,15 @@ class ReadOptionalResult<T> implements ResultSetReader<T, Optional<T>>
     @Override
     public Optional<T> readResult(ResultSet resultSet, ResultSetMapper<T> resultMapper) throws SQLException
     {
+        return readResult( resultSet, ColumnIndex.create( 1 ), resultMapper );
+    }
+
+    @Override
+    public Optional<T> readResult(ResultSet resultSet, ColumnIndex columnIndex, ResultSetMapper<T> resultMapper) throws SQLException
+    {
         if (resultSet.next())
         {
-            final T result = resultMapper.map( resultSet );
+            final T result = resultMapper.map( resultSet, columnIndex.copy() );
             if (resultSet.next())
             {
                 throw new IllegalStateException( "ResultSet returned more than one row" );
@@ -98,9 +104,15 @@ class ReadOneResult<T> implements ResultSetReader<T, T>
     @Override
     public T readResult(ResultSet resultSet, ResultSetMapper<T> resultMapper) throws SQLException
     {
+        return readResult( resultSet, ColumnIndex.create( 1 ), resultMapper );
+    }
+
+    @Override
+    public T readResult(ResultSet resultSet, ColumnIndex columnIndex, ResultSetMapper<T> resultMapper) throws SQLException
+    {
         if (resultSet.next())
         {
-            final T result = resultMapper.map( resultSet );
+            final T result = resultMapper.map( resultSet, columnIndex.copy() );
             if (resultSet.next())
             {
                 throw new IllegalStateException( "ResultSet returned more than one row" );
@@ -131,10 +143,18 @@ class ReadManyResultsIntoCollector<T, A, R> implements ResultSetReader<T, R>
     @Override
     public R readResult(ResultSet resultSet, ResultSetMapper<T> resultMapper) throws SQLException
     {
+        return readResult( resultSet, ColumnIndex.create( 1 ), resultMapper );
+    }
+
+    @Override
+    public R readResult(ResultSet resultSet, ColumnIndex columnIndex, ResultSetMapper<T> resultMapper) throws SQLException
+    {
         A container = collector.supplier().get();
         BiConsumer<A, T> accumulator = collector.accumulator();
         while (resultSet.next())
-            accumulator.accept( container, resultMapper.map( resultSet ) );
+        {
+            accumulator.accept( container, resultMapper.map( resultSet, columnIndex.copy() ) );
+        }
         return collector.finisher().apply( container );
     }
 }
@@ -151,8 +171,16 @@ class ReadManyResultsIntoConsumer<T, C extends Consumer<T>> implements ResultSet
     @Override
     public C readResult(ResultSet resultSet, ResultSetMapper<T> resultMapper) throws SQLException
     {
+        return readResult( resultSet, ColumnIndex.create( 1 ), resultMapper );
+    }
+
+    @Override
+    public C readResult(ResultSet resultSet, ColumnIndex columnIndex, ResultSetMapper<T> resultMapper) throws SQLException
+    {
         while (resultSet.next())
-            consumer.accept( resultMapper.map( resultSet ) );
+        {
+            consumer.accept( resultMapper.map( resultSet, columnIndex.copy() ) );
+        }
         return consumer;
     }
 }

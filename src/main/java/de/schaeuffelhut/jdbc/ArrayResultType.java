@@ -11,6 +11,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * Handles the extraction of {@link java.sql.Array} columns into Java arrays.
+ *
+ * @param <T> the component type of the array
+ */
 class ArrayResultType<T> implements ResultType<T[]>
 {
     private final ResultType<T> resultType;

@@ -12,6 +12,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles the extraction of {@link java.sql.Array} columns into Java {@link List}s.
+ *
+ * @param <T> the component type of the list
+ */
 class ListResultType<T> implements ResultType<List<T>>
 {
     private final ResultType<T> resultType;

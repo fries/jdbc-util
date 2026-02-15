@@ -25,7 +25,15 @@ import java.util.List;
 
 
 /**
+ * Collection of built-in {@link ResultType} implementations for common JDBC types.
+ *
+ * <p>Provides standard mappings for Java primitives, wrappers, strings, dates,
+ * and more. Also includes utilities for Enums, Arrays, Lists, and mapper adaptation.</p>
+ *
  * @author Friedrich Schäuffelhut
+ * @see ResultType
+ * @see ResultSetMappers
+ * @since 1.0
  */
 public final class ResultTypes
 {
@@ -108,6 +116,43 @@ public final class ResultTypes
     public static <T> ResultType<T> ifNull(ResultType<T> resultType, T defaultValue)
     {
         return new IfNullResultType<T>( resultType, defaultValue );
+    }
+
+    /**
+     * Adapts a {@link ResultSetMapper} into a {@link ResultType}.
+     *
+     * <p>This allows using complex mappers (e.g. created via {@link ResultSetMappers#object(ResultSetMappers.F1, ResultType)})
+     * as if they were a single column {@link ResultType}. This is useful for nesting mappers
+     * for composite objects.</p>
+     *
+     * @param type   the class of the object produced by the mapper
+     * @param mapper the mapper to adapt
+     * @param <T>    the result type
+     * @return a {@link ResultType} that delegates to the given mapper
+     * @since 2025-02-15
+     */
+    public static <T> ResultType<T> mapper(Class<T> type, ResultSetMapper<T> mapper)
+    {
+        return new ResultType<T>()
+        {
+            @Override
+            public void initialize(ResultSet resultSet, ColumnIndex index) throws SQLException
+            {
+                mapper.initialize( resultSet, index );
+            }
+
+            @Override
+            public T getResult(ResultSet resultSet, ColumnIndex index) throws SQLException
+            {
+                return mapper.map( resultSet, index );
+            }
+
+            @Override
+            public Class<T> getResultType()
+            {
+                return type;
+            }
+        };
     }
 
     public static ResultType<?>[] resultTypes(ResultType<?>... resultTypes)

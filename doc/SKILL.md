@@ -7,7 +7,7 @@ This skill teaches how to use the `de.schaeuffelhut.jdbc:jdbc-util` library, a l
 Ensure the following dependency is present in the `build.gradle` file.
 
 ```gradle
-implementation 'de.schaeuffelhut.jdbc:jdbc-util:1.1.0'
+implementation 'de.schaeuffelhut.jdbc:jdbc-util:1.1.1'
 ```
 
 ## 2. Core Concepts

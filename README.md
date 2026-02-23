@@ -27,7 +27,7 @@ SQL and map results directly to Java objects using modern type-safe method refer
 ### Gradle
 
 ```Gradle
-implementation 'de.schaeuffelhut.jdbc:jdbc-util:1.1.0'
+implementation 'de.schaeuffelhut.jdbc:jdbc-util:1.1.1'
 ```
 
 ### Maven
@@ -36,7 +36,7 @@ implementation 'de.schaeuffelhut.jdbc:jdbc-util:1.1.0'
 <dependency>
     <groupId>de.schaeuffelhut.jdbc</groupId>
     <artifactId>jdbc-util</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 

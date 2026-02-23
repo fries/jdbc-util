@@ -139,7 +139,7 @@ class ReadOptionalResult<T> implements ResultSetReader<T, Optional<T>>
             {
                 throw new IllegalStateException( "ResultSet returned more than one row" );
             }
-            return Optional.of( result );
+            return Optional.ofNullable( result );
         }
         else
         {
